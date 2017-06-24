@@ -1,8 +1,5 @@
-package com.mackenziehigh.sexpr.internal;
+package com.mackenziehigh.sexpr;
 
-import com.mackenziehigh.sexpr.SList;
-import com.mackenziehigh.sexpr.Sexpr;
-import com.mackenziehigh.sexpr.SourceLocation;
 import high.mackenzie.snowflake.ITreeNode;
 import high.mackenzie.snowflake.LinesAndColumns;
 import high.mackenzie.snowflake.NewlineStyles;
@@ -11,8 +8,7 @@ import java.util.Objects;
 import java.util.Stack;
 
 /**
- *
- * @author mackenzie
+ * An instance of this class is used to visit nodes in an AST.
  */
 final class Visitor
         extends AbstractVisitor
@@ -48,42 +44,16 @@ final class Visitor
 
     private SourceLocation locate (final ITreeNode node)
     {
-
-        return new SourceLocation()
-        {
-            @Override
-            public int column ()
-            {
-                return locator.columnNumbers()[node.start()];
-            }
-
-            @Override
-            public int line ()
-            {
-                return locator.lineNumbers()[node.start()];
-            }
-
-            @Override
-            public String source ()
-            {
-                return source;
-            }
-
-        };
+        final int column = locator.columnNumbers()[node.start()];
+        final int line = locator.lineNumbers()[node.start()];
+        return new SourceLocation(source, line, column);
     }
 
     private void createAtom (final ITreeNode node,
                              final boolean expand)
     {
         final String text = new String(expand ? Escaper.instance.expand(node.text()) : node.text().toCharArray());
-        final BaseAtom atom = new BaseAtom(text)
-        {
-            @Override
-            public SourceLocation location ()
-            {
-                return locate(node);
-            }
-        };
+        final SAtom atom = new SAtom(locate(node), text);
         stack.push(atom);
     }
 
@@ -110,14 +80,7 @@ final class Visitor
         /**
          * Create the Symbolic List.
          */
-        final SList list = new BaseList(elements)
-        {
-            @Override
-            public SourceLocation location ()
-            {
-                return locate(node);
-            }
-        };
+        final SList list = new SList(locate(node), elements);
         stack.push(list);
     }
 

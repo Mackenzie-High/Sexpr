@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr.internal;
+package com.mackenziehigh.sexpr;
 
 import high.mackenzie.snowflake.Grammar;
 import high.mackenzie.snowflake.GrammarBuilder;

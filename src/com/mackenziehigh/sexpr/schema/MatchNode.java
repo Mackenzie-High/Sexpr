@@ -1,7 +1,8 @@
-package com.mackenziehigh.sexpr.internal.schema;
+package com.mackenziehigh.sexpr.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -30,7 +31,7 @@ public interface MatchNode
      *
      * @return an immutable collection of subordinate matches.
      */
-    public MatchNode children ();
+    public List<MatchNode> children ();
 
     /**
      * These are the actions that should be executed
@@ -55,7 +56,7 @@ public interface MatchNode
     public default void execute ()
     {
         before().forEach(x -> x.accept(this.value()));
-        children().execute();
+        children().forEach(x -> x.execute());
         after().forEach(x -> x.accept(this.value()));
     }
 }

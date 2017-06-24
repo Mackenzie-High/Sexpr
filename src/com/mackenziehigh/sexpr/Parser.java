@@ -1,8 +1,5 @@
-package com.mackenziehigh.sexpr.internal;
+package com.mackenziehigh.sexpr;
 
-import com.mackenziehigh.sexpr.SList;
-import com.mackenziehigh.sexpr.SexprFactory;
-import com.mackenziehigh.sexpr.SourceLocation;
 import high.mackenzie.snowflake.LinesAndColumns;
 import high.mackenzie.snowflake.NewlineStyles;
 import high.mackenzie.snowflake.ParserOutput;
@@ -42,29 +39,10 @@ final class Parser
 
         if (output.success() == false)
         {
-            final SourceLocation location = new SourceLocation()
-            {
-                @Override
-                public int column ()
-                {
-                    return locator.columnNumbers()[output.lengthOfConsumption()];
-                }
-
-                @Override
-                public int line ()
-                {
-                    return locator.lineNumbers()[output.lengthOfConsumption()];
-                }
-
-                @Override
-                public String source ()
-                {
-                    return source;
-                }
-
-            };
-
-            throw new SexprFactory.ParsingFailedException(location);
+            final int line = locator.lineNumbers()[output.lengthOfConsumption()];
+            final int column = locator.columnNumbers()[output.lengthOfConsumption()];
+            final SourceLocation location = new SourceLocation(source, line, column);
+            throw new IllegalArgumentException("Parsing Failed At " + location.message());
         }
 
         final Visitor visitor = new Visitor(source, input);

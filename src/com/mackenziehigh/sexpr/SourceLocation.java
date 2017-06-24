@@ -1,20 +1,47 @@
 package com.mackenziehigh.sexpr;
 
+import java.util.Objects;
+
 /**
  * An instance of this interface indicate the location
  * of a symbolic-expression within a string of text.
  */
-public interface SourceLocation
+public final class SourceLocation
 {
+
+    public static SourceLocation DEFAULT = new SourceLocation("N/A", 0, 0);
+
+    private final String source;
+
+    private final int line;
+
+    private final int column;
+
+    /**
+     * Sole Constructor.
+     *
+     * @param source is the value that will be returnable by source().
+     * @param line is the value that will be returnable by line().
+     * @param column is the value that will be returnable by column().
+     */
+    public SourceLocation (final String source,
+                           final int line,
+                           final int column)
+    {
+        this.source = Objects.requireNonNull(source);
+        this.line = line;
+        this.column = column;
+    }
+
     /**
      * This method retrieves the name of the source.
      * This is usually the path to a file.
      *
      * @return the identifier of the source.
      */
-    public default String source ()
+    public String source ()
     {
-        return "N/A";
+        return source;
     }
 
     /**
@@ -23,9 +50,9 @@ public interface SourceLocation
      *
      * @return the line-number.
      */
-    public default int line ()
+    public int line ()
     {
-        return 0;
+        return line;
     }
 
     /**
@@ -34,9 +61,9 @@ public interface SourceLocation
      *
      * @return the line-number.
      */
-    public default int column ()
+    public int column ()
     {
-        return 0;
+        return column;
     }
 
     /**
@@ -45,8 +72,17 @@ public interface SourceLocation
      *
      * @return this object in human readable form.
      */
-    public default String message ()
+    public String message ()
     {
         return String.format("Line: %d, Column: %d, Source: %s", line(), column(), source());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString ()
+    {
+        return message();
     }
 }

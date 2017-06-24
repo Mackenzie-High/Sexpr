@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr.internal;
+package com.mackenziehigh.sexpr;
 
 import high.mackenzie.snowflake.ITreeNode;
 import high.mackenzie.snowflake.ITreeNodeVisitor;

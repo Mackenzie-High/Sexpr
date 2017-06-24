@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr.internal.schema;
+package com.mackenziehigh.sexpr.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
 import java.util.Optional;
@@ -42,18 +42,44 @@ public interface MatchResult
     }
 
     /**
+     * If the match was unsuccessful, this method tries
+     * to create a meaningful error-message for the user.
+     *
+     * @return the error-message, if matching failed.
+     */
+    public default Optional<String> errorMessage ()
+    {
+        if (isSuccess())
+        {
+            return Optional.empty();
+        }
+        else if (lastSuccess().isPresent())
+        {
+            return Optional.of("Match Failed After " + lastSuccess().get().location().message());
+        }
+        else
+        {
+            return Optional.of("Match Failed");
+        }
+    }
+
+    /**
      * This method executes all of the actions
      * in the matchTree() in the proper order.
      *
      * <p>
      * This method does nothing, if the match was unsuccessful.
      * </p>
+     *
+     * @return this.
      */
-    public default void execute ()
+    public default MatchResult execute ()
     {
-        if (isSuccess() == false)
+        if (isSuccess())
         {
             matchTree().get().execute();
         }
+
+        return this;
     }
 }

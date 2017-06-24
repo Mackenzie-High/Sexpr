@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr.internal.schema;
+package com.mackenziehigh.sexpr.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
 

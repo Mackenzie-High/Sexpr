@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr.internal.schema;
+package com.mackenziehigh.sexpr.schema;
 
 import com.mackenziehigh.sexpr.SAtom;
 import com.mackenziehigh.sexpr.Sexpr;
@@ -21,6 +21,13 @@ public interface SchemaBuilder
      */
     public interface RuleBuilder
     {
+        /**
+         * This method defines this rule as the root rule in the schema.
+         *
+         * @return this.
+         */
+        public RuleBuilder root ();
+
         /**
          * This method defines a rule that matches a SAtom only.
          *
@@ -50,7 +57,7 @@ public interface SchemaBuilder
          *
          * @return a builder for the rule.
          */
-        public Disjunction one ();
+        public Disjunction choice ();
 
         /**
          * This method defines a rule that consists of a series of options,
@@ -103,7 +110,7 @@ public interface SchemaBuilder
          * @param action is the action to add.
          * @return this.
          */
-        public T before (Consumer<Sexpr> action);
+        public T before (Consumer<? extends Sexpr> action);
 
         /**
          * This method adds an action to execute upon
@@ -117,7 +124,7 @@ public interface SchemaBuilder
          * @param action is the action to add.
          * @return this.
          */
-        public T after (Consumer<Sexpr> action);
+        public T after (Consumer<? extends Sexpr> action);
     }
 
     /**
@@ -152,13 +159,66 @@ public interface SchemaBuilder
         /**
          * This method specifies that this rule will
          * only successfully match atoms that have
+         * a character representation.
+         *
+         * @return this.
+         */
+        public default Leaf requireChar ()
+        {
+            require(x -> x.asChar().isPresent());
+            return this;
+        }
+
+        /**
+         * This method specifies that this rule will
+         * only successfully match atoms that have
          * an integer representation.
          *
          * @return this.
          */
-        public default Leaf requireInteger ()
+        public default Leaf requireByte ()
         {
-            require(x -> x.asInteger().isPresent());
+            require(x -> x.asByte().isPresent());
+            return this;
+        }
+
+        /**
+         * This method specifies that this rule will
+         * only successfully match atoms that have
+         * an integer representation.
+         *
+         * @return this.
+         */
+        public default Leaf requireShort ()
+        {
+            require(x -> x.asShort().isPresent());
+            return this;
+        }
+
+        /**
+         * This method specifies that this rule will
+         * only successfully match atoms that have
+         * an integer representation.
+         *
+         * @return this.
+         */
+        public default Leaf requireInt ()
+        {
+            require(x -> x.asInt().isPresent());
+            return this;
+
+        }
+
+        /**
+         * This method specifies that this rule will
+         * only successfully match atoms that have
+         * an integer representation.
+         *
+         * @return this.
+         */
+        public default Leaf requireLong ()
+        {
+            require(x -> x.asLong().isPresent());
             return this;
         }
 
@@ -172,6 +232,19 @@ public interface SchemaBuilder
         public default Leaf requireFloat ()
         {
             require(x -> x.asFloat().isPresent());
+            return this;
+        }
+
+        /**
+         * This method specifies that this rule will
+         * only successfully match atoms that have
+         * a floating-point representation.
+         *
+         * @return this.
+         */
+        public default Leaf requireDouble ()
+        {
+            require(x -> x.asDouble().isPresent());
             return this;
         }
 
@@ -228,7 +301,7 @@ public interface SchemaBuilder
             Arrays.asList(values).forEach(x -> Objects.requireNonNull(x));
             final Set<String> set = new TreeSet<>();
             set.addAll(Arrays.asList(values));
-            require(x -> set.contains(x));
+            require(x -> set.contains(x.content()));
             return this;
         }
     }
@@ -361,6 +434,7 @@ public interface SchemaBuilder
      * This method creates the schema described by this grammar.
      *
      * @return the schema.
+     * @throws IllegalStateException if this method was already invoked.
      */
     public Schema build ();
 }
