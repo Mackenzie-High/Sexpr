@@ -46,6 +46,7 @@ public final class Escaper
         /**
          * Normal Characters.
          */
+        ASCII[32] = Character.toString((char) 32);
         ASCII[33] = "!";
         //
         ASCII[35] = "#";
@@ -166,9 +167,46 @@ public final class Escaper
         {
             final char chr = input[i];
 
-            final boolean isAscii = chr < ASCII.length && ASCII[chr] != null;
-
-            str.append(isAscii ? ASCII[chr] : String.format("\\u%04X", (int) chr));
+            if (chr == '\b')
+            {
+                str.append("\\b");
+            }
+            else if (chr == '\t')
+            {
+                str.append("\\t");
+            }
+            else if (chr == '\n')
+            {
+                str.append("\\n");
+            }
+            else if (chr == '\f')
+            {
+                str.append("\\f");
+            }
+            else if (chr == '\r')
+            {
+                str.append("\\r");
+            }
+            else if (chr == '\'')
+            {
+                str.append("\\\'");
+            }
+            else if (chr == '\"')
+            {
+                str.append("\\\"");
+            }
+            else if (chr == '\\')
+            {
+                str.append("\\\\");
+            }
+            else if (chr < ASCII.length && ASCII[chr] != null)
+            {
+                str.append(ASCII[chr]);
+            }
+            else
+            {
+                str.append(String.format("\\u%04X", (int) chr));
+            }
         }
 
         return str.toString();

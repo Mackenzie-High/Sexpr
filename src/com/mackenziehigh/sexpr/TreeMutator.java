@@ -57,10 +57,17 @@ public final class TreeMutator
      */
     public SList append (final Sexpr value)
     {
-        final LinkedList<Sexpr> elements = new LinkedList<>(node.toList());
-        elements.addLast(Objects.requireNonNull(value));
-        final SList modified = SList.copyOf(elements);
-        return set(modified);
+        if (node.isList())
+        {
+            final LinkedList<Sexpr> elements = new LinkedList<>(node.toList());
+            elements.addLast(Objects.requireNonNull(value));
+            final SList modified = SList.copyOf(elements);
+            return set(modified);
+        }
+        else
+        {
+            throw new IllegalStateException("append(Sexpr) cannot be used on th tree root.");
+        }
     }
 
     /**
@@ -73,10 +80,17 @@ public final class TreeMutator
      */
     public SList prepend (final Sexpr value)
     {
-        final LinkedList<Sexpr> elements = new LinkedList<>(node.toList());
-        elements.addFirst(Objects.requireNonNull(value));
-        final SList modified = SList.copyOf(elements);
-        return set(modified);
+        if (node.isList())
+        {
+            final LinkedList<Sexpr> elements = new LinkedList<>(node.toList());
+            elements.addFirst(Objects.requireNonNull(value));
+            final SList modified = SList.copyOf(elements);
+            return set(modified);
+        }
+        else
+        {
+            throw new IllegalStateException("prepend(Sexpr) cannot be used on th tree root.");
+        }
     }
 
     /**
@@ -84,10 +98,18 @@ public final class TreeMutator
      *
      * @param value will replace the node() in the tree.
      * @return a modified copy of the symbolic-expression.
+     * @throws IllegalStateException if the selected node is the root of the tree.
      */
     public SList set (final Sexpr value)
     {
-        return below.rebuild(Objects.requireNonNull(value), index);
+        if (below == null)
+        {
+            throw new IllegalStateException("set(Sexpr) cannot be used on th tree root.");
+        }
+        else
+        {
+            return below.rebuild(Objects.requireNonNull(value), index);
+        }
     }
 
     /**
@@ -111,16 +133,18 @@ public final class TreeMutator
      */
     public TreeMutator last ()
     {
-        return get(-1);
+        if (node.isList())
+        {
+            return get(node.toList().size() - 1);
+        }
+        else
+        {
+            throw new IllegalStateException("last() requires that node() be a SList.");
+        }
     }
 
     /**
      * This method selects an element in the currently selected list node().
-     *
-     * <p>
-     * This method supports negative indexing.
-     * For example, (-1) can be used to reference the last element.
-     * </p>
      *
      * @param index is the index of the element to select.
      * @return a new instance that encodes this action.
@@ -131,9 +155,8 @@ public final class TreeMutator
     {
         if (node.isList())
         {
-            final int key = index < 0 ? node.toList().size() + index : index;
-            final Sexpr element = node.toList().get(key);
-            final TreeMutator step = new TreeMutator(this, element, key);
+            final Sexpr element = node.toList().get(index);
+            final TreeMutator step = new TreeMutator(this, element, index);
             return step;
         }
         else

@@ -1,12 +1,8 @@
-package com.mackenziehigh.sexpr.internal.schema;
+package com.mackenziehigh.sexpr.schema;
 
 import com.mackenziehigh.sexpr.SAtom;
 import com.mackenziehigh.sexpr.SList;
 import com.mackenziehigh.sexpr.Sexpr;
-import com.mackenziehigh.sexpr.schema.MatchNode;
-import com.mackenziehigh.sexpr.schema.MatchResult;
-import com.mackenziehigh.sexpr.schema.Schema;
-import com.mackenziehigh.sexpr.schema.SchemaBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +20,7 @@ import java.util.function.Predicate;
 /**
  * Implementation of SchemaBuilder.
  */
-public final class ConcreteSchemaBuilder
+final class SchemaBuilderImplementation
         implements SchemaBuilder
 {
     /**
@@ -560,7 +556,7 @@ public final class ConcreteSchemaBuilder
 
     public static void main (String[] args)
     {
-        final SchemaBuilder b = new ConcreteSchemaBuilder();
+        final SchemaBuilder b = new SchemaBuilderImplementation();
         b.define("x").leaf().require("5").before(x -> System.out.println("X = " + x));
         b.define("y").leaf().require("7").before(x -> System.out.println("Y = " + x));
         b.define("z").root().choice().of("x", "y");

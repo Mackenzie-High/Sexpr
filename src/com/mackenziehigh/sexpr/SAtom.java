@@ -344,6 +344,12 @@ public final class SAtom
 
     private String createParsableContent ()
     {
+        /**
+         * If the content() contains whitespace, parentheses,
+         * at-symbols, single-quotes,or double-quotes,
+         * then escape and quote the string; otherwise,
+         * return the content() itself.
+         */
         if (content.matches("[^\\s()@'\"]*"))
         {
             return content();
