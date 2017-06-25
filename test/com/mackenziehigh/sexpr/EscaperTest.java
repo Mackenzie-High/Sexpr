@@ -1,6 +1,5 @@
 package com.mackenziehigh.sexpr;
 
-import com.mackenziehigh.sexpr.Escaper;
 import java.util.Arrays;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -80,7 +79,7 @@ public class EscaperTest
             }
         }
 
-        assertEquals((8 * 2) + (91 * 1) + ((65536 - 99) * 6), total);
+        assertEquals((8 * 2) + (91 * 1) + ((65536 - 100) * 6), total);
     }
 
     /**

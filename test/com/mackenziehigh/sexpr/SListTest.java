@@ -2211,4 +2211,23 @@ public class SListTest
 
         SList.of().toAtom();
     }
+
+    /**
+     * Test: 20170625032925499124
+     *
+     * <p>
+     * Method: <code>mutator</code>
+     * </p>
+     *
+     * <p>
+     * Case: normal
+     * </p>
+     */
+    @Test
+    public void test20170625032925499124 ()
+    {
+        System.out.println("Test: 20170625032925499124");
+
+        assertTrue(SList.of().mutator() instanceof TreeMutator);
+    }
 }

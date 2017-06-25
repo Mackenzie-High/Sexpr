@@ -513,9 +513,17 @@ public class SAtomTest
     {
         System.out.println("Test: 20170617092746028751");
 
+        // No Special Characters => No Quotes
         assertEquals("vulcan", new SAtom("vulcan").toString());
-        assertEquals("europa ganymede", new SAtom("'europa ganymede'").toString());
-        fail();
+
+        // Whitespace => Quote It!
+        assertEquals("'europa ganymede'", new SAtom("europa ganymede").toString());
+
+        // Whitespace => Quote It!
+        assertEquals("'alien@example.com'", new SAtom("alien@example.com").toString());
+
+        // Escape Sequence Characters => Quote It!
+        assertEquals("'\\b\\t\\n\\f\\r\\\'\\\"\\\\'", new SAtom("\b\t\n\f\r\'\"\\").toString());
     }
 
     /**
@@ -749,6 +757,11 @@ public class SAtomTest
         // Case: different case
         atom1 = new SAtom("a");
         atom2 = new SAtom("A");
+        assertTrue(atom1.compareTo(atom2) > 0);
+
+        // Case: null
+        atom1 = new SAtom("A");
+        atom2 = null;
         assertTrue(atom1.compareTo(atom2) > 0);
     }
 
