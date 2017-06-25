@@ -649,21 +649,44 @@ public class SListTest
         final SAtom Z = new SAtom("Z");
 
         SList list1;
-        SList list2;
+        Object list2;
 
-        // Case: same object
+        /**
+         * Case: same object
+         */
         list1 = SList.of(X, Y, Z);
         list2 = list1;
         assertTrue(list1.equals(list2));
 
-        // Case: null
+        /**
+         * Case: null
+         */
         list1 = SList.of(X, Y, Z);
         list2 = null;
         assertFalse(list1.equals(list2));
 
-        // Case: different type
+        /**
+         * Case: different type
+         * Note: The equals method is optimized to check the hash first.
+         * If the hash differs, the type-check will not occur.
+         */
         list1 = SList.of(X, Y, Z);
-        assertFalse(list1.equals((Object) "(X, Y, Z)"));
+        final int hash = list1.hashCode();
+        list2 = new Object()
+        {
+            @Override
+            public boolean equals (Object obj)
+            {
+                return true;
+            }
+
+            @Override
+            public int hashCode ()
+            {
+                return hash;
+            }
+        };
+        assertFalse(list1.equals(list2));
 
         // Case: different values
         list1 = SList.of(X, Y);
@@ -1817,6 +1840,10 @@ public class SListTest
         expected.put(new SAtom("300"), new SAtom("400"));
         expected.put(new SAtom("500"), new SAtom("600"));
         assertEquals(expected, input.asMap().get());
+
+        // Case: non sub-list entry (i.e. 300 is not a valid entry)
+        input = SList.parse("N/A", "(100 200) 300 (400 500)");
+        assertFalse(input.asMap().isPresent());
     }
 
     /**

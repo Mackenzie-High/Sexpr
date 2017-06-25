@@ -510,14 +510,7 @@ public final class SAtom
             low = 48 <= low && low <= 57 ? low - 48 : low;
             low = 65 <= low && low <= 70 ? low - 55 : low;
 
-            if (high > 15)
-            {
-                return Optional.empty();
-            }
-            else
-            {
-                bytes[i / 2] = (byte) (high * 16 + low);
-            }
+            bytes[i / 2] = (byte) (high * 16 + low);
         }
 
         return Optional.of(bytes);
