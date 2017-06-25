@@ -1,5 +1,8 @@
-package com.mackenziehigh.sexpr;
+package com.mackenziehigh.sexpr.internal;
 
+import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.SourceLocation;
 import high.mackenzie.snowflake.LinesAndColumns;
 import high.mackenzie.snowflake.NewlineStyles;
 import high.mackenzie.snowflake.ParserOutput;
@@ -8,7 +11,7 @@ import java.util.Objects;
 /**
  * Symbolic Expression Parser.
  */
-final class Parser
+public final class Parser
 {
     private final String source;
 

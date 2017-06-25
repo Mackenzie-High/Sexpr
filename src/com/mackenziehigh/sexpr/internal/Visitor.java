@@ -1,5 +1,10 @@
-package com.mackenziehigh.sexpr;
+package com.mackenziehigh.sexpr.internal;
 
+import com.mackenziehigh.sexpr.SAtom;
+import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.SourceLocation;
+import com.mackenziehigh.sexpr.internal.AbstractVisitor;
 import high.mackenzie.snowflake.ITreeNode;
 import high.mackenzie.snowflake.LinesAndColumns;
 import high.mackenzie.snowflake.NewlineStyles;

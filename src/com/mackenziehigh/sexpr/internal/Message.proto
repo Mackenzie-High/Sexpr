@@ -1,6 +1,6 @@
 syntax = "proto3";
 package sexpr;
-option java_package = "com.mackenziehigh.sexpr";
+option java_package = "com.mackenziehigh.sexpr.internal";
 
 message message_t
 {

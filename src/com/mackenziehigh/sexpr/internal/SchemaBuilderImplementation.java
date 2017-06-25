@@ -1,8 +1,12 @@
-package com.mackenziehigh.sexpr.schema;
+package com.mackenziehigh.sexpr.internal;
 
 import com.mackenziehigh.sexpr.SAtom;
 import com.mackenziehigh.sexpr.SList;
 import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.schema.MatchNode;
+import com.mackenziehigh.sexpr.schema.MatchResult;
+import com.mackenziehigh.sexpr.schema.Schema;
+import com.mackenziehigh.sexpr.schema.SchemaBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

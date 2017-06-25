@@ -1,6 +1,6 @@
 package com.mackenziehigh.sexpr;
 
-import com.mackenziehigh.sexpr.Message.message_t;
+import com.mackenziehigh.sexpr.internal.Message.message_t;
 
 /**
  * This class provides static methods for converting

@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr;
+package com.mackenziehigh.sexpr.internal;
 
 import java.util.Arrays;
 

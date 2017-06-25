@@ -1,5 +1,6 @@
 package com.mackenziehigh.sexpr;
 
+import com.mackenziehigh.sexpr.internal.Escaper;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;

@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr;
+package com.mackenziehigh.sexpr.internal;
 
 import high.mackenzie.snowflake.Grammar;
 import high.mackenzie.snowflake.GrammarBuilder;
@@ -9,9 +9,9 @@ import high.mackenzie.snowflake.ParserOutput;
  * This class was auto-generated using the Snowflake parser-generator.
  *
  * <p>
- * Generated On: Sat Jun 24 00:16:46 EDT 2017</p>
+ * Generated On: Sun Jun 25 07:41:13 EDT 2017</p>
  */
-final class GeneratedParser
+public final class GeneratedParser
         implements IParser
 {
 
