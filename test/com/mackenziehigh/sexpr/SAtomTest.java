@@ -961,25 +961,6 @@ public class SAtomTest
     }
 
     /**
-     * Test: 20170624063944466823
-     *
-     * <p>
-     * Method: <code>mutator</code>
-     * </p>
-     *
-     * <p>
-     * Case: normal
-     * </p>
-     */
-    @Test
-    public void test20170624063944466823 ()
-    {
-        System.out.println("Test: 20170624063944466823");
-
-        assertTrue(new SAtom("X").mutator() instanceof SexprMutator);
-    }
-
-    /**
      * Test: 20170625013811754162
      *
      * <p>
