@@ -283,12 +283,14 @@ public final class SList
     }
 
     /**
-     * {@inheritDoc}
+     * This method obtains a mutator that can be used to
+     * non-destructively modify the tree rooted at this node.
+     *
+     * @return the mutator.
      */
-    @Override
-    public SexprMutator<SList> mutator ()
+    public TreeMutator mutator ()
     {
-        return new SexprMutator(this);
+        return new TreeMutator(this);
     }
 
     /**

@@ -412,12 +412,6 @@ public final class SAtom
         return condition.test(this);
     }
 
-    @Override
-    public SexprMutator<SAtom> mutator ()
-    {
-        return new SexprMutator(this);
-    }
-
     /**
      * {@inheritDoc}
      */

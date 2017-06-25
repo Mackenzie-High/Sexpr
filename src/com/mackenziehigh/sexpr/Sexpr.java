@@ -108,14 +108,6 @@ public interface Sexpr<T extends Sexpr<T>>
     public boolean isList ();
 
     /**
-     * This method obtains a mutator that can be used
-     * to non-destructively modify this node.
-     *
-     * @return the mutator.
-     */
-    public SexprMutator<T> mutator ();
-
-    /**
      * This method retrieves an object describing the source
      * from which this object we obtained.
      *
