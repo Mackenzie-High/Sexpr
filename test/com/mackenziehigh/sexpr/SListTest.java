@@ -2144,4 +2144,44 @@ public class SListTest
             assertTrue(message.matches("Parsing Failed At Line: [0-9]+, Column: [0-9]+, Source: test20170625011212166514"));
         }
     }
+
+    /**
+     * Test: 20170625013405187918
+     *
+     * <p>
+     * Method: <code>toList</code>
+     * </p>
+     *
+     * <p>
+     * Case: normal
+     * </p>
+     */
+    @Test
+    public void test20170625013405187918 ()
+    {
+        System.out.println("Test: 20170625013405187918");
+
+        final SList original = SList.of();
+        final SList result = original.toList();
+        assertTrue(original == result); // identity
+    }
+
+    /**
+     * Test: 20170625013405187994
+     *
+     * <p>
+     * Method: <code>toAtom</code>
+     * </p>
+     *
+     * <p>
+     * Case: normal
+     * </p>
+     */
+    @Test (expected = ClassCastException.class)
+    public void test20170625013405187994 ()
+    {
+        System.out.println("Test: 20170625013405187994");
+
+        SList.of().toAtom();
+    }
 }

@@ -978,4 +978,44 @@ public class SAtomTest
 
         assertTrue(new SAtom("X").mutator() instanceof SexprMutator);
     }
+
+    /**
+     * Test: 20170625013811754162
+     *
+     * <p>
+     * Method: <code>toList</code>
+     * </p>
+     *
+     * <p>
+     * Case: normal
+     * </p>
+     */
+    @Test (expected = ClassCastException.class)
+    public void test20170625013811754162 ()
+    {
+        System.out.println("Test: 20170625013811754162");
+
+        new SAtom(1).toList();
+    }
+
+    /**
+     * Test: 20170625013811754272
+     *
+     * <p>
+     * Method: <code>toAtom</code>
+     * </p>
+     *
+     * <p>
+     * Case: normal
+     * </p>
+     */
+    @Test
+    public void test20170625013811754272 ()
+    {
+        System.out.println("Test: 20170625013811754272");
+
+        final SAtom original = new SAtom(1);
+        final SAtom result = original.toAtom();
+        assertTrue(original == result); // identity
+    }
 }
