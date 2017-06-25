@@ -300,24 +300,4 @@ public final class Escaper
                 return false;
         }
     }
-
-    public static void main (String[] args)
-    {
-        final Escaper m = new Escaper();
-
-        for (char c = 1; c < Character.MAX_VALUE; c++)
-        {
-            String e = "" + c;
-            char[] a = m.expand(m.escape(e.toCharArray()));
-            if (e.charAt(0) != a[0] || a.length != 1)
-            {
-                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXX = " + (int) c);
-            }
-            else
-            {
-                System.out.println("X = " + (int) c);
-            }
-        }
-    }
-
 }

@@ -1,5 +1,6 @@
-package com.mackenziehigh.sexpr.internal;
+package com.mackenziehigh.sexpr;
 
+import com.mackenziehigh.sexpr.Escaper;
 import java.util.Arrays;
 import static org.junit.Assert.*;
 import org.junit.Test;

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -50,59 +50,13 @@ public final class SList
     private final int hash;
 
     /**
-     * Constructor.
-     *
-     * @param elements will be the elements in this list.
-     */
-    public SList (final List<? extends Sexpr> elements)
-    {
-        this(SourceLocation.DEFAULT, elements);
-    }
-
-    /**
-     * Constructor.
+     * Sole Constructor.
      *
      * @param location will be the location() of this list.
      * @param elements will be the elements in this list.
      */
-    public SList (final SourceLocation location,
-                  final Sexpr... elements)
-    {
-        this(location, Arrays.asList(elements));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param location will be the location() of this list.
-     * @param elements will be the elements in this list.
-     */
-    public SList (final SourceLocation location,
-                  final Stream<? extends Sexpr> elements)
-    {
-        this(location, elements.iterator());
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param location will be the location() of this list.
-     * @param elements will be the elements in this list.
-     */
-    public SList (final SourceLocation location,
-                  final Iterable<? extends Sexpr> elements)
-    {
-        this(location, elements.iterator());
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param location will be the location() of this list.
-     * @param elements will be the elements in this list.
-     */
-    public SList (final SourceLocation location,
-                  final Iterator<? extends Sexpr> elements)
+    private SList (final SourceLocation location,
+                   final Iterator<? extends Sexpr> elements)
     {
         this.location = Objects.requireNonNull(location);
         this.elements = new ArrayList<>();
@@ -112,6 +66,102 @@ public final class SList
         this.treeHeight = this.elements.stream().mapToInt(x -> x.treeHeight()).max().orElse(0) + 1;
         this.treeLeafCount = this.elements.stream().mapToInt(x -> x.treeLeafCount()).sum();
         this.hash = 31 * this.elements.stream().mapToInt(x -> x.hashCode()).sum();
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param elements will be the elements in this list.
+     * @return the new symbolic-list.
+     */
+    public static SList of (final Sexpr... elements)
+    {
+        return new SList(SourceLocation.DEFAULT, Arrays.asList(elements).iterator());
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param elements will be the elements in this list.
+     * @return the new symbolic-list.
+     */
+    public static SList of (final SourceLocation location,
+                            final Sexpr... elements)
+    {
+        return new SList(location, Arrays.asList(elements).iterator());
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param list contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final Iterable<? extends Sexpr> list)
+    {
+        return new SList(SourceLocation.DEFAULT, list.iterator());
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param list contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final SourceLocation location,
+                                final Iterable<? extends Sexpr> list)
+    {
+        return new SList(location, list.iterator());
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final Stream<? extends Sexpr> stream)
+    {
+        return new SList(SourceLocation.DEFAULT, stream.iterator());
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final SourceLocation location,
+                                final Stream<? extends Sexpr> stream)
+    {
+        return new SList(location, stream.iterator());
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final Iterator<? extends Sexpr> stream)
+    {
+        return new SList(SourceLocation.DEFAULT, stream);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final SourceLocation location,
+                                final Iterator<? extends Sexpr> stream)
+    {
+        return new SList(location, stream);
     }
 
     /**
@@ -127,11 +177,12 @@ public final class SList
      *
      * @param location will be the location() of this list.
      * @param map contains the entries to add to the list.
+     * @return the new symbolic-list.
      */
-    public SList (final SourceLocation location,
-                  final Map<? extends Sexpr, ? extends Sexpr> map)
+    public static SList fromMap (final SourceLocation location,
+                                 final Map<? extends Sexpr, ? extends Sexpr> map)
     {
-        this(location, createMap(location, map));
+        return copyOf(location, createMap(location, map));
     }
 
     /**
@@ -149,19 +200,20 @@ public final class SList
      * @param location will be the location() of this list.
      * @param map contains the entries to add to the list.
      * @param separator will be used as the key-value separator.
+     * @return the new symbolic-list.
      */
-    public SList (final SourceLocation location,
-                  final Map<? extends Sexpr, ? extends Sexpr> map,
-                  final Sexpr separator)
+    public static SList fromMap (final SourceLocation location,
+                                 final Map<? extends Sexpr, ? extends Sexpr> map,
+                                 final Sexpr separator)
     {
-        this(location, createMap(location, map, separator));
+        return copyOf(location, createMap(location, map, separator));
     }
 
     private static List<Sexpr> createMap (final SourceLocation location,
                                           final Map<? extends Sexpr, ? extends Sexpr> map)
     {
         final List<Sexpr> outer = new LinkedList<>();
-        map.forEach((x, y) -> outer.add(new SList(location, x, y)));
+        map.forEach((x, y) -> outer.add(SList.of(location, x, y)));
         return outer;
     }
 
@@ -170,7 +222,7 @@ public final class SList
                                           final Sexpr separator)
     {
         final List<Sexpr> outer = new LinkedList<>();
-        map.forEach((x, y) -> outer.add(new SList(location, x, separator, y)));
+        map.forEach((x, y) -> outer.add(SList.of(location, x, separator, y)));
         return outer;
     }
 
@@ -257,7 +309,7 @@ public final class SList
      */
     public SList tail ()
     {
-        return isEmpty() ? this : (SList) subList(1, size());
+        return isEmpty() ? this : copyOf(location, subList(1, size()));
     }
 
     /**
@@ -302,7 +354,7 @@ public final class SList
     @Override
     public boolean preorder (final Predicate<Sexpr> condition)
     {
-        return condition.test(this) || stream().anyMatch(x -> dfs(condition));
+        return condition.test(this) || stream().anyMatch(x -> x.dfs(condition));
     }
 
     /**
@@ -311,7 +363,7 @@ public final class SList
     @Override
     public boolean postorder (final Predicate<Sexpr> condition)
     {
-        return stream().anyMatch(x -> preorder(condition)) || condition.test(this);
+        return stream().anyMatch(x -> x.postorder(condition)) || condition.test(this);
     }
 
     /**
@@ -329,7 +381,7 @@ public final class SList
      */
     public Optional<Map<Sexpr, Sexpr>> asMap ()
     {
-        final Map<Sexpr, Sexpr> map = new LinkedHashMap<>(size());
+        final Map<Sexpr, Sexpr> map = new TreeMap<>();
 
         for (Sexpr element : this)
         {
@@ -337,14 +389,14 @@ public final class SList
             {
                 return Optional.empty();
             }
-            else if (((SList) element).size() != 2)
+            else if (((SList) element).size() < 2)
             {
                 return Optional.empty();
             }
             else
             {
-                final SList pair = (SList) element;
-                map.put(pair.first(), pair.last());
+                final SList entry = (SList) element;
+                map.put(entry.first(), entry.last());
             }
         }
 
@@ -384,17 +436,27 @@ public final class SList
     @Override
     public final boolean equals (final Object other)
     {
-        if (hash != other.hashCode())
+        if (other == this)
+        {
+            return true;
+        }
+        else if (other == null)
         {
             return false;
         }
-        else if (other instanceof SAtom == false)
+        else if (hash != other.hashCode())
+        {
+            return false;
+        }
+        else if (other instanceof SList == false)
         {
             return false;
         }
         else
         {
-            return compareTo((Sexpr) other) == 0;
+            final SList otherList = (SList) other;
+            final boolean result = elements.equals(otherList.elements);
+            return result;
         }
     }
 
@@ -422,8 +484,8 @@ public final class SList
     }
 
     /**
-     * This method converts the textual representation of a Sexpr
-     * to an actual corresponding Sexpr object.
+     * This method converts the textual representation of a SList
+     * to an actual corresponding SList object.
      *
      * <p>
      * This method inserts an implicit symbolic-list into the input.
@@ -440,5 +502,4 @@ public final class SList
         final Parser p = new Parser(Objects.requireNonNull(location));
         return p.parse(Objects.requireNonNull(input));
     }
-
 }

@@ -66,6 +66,8 @@ final class Visitor
     @Override
     protected void visit_slist (ITreeNode node)
     {
+        visitChildren(node);
+
         /**
          * Get the elements off of the stack.
          * Be sure to keep them in the correct order.
@@ -80,7 +82,7 @@ final class Visitor
         /**
          * Create the Symbolic List.
          */
-        final SList list = new SList(locate(node), elements);
+        final SList list = SList.copyOf(locate(node), elements);
         stack.push(list);
     }
 

@@ -15,9 +15,71 @@ import java.util.function.Predicate;
 public final class SAtom
         implements Sexpr<SAtom>
 {
+    /**
+     * This is the content() of this atom.
+     */
     private final String content;
 
+    /**
+     * This is the content() in a format that would be recognized by the parser.
+     */
+    private final String parsableContent;
+
+    /**
+     * This is the location of this atom in an input-string,
+     * if this atom was obtained by parsing an input-string.
+     */
     private final SourceLocation location;
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Boolean> valueAsBoolean = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Character> valueAsChar = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Byte> valueAsByte = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Short> valueAsShort = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Integer> valueAsInt = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Long> valueAsLong = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Float> valueAsFloat = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Double> valueAsDouble = Optional.empty();
+
+    /**
+     * Cached Value.
+     */
+    private Optional<Class<?>> valueAsClass = Optional.empty();
+
+    /**
+     * Cached Hash Code.
+     */
+    private final int hash;
 
     /**
      * Constructor.
@@ -232,23 +294,9 @@ public final class SAtom
      * @param location will be the location() of this atom.
      */
     public SAtom (final SourceLocation location,
-                  final String value)
-    {
-        this.content = Objects.requireNonNull(value);
-        this.location = Objects.requireNonNull(location);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
                   final Class value)
     {
-        this.content = Objects.requireNonNull(value).getName();
-        this.location = Objects.requireNonNull(location);
+        this(location, value.getName());
     }
 
     /**
@@ -259,6 +307,26 @@ public final class SAtom
      */
     public SAtom (final SourceLocation location,
                   final byte[] value)
+    {
+        this(location, convertToHex(value));
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param value will be the content() of this atom.
+     * @param location will be the location() of this atom.
+     */
+    public SAtom (final SourceLocation location,
+                  final String value)
+    {
+        this.content = Objects.requireNonNull(value);
+        this.location = Objects.requireNonNull(location);
+        this.hash = 71 * value.hashCode() + 3;
+        this.parsableContent = createParsableContent();
+    }
+
+    private static String convertToHex (final byte[] value)
     {
         final StringBuilder str = new StringBuilder(value.length * 2);
 
@@ -271,8 +339,19 @@ public final class SAtom
             str.append(high).append(low);
         }
 
-        this.content = str.toString();
-        this.location = Objects.requireNonNull(location);
+        return str.toString();
+    }
+
+    private String createParsableContent ()
+    {
+        if (content.matches("[^\\s()@'\"]*"))
+        {
+            return content();
+        }
+        else
+        {
+            return "'" + escaped() + "'";
+        }
     }
 
     /**
@@ -367,7 +446,7 @@ public final class SAtom
      *
      * @return the class, if it is found.
      */
-    public Optional<Class> asClass ()
+    public Optional<Class<?>> asClass ()
     {
         return asClass(SAtom.class.getClassLoader());
     }
@@ -378,11 +457,17 @@ public final class SAtom
      * @param loader will be used to search for the class.
      * @return the class, if it is found.
      */
-    public Optional<Class> asClass (final ClassLoader loader)
+    public Optional<Class<?>> asClass (final ClassLoader loader)
     {
+        if (valueAsClass.isPresent())
+        {
+            return valueAsClass;
+        }
+
         try
         {
-            return Optional.of(Class.forName(toString(), false, loader));
+            valueAsClass = Optional.of(Class.forName(content, true, loader));
+            return valueAsClass;
         }
         catch (RuntimeException | ClassNotFoundException ex)
         {
@@ -408,6 +493,10 @@ public final class SAtom
         {
             return Optional.empty();
         }
+        else if (content.matches("[0-9A-Fa-f]+") == false)
+        {
+            return Optional.empty();
+        }
 
         final byte[] bytes = new byte[content.length() / 2];
 
@@ -415,11 +504,11 @@ public final class SAtom
         {
             int high = Character.toUpperCase(content.charAt(i + 0));
             high = 48 <= high && high <= 57 ? high - 48 : high;
-            high = 65 <= high && high <= 70 ? high - 65 : high;
+            high = 65 <= high && high <= 70 ? high - 55 : high;
 
             int low = Character.toUpperCase(content.charAt(i + 1));
             low = 48 <= low && low <= 57 ? low - 48 : low;
-            low = 65 <= low && low <= 70 ? low - 65 : low;
+            low = 65 <= low && low <= 70 ? low - 55 : low;
 
             if (high > 15)
             {
@@ -451,6 +540,11 @@ public final class SAtom
      */
     public Optional<Boolean> asBoolean ()
     {
+        if (valueAsBoolean.isPresent())
+        {
+            return valueAsBoolean;
+        }
+
         switch (toString().toLowerCase())
         {
             case "true":
@@ -458,13 +552,13 @@ public final class SAtom
             case "on":
             case "t":
             case "1":
-                return Optional.of(Boolean.TRUE);
+                return valueAsBoolean = Optional.of(Boolean.TRUE);
             case "false":
             case "no":
             case "off":
             case "f":
             case "0":
-                return Optional.of(Boolean.FALSE);
+                return valueAsBoolean = Optional.of(Boolean.FALSE);
             default:
                 return Optional.empty();
         }
@@ -477,7 +571,11 @@ public final class SAtom
      */
     public Optional<Character> asChar ()
     {
-        if ("max".equalsIgnoreCase(content()))
+        if (valueAsChar.isPresent())
+        {
+            return valueAsChar;
+        }
+        else if ("max".equalsIgnoreCase(content()))
         {
             return Optional.of(Character.MAX_VALUE);
         }
@@ -493,10 +591,14 @@ public final class SAtom
         {
             return Optional.of(Character.MIN_VALUE);
         }
+        else if (asInt().isPresent() && asInt().get() >= Character.MIN_VALUE && asInt().get() <= Character.MAX_VALUE)
+        {
+            valueAsChar = Optional.of((char) (int) asInt().get());
+            return valueAsChar;
+        }
         else
         {
-            final Optional<Long> number = asLong();
-            return number.isPresent() ? Optional.of((char) number.get().intValue()) : Optional.empty();
+            return Optional.empty();
         }
     }
 
@@ -507,7 +609,11 @@ public final class SAtom
      */
     public Optional<Byte> asByte ()
     {
-        if ("max".equalsIgnoreCase(content()))
+        if (valueAsByte.isPresent())
+        {
+            return valueAsByte;
+        }
+        else if ("max".equalsIgnoreCase(content()))
         {
             return Optional.of(Byte.MAX_VALUE);
         }
@@ -525,8 +631,15 @@ public final class SAtom
         }
         else
         {
-            final Optional<Long> number = asLong();
-            return number.isPresent() ? Optional.of(number.get().byteValue()) : Optional.empty();
+            try
+            {
+                valueAsByte = Optional.of(Byte.parseByte(content()));
+                return valueAsByte;
+            }
+            catch (RuntimeException ex)
+            {
+                return Optional.empty();
+            }
         }
     }
 
@@ -537,7 +650,11 @@ public final class SAtom
      */
     public Optional<Short> asShort ()
     {
-        if ("max".equalsIgnoreCase(content()))
+        if (valueAsShort.isPresent())
+        {
+            return valueAsShort;
+        }
+        else if ("max".equalsIgnoreCase(content()))
         {
             return Optional.of(Short.MAX_VALUE);
         }
@@ -555,8 +672,15 @@ public final class SAtom
         }
         else
         {
-            final Optional<Long> number = asLong();
-            return number.isPresent() ? Optional.of(number.get().shortValue()) : Optional.empty();
+            try
+            {
+                valueAsShort = Optional.of(Short.parseShort(content()));
+                return valueAsShort;
+            }
+            catch (RuntimeException ex)
+            {
+                return Optional.empty();
+            }
         }
     }
 
@@ -567,7 +691,11 @@ public final class SAtom
      */
     public Optional<Integer> asInt ()
     {
-        if ("max".equalsIgnoreCase(content()))
+        if (valueAsInt.isPresent())
+        {
+            return valueAsInt;
+        }
+        else if ("max".equalsIgnoreCase(content()))
         {
             return Optional.of(Integer.MAX_VALUE);
         }
@@ -585,8 +713,15 @@ public final class SAtom
         }
         else
         {
-            final Optional<Long> number = asLong();
-            return number.isPresent() ? Optional.of(number.get().intValue()) : Optional.empty();
+            try
+            {
+                valueAsInt = Optional.of(Integer.parseInt(content()));
+                return valueAsInt;
+            }
+            catch (RuntimeException ex)
+            {
+                return Optional.empty();
+            }
         }
     }
 
@@ -597,32 +732,38 @@ public final class SAtom
      */
     public Optional<Long> asLong ()
     {
-        try
+
+        if (valueAsLong.isPresent())
         {
-            if ("max".equalsIgnoreCase(content()))
-            {
-                return Optional.of(Long.MAX_VALUE);
-            }
-            else if ("maximum".equalsIgnoreCase(content()))
-            {
-                return Optional.of(Long.MAX_VALUE);
-            }
-            else if ("min".equalsIgnoreCase(content()))
-            {
-                return Optional.of(Long.MIN_VALUE);
-            }
-            else if ("minimum".equalsIgnoreCase(content()))
-            {
-                return Optional.of(Long.MIN_VALUE);
-            }
-            else
-            {
-                return Optional.of(Long.parseLong(toString()));
-            }
+            return valueAsLong;
         }
-        catch (RuntimeException ex)
+        else if ("max".equalsIgnoreCase(content()))
         {
-            return Optional.empty();
+            return Optional.of(Long.MAX_VALUE);
+        }
+        else if ("maximum".equalsIgnoreCase(content()))
+        {
+            return Optional.of(Long.MAX_VALUE);
+        }
+        else if ("min".equalsIgnoreCase(content()))
+        {
+            return Optional.of(Long.MIN_VALUE);
+        }
+        else if ("minimum".equalsIgnoreCase(content()))
+        {
+            return Optional.of(Long.MIN_VALUE);
+        }
+        else
+        {
+            try
+            {
+                valueAsLong = Optional.of(Long.parseLong(content()));
+                return valueAsLong;
+            }
+            catch (RuntimeException ex)
+            {
+                return Optional.empty();
+            }
         }
     }
 
@@ -633,8 +774,16 @@ public final class SAtom
      */
     public Optional<Float> asFloat ()
     {
-        final Optional<Double> number = asDouble();
-        return number.isPresent() ? Optional.of(number.get().floatValue()) : Optional.empty();
+        if (valueAsFloat.isPresent())
+        {
+            return valueAsFloat;
+        }
+        else
+        {
+            final Optional<Double> number = asDouble();
+            valueAsFloat = number.isPresent() ? Optional.of(number.get().floatValue()) : Optional.empty();
+            return valueAsFloat;
+        }
     }
 
     /**
@@ -646,7 +795,11 @@ public final class SAtom
     {
         try
         {
-            if ("infinity".equalsIgnoreCase(content()))
+            if (valueAsDouble.isPresent())
+            {
+                return valueAsDouble;
+            }
+            else if ("infinity".equalsIgnoreCase(content()))
             {
                 return Optional.of(Double.POSITIVE_INFINITY);
             }
@@ -672,7 +825,8 @@ public final class SAtom
             }
             else
             {
-                return Optional.of(Double.parseDouble(toString()));
+                valueAsDouble = Optional.of(Double.parseDouble(toString()));
+                return valueAsDouble;
             }
         }
         catch (RuntimeException ex)
@@ -747,7 +901,7 @@ public final class SAtom
         else
         {
             final SAtom other = (SAtom) obj;
-            final boolean result = content.equals(other.content);
+            final boolean result = hash == other.hash && content.equals(other.content);
             return result;
         }
     }
@@ -758,9 +912,6 @@ public final class SAtom
     @Override
     public final String toString ()
     {
-        final String symbol = content();
-        final String string = "@'" + escaped() + "'";
-        final String result = escaped().equals(content()) ? symbol : string;
-        return result;
+        return parsableContent;
     }
 }

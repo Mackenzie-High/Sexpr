@@ -7,7 +7,7 @@ import high.mackenzie.snowflake.ITreeNodeVisitor;
  * This class was auto-generated using the Snowflake parser-generator.
  *
  * <p>
- * Generated On: Sat Jun 17 14:12:45 EDT 2017</p>
+ * Generated On: Sat Jun 24 00:16:46 EDT 2017</p>
  */
 abstract class AbstractVisitor
         implements ITreeNodeVisitor
@@ -21,145 +21,123 @@ abstract class AbstractVisitor
     {
         final String name = node.rule();
 
-        if ("input".equals(name))
+        if (null == name)
         {
-            visit_input(node);
-        }
-        else if ("sexpr".equals(name))
-        {
-            visit_sexpr(node);
-        }
-        else if ("satom".equals(name))
-        {
-            visit_satom(node);
-        }
-        else if ("satom_form1".equals(name))
-        {
-            visit_satom_form1(node);
-        }
-        else if ("satom_form1_text".equals(name))
-        {
-            visit_satom_form1_text(node);
-        }
-        else if ("satom_form2".equals(name))
-        {
-            visit_satom_form2(node);
-        }
-        else if ("satom_form2_text".equals(name))
-        {
-            visit_satom_form2_text(node);
-        }
-        else if ("satom_form3".equals(name))
-        {
-            visit_satom_form3(node);
-        }
-        else if ("satom_form3_text".equals(name))
-        {
-            visit_satom_form3_text(node);
-        }
-        else if ("satom_form4".equals(name))
-        {
-            visit_satom_form4(node);
-        }
-        else if ("satom_form4_text".equals(name))
-        {
-            visit_satom_form4_text(node);
-        }
-        else if ("satom_form5".equals(name))
-        {
-            visit_satom_form5(node);
-        }
-        else if ("satom_form5_text".equals(name))
-        {
-            visit_satom_form5_text(node);
-        }
-        else if ("slist".equals(name))
-        {
-            visit_slist(node);
-        }
-        else if ("slist_body".equals(name))
-        {
-            visit_slist_body(node);
-        }
-        else if ("slist_start".equals(name))
-        {
-            visit_slist_start(node);
-        }
-        else if ("slist_end".equals(name))
-        {
-            visit_slist_end(node);
-        }
-        else if ("slist_elements".equals(name))
-        {
-            visit_slist_elements(node);
-        }
-        else if ("slist_element".equals(name))
-        {
-            visit_slist_element(node);
-        }
-        else if ("ANY_CHAR".equals(name))
-        {
-            visit_ANY_CHAR(node);
-        }
-        else if ("ESCAPE".equals(name))
-        {
-            visit_ESCAPE(node);
-        }
-        else if ("ESCAPE_B".equals(name))
-        {
-            visit_ESCAPE_B(node);
-        }
-        else if ("ESCAPE_T".equals(name))
-        {
-            visit_ESCAPE_T(node);
-        }
-        else if ("ESCAPE_N".equals(name))
-        {
-            visit_ESCAPE_N(node);
-        }
-        else if ("ESCAPE_F".equals(name))
-        {
-            visit_ESCAPE_F(node);
-        }
-        else if ("ESCAPE_R".equals(name))
-        {
-            visit_ESCAPE_R(node);
-        }
-        else if ("ESCAPE_SL".equals(name))
-        {
-            visit_ESCAPE_SL(node);
-        }
-        else if ("ESCAPE_SQ".equals(name))
-        {
-            visit_ESCAPE_SQ(node);
-        }
-        else if ("ESCAPE_DQ".equals(name))
-        {
-            visit_ESCAPE_DQ(node);
-        }
-        else if ("ESCAPE_U".equals(name))
-        {
-            visit_ESCAPE_U(node);
-        }
-        else if ("HEX_DIGIT".equals(name))
-        {
-            visit_HEX_DIGIT(node);
-        }
-        else if ("WS".equals(name))
-        {
-            visit_WS(node);
-        }
-        else if ("SP".equals(name))
-        {
-            visit_SP(node);
-        }
-        else if ("COMMENT".equals(name))
-        {
-            visit_COMMENT(node);
+            visitUnknown(node);
         }
         else
         {
-            visitUnknown(node);
+            switch (name)
+            {
+                case "input":
+                    visit_input(node);
+                    break;
+                case "sexpr":
+                    visit_sexpr(node);
+                    break;
+                case "satom":
+                    visit_satom(node);
+                    break;
+                case "satom_form1":
+                    visit_satom_form1(node);
+                    break;
+                case "satom_form1_text":
+                    visit_satom_form1_text(node);
+                    break;
+                case "satom_form2":
+                    visit_satom_form2(node);
+                    break;
+                case "satom_form2_text":
+                    visit_satom_form2_text(node);
+                    break;
+                case "satom_form3":
+                    visit_satom_form3(node);
+                    break;
+                case "satom_form3_text":
+                    visit_satom_form3_text(node);
+                    break;
+                case "satom_form4":
+                    visit_satom_form4(node);
+                    break;
+                case "satom_form4_text":
+                    visit_satom_form4_text(node);
+                    break;
+                case "satom_form5":
+                    visit_satom_form5(node);
+                    break;
+                case "satom_form5_text":
+                    visit_satom_form5_text(node);
+                    break;
+                case "slist":
+                    visit_slist(node);
+                    break;
+                case "slist_body":
+                    visit_slist_body(node);
+                    break;
+                case "slist_start":
+                    visit_slist_start(node);
+                    break;
+                case "slist_end":
+                    visit_slist_end(node);
+                    break;
+                case "slist_elements":
+                    visit_slist_elements(node);
+                    break;
+                case "slist_element":
+                    visit_slist_element(node);
+                    break;
+                case "ANY_CHAR":
+                    visit_ANY_CHAR(node);
+                    break;
+                case "ESCAPE":
+                    visit_ESCAPE(node);
+                    break;
+                case "ESCAPE_B":
+                    visit_ESCAPE_B(node);
+                    break;
+                case "ESCAPE_T":
+                    visit_ESCAPE_T(node);
+                    break;
+                case "ESCAPE_N":
+                    visit_ESCAPE_N(node);
+                    break;
+                case "ESCAPE_F":
+                    visit_ESCAPE_F(node);
+                    break;
+                case "ESCAPE_R":
+                    visit_ESCAPE_R(node);
+                    break;
+                case "ESCAPE_SL":
+                    visit_ESCAPE_SL(node);
+                    break;
+                case "ESCAPE_SQ":
+                    visit_ESCAPE_SQ(node);
+                    break;
+                case "ESCAPE_DQ":
+                    visit_ESCAPE_DQ(node);
+                    break;
+                case "ESCAPE_U":
+                    visit_ESCAPE_U(node);
+                    break;
+                case "HEX_DIGIT":
+                    visit_HEX_DIGIT(node);
+                    break;
+                case "WS":
+                    visit_WS(node);
+                    break;
+                case "SP":
+                    visit_SP(node);
+                    break;
+                case "COMMENT":
+                    visit_COMMENT(node);
+                    break;
+                case "COMMENT_TEXT":
+                    visit_COMMENT_TEXT(node);
+                    break;
+                default:
+                    visitUnknown(node);
+                    break;
+            }
         }
     }
 
@@ -187,6 +165,16 @@ abstract class AbstractVisitor
      * This method visits a parse-tree node created by rule "COMMENT".
      */
     protected void visit_COMMENT (ITreeNode node)
+    {
+        // You should *not* place your code right here.
+        // Instead, you should override this method via a subclass.
+        visitUnknown(node); // Default Behavior
+    }
+
+    /**
+     * This method visits a parse-tree node created by rule "COMMENT_TEXT".
+     */
+    protected void visit_COMMENT_TEXT (ITreeNode node)
     {
         // You should *not* place your code right here.
         // Instead, you should override this method via a subclass.

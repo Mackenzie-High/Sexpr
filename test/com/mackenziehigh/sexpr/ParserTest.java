@@ -1,8 +1,5 @@
-package com.mackenziehigh.sexpr.internal;
+package com.mackenziehigh.sexpr;
 
-import com.mackenziehigh.sexpr.SAtom;
-import com.mackenziehigh.sexpr.SList;
-import com.mackenziehigh.sexpr.SexprFactory.ParsingFailedException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -87,7 +84,7 @@ public class ParserTest
             p.parse("'''");
             fail();
         }
-        catch (ParsingFailedException ex)
+        catch (IllegalArgumentException ex)
         {
             final String message = ex.getMessage();
             assertTrue(message.matches("Parsing Failed At Line: [0-9]+, Column: [0-9]+, Source: test20170617124858539776"));

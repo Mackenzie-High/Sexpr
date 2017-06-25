@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GeneratedParser.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Sexpr&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr</a> &gt; <span class="el_source">GeneratedParser.java</span></div><h1>GeneratedParser.java</h1><pre class="source lang-java linenums">package com.mackenziehigh.sexpr;
+
+import high.mackenzie.snowflake.Grammar;
+import high.mackenzie.snowflake.GrammarBuilder;
+import high.mackenzie.snowflake.IParser;
+import high.mackenzie.snowflake.ParserOutput;
+
+/**
+ * This class was auto-generated using the Snowflake parser-generator.
+ *
+ * &lt;p&gt;
+ * Generated On: Sat Jun 24 00:16:46 EDT 2017&lt;/p&gt;
+ */
+<span class="fc" id="L14">final class GeneratedParser</span>
+        implements IParser
+{
+
+<span class="fc" id="L18">    private static final Grammar grammar = grammar();</span>
+
+    /**
+     * This method constructs the grammar object.
+     */
+    private static Grammar grammar ()
+    {
+<span class="fc" id="L25">        final GrammarBuilder g = new GrammarBuilder();</span>
+
+        // Character Classes
+<span class="fc" id="L28">        g.range(&quot;@class0&quot;, (char) 64, (char) 64);</span>
+<span class="fc" id="L29">        g.range(&quot;@class1&quot;, (char) 39, (char) 39);</span>
+<span class="fc" id="L30">        g.combine(&quot;@class2&quot;, &quot;@class1&quot;);</span>
+<span class="fc" id="L31">        g.negate(&quot;@class3&quot;, &quot;@class2&quot;);</span>
+<span class="fc" id="L32">        g.range(&quot;@class4&quot;, (char) 64, (char) 64);</span>
+<span class="fc" id="L33">        g.range(&quot;@class5&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L34">        g.range(&quot;@class6&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L35">        g.range(&quot;@class7&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L36">        g.range(&quot;@class8&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L37">        g.combine(&quot;@class9&quot;, &quot;@class8&quot;);</span>
+<span class="fc" id="L38">        g.negate(&quot;@class10&quot;, &quot;@class9&quot;);</span>
+<span class="fc" id="L39">        g.range(&quot;@class11&quot;, (char) 39, (char) 39);</span>
+<span class="fc" id="L40">        g.combine(&quot;@class12&quot;, &quot;@class11&quot;);</span>
+<span class="fc" id="L41">        g.negate(&quot;@class13&quot;, &quot;@class12&quot;);</span>
+<span class="fc" id="L42">        g.range(&quot;@class14&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L43">        g.range(&quot;@class15&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L44">        g.range(&quot;@class16&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L45">        g.range(&quot;@class17&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L46">        g.combine(&quot;@class18&quot;, &quot;@class17&quot;);</span>
+<span class="fc" id="L47">        g.negate(&quot;@class19&quot;, &quot;@class18&quot;);</span>
+<span class="fc" id="L48">        g.range(&quot;@class20&quot;, (char) 32, (char) 32);</span>
+<span class="fc" id="L49">        g.range(&quot;@class21&quot;, (char) 9, (char) 9);</span>
+<span class="fc" id="L50">        g.range(&quot;@class22&quot;, (char) 10, (char) 10);</span>
+<span class="fc" id="L51">        g.range(&quot;@class23&quot;, (char) 11, (char) 11);</span>
+<span class="fc" id="L52">        g.range(&quot;@class24&quot;, (char) 12, (char) 12);</span>
+<span class="fc" id="L53">        g.range(&quot;@class25&quot;, (char) 13, (char) 13);</span>
+<span class="fc" id="L54">        g.range(&quot;@class26&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L55">        g.range(&quot;@class27&quot;, (char) 39, (char) 39);</span>
+<span class="fc" id="L56">        g.range(&quot;@class28&quot;, (char) 35, (char) 35);</span>
+<span class="fc" id="L57">        g.range(&quot;@class29&quot;, (char) 40, (char) 40);</span>
+<span class="fc" id="L58">        g.range(&quot;@class30&quot;, (char) 41, (char) 41);</span>
+<span class="fc" id="L59">        g.combine(&quot;@class31&quot;, &quot;@class20&quot;, &quot;@class21&quot;, &quot;@class22&quot;, &quot;@class23&quot;, &quot;@class24&quot;, &quot;@class25&quot;, &quot;@class26&quot;, &quot;@class27&quot;, &quot;@class28&quot;, &quot;@class29&quot;, &quot;@class30&quot;);</span>
+<span class="fc" id="L60">        g.negate(&quot;@class32&quot;, &quot;@class31&quot;);</span>
+<span class="fc" id="L61">        g.range(&quot;@class33&quot;, (char) 40, (char) 40);</span>
+<span class="fc" id="L62">        g.range(&quot;@class34&quot;, (char) 42, (char) 42);</span>
+<span class="fc" id="L63">        g.range(&quot;@class35&quot;, (char) 42, (char) 42);</span>
+<span class="fc" id="L64">        g.range(&quot;@class36&quot;, (char) 41, (char) 41);</span>
+<span class="fc" id="L65">        g.range(&quot;@class37&quot;, (char) 0, (char) 65535);</span>
+<span class="fc" id="L66">        g.range(&quot;@class38&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L67">        g.range(&quot;@class39&quot;, (char) 98, (char) 98);</span>
+<span class="fc" id="L68">        g.range(&quot;@class40&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L69">        g.range(&quot;@class41&quot;, (char) 116, (char) 116);</span>
+<span class="fc" id="L70">        g.range(&quot;@class42&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L71">        g.range(&quot;@class43&quot;, (char) 110, (char) 110);</span>
+<span class="fc" id="L72">        g.range(&quot;@class44&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L73">        g.range(&quot;@class45&quot;, (char) 102, (char) 102);</span>
+<span class="fc" id="L74">        g.range(&quot;@class46&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L75">        g.range(&quot;@class47&quot;, (char) 114, (char) 114);</span>
+<span class="fc" id="L76">        g.range(&quot;@class48&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L77">        g.range(&quot;@class49&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L78">        g.range(&quot;@class50&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L79">        g.range(&quot;@class51&quot;, (char) 92, (char) 92);</span>
+<span class="fc" id="L80">        g.range(&quot;@class52&quot;, (char) 34, (char) 34);</span>
+<span class="fc" id="L81">        g.range(&quot;@class53&quot;, (char) 117, (char) 117);</span>
+<span class="fc" id="L82">        g.range(&quot;@class54&quot;, (char) 48, (char) 57);</span>
+<span class="fc" id="L83">        g.range(&quot;@class55&quot;, (char) 65, (char) 70);</span>
+<span class="fc" id="L84">        g.combine(&quot;@class56&quot;, &quot;@class54&quot;, &quot;@class55&quot;);</span>
+<span class="fc" id="L85">        g.range(&quot;@class57&quot;, (char) 32, (char) 32);</span>
+<span class="fc" id="L86">        g.range(&quot;@class58&quot;, (char) 9, (char) 9);</span>
+<span class="fc" id="L87">        g.range(&quot;@class59&quot;, (char) 10, (char) 10);</span>
+<span class="fc" id="L88">        g.range(&quot;@class60&quot;, (char) 11, (char) 11);</span>
+<span class="fc" id="L89">        g.range(&quot;@class61&quot;, (char) 12, (char) 12);</span>
+<span class="fc" id="L90">        g.range(&quot;@class62&quot;, (char) 13, (char) 13);</span>
+<span class="fc" id="L91">        g.combine(&quot;@class63&quot;, &quot;@class57&quot;, &quot;@class58&quot;, &quot;@class59&quot;, &quot;@class60&quot;, &quot;@class61&quot;, &quot;@class62&quot;);</span>
+
+        // Grammar Rules
+<span class="fc" id="L94">        g.choose(&quot;@20&quot;, &quot;ESCAPE&quot;, &quot;@19&quot;);</span>
+<span class="fc" id="L95">        g.choose(&quot;@27&quot;, &quot;ESCAPE&quot;, &quot;@26&quot;);</span>
+<span class="fc" id="L96">        g.choose(&quot;@52&quot;, &quot;SP&quot;, &quot;COMMENT&quot;);</span>
+<span class="fc" id="L97">        g.choose(&quot;COMMENT_TEXT&quot;, &quot;COMMENT&quot;, &quot;@58&quot;);</span>
+<span class="fc" id="L98">        g.choose(&quot;ESCAPE&quot;, &quot;ESCAPE_B&quot;, &quot;ESCAPE_T&quot;, &quot;ESCAPE_N&quot;, &quot;ESCAPE_F&quot;, &quot;ESCAPE_R&quot;, &quot;ESCAPE_SL&quot;, &quot;ESCAPE_SQ&quot;, &quot;ESCAPE_DQ&quot;, &quot;ESCAPE_U&quot;);</span>
+<span class="fc" id="L99">        g.choose(&quot;satom&quot;, &quot;satom_form1&quot;, &quot;satom_form2&quot;, &quot;satom_form3&quot;, &quot;satom_form4&quot;, &quot;satom_form5&quot;);</span>
+<span class="fc" id="L100">        g.choose(&quot;sexpr&quot;, &quot;satom&quot;, &quot;slist&quot;);</span>
+<span class="fc" id="L101">        g.chr(&quot;@0&quot;, &quot;@class0&quot;);</span>
+<span class="fc" id="L102">        g.chr(&quot;@10&quot;, &quot;@class7&quot;);</span>
+<span class="fc" id="L103">        g.chr(&quot;@12&quot;, &quot;@class10&quot;);</span>
+<span class="fc" id="L104">        g.chr(&quot;@18&quot;, &quot;@class13&quot;);</span>
+<span class="fc" id="L105">        g.chr(&quot;@21&quot;, &quot;@class14&quot;);</span>
+<span class="fc" id="L106">        g.chr(&quot;@22&quot;, &quot;@class15&quot;);</span>
+<span class="fc" id="L107">        g.chr(&quot;@23&quot;, &quot;@class16&quot;);</span>
+<span class="fc" id="L108">        g.chr(&quot;@25&quot;, &quot;@class19&quot;);</span>
+<span class="fc" id="L109">        g.chr(&quot;@28&quot;, &quot;@class32&quot;);</span>
+<span class="fc" id="L110">        g.chr(&quot;@29&quot;, &quot;@class33&quot;);</span>
+<span class="fc" id="L111">        g.chr(&quot;@30&quot;, &quot;@class34&quot;);</span>
+<span class="fc" id="L112">        g.chr(&quot;@32&quot;, &quot;@class35&quot;);</span>
+<span class="fc" id="L113">        g.chr(&quot;@34&quot;, &quot;@class36&quot;);</span>
+<span class="fc" id="L114">        g.chr(&quot;@35&quot;, &quot;@class38&quot;);</span>
+<span class="fc" id="L115">        g.chr(&quot;@36&quot;, &quot;@class39&quot;);</span>
+<span class="fc" id="L116">        g.chr(&quot;@37&quot;, &quot;@class40&quot;);</span>
+<span class="fc" id="L117">        g.chr(&quot;@38&quot;, &quot;@class41&quot;);</span>
+<span class="fc" id="L118">        g.chr(&quot;@39&quot;, &quot;@class42&quot;);</span>
+<span class="fc" id="L119">        g.chr(&quot;@40&quot;, &quot;@class43&quot;);</span>
+<span class="fc" id="L120">        g.chr(&quot;@41&quot;, &quot;@class44&quot;);</span>
+<span class="fc" id="L121">        g.chr(&quot;@42&quot;, &quot;@class45&quot;);</span>
+<span class="fc" id="L122">        g.chr(&quot;@43&quot;, &quot;@class46&quot;);</span>
+<span class="fc" id="L123">        g.chr(&quot;@44&quot;, &quot;@class47&quot;);</span>
+<span class="fc" id="L124">        g.chr(&quot;@45&quot;, &quot;@class48&quot;);</span>
+<span class="fc" id="L125">        g.chr(&quot;@46&quot;, &quot;@class49&quot;);</span>
+<span class="fc" id="L126">        g.chr(&quot;@47&quot;, &quot;@class50&quot;);</span>
+<span class="fc" id="L127">        g.chr(&quot;@49&quot;, &quot;@class51&quot;);</span>
+<span class="fc" id="L128">        g.chr(&quot;@5&quot;, &quot;@class3&quot;);</span>
+<span class="fc" id="L129">        g.chr(&quot;@50&quot;, &quot;@class52&quot;);</span>
+<span class="fc" id="L130">        g.chr(&quot;@51&quot;, &quot;@class53&quot;);</span>
+<span class="fc" id="L131">        g.chr(&quot;@7&quot;, &quot;@class4&quot;);</span>
+<span class="fc" id="L132">        g.chr(&quot;@8&quot;, &quot;@class5&quot;);</span>
+<span class="fc" id="L133">        g.chr(&quot;@9&quot;, &quot;@class6&quot;);</span>
+<span class="fc" id="L134">        g.chr(&quot;ANY_CHAR&quot;, &quot;@class37&quot;);</span>
+<span class="fc" id="L135">        g.chr(&quot;HEX_DIGIT&quot;, &quot;@class56&quot;);</span>
+<span class="fc" id="L136">        g.chr(&quot;SP&quot;, &quot;@class63&quot;);</span>
+<span class="fc" id="L137">        g.not(&quot;@11&quot;, &quot;@10&quot;);</span>
+<span class="fc" id="L138">        g.not(&quot;@17&quot;, &quot;@16&quot;);</span>
+<span class="fc" id="L139">        g.not(&quot;@24&quot;, &quot;@23&quot;);</span>
+<span class="fc" id="L140">        g.not(&quot;@31&quot;, &quot;@30&quot;);</span>
+<span class="fc" id="L141">        g.not(&quot;@33&quot;, &quot;@32&quot;);</span>
+<span class="fc" id="L142">        g.not(&quot;@4&quot;, &quot;@3&quot;);</span>
+<span class="fc" id="L143">        g.not(&quot;@57&quot;, &quot;@56&quot;);</span>
+<span class="fc" id="L144">        g.repeat(&quot;@54&quot;, &quot;COMMENT_TEXT&quot;, 0, 2147483647);</span>
+<span class="fc" id="L145">        g.repeat(&quot;WS&quot;, &quot;@52&quot;, 0, 2147483647);</span>
+<span class="fc" id="L146">        g.repeat(&quot;satom_form1_text&quot;, &quot;@6&quot;, 0, 2147483647);</span>
+<span class="fc" id="L147">        g.repeat(&quot;satom_form2_text&quot;, &quot;@13&quot;, 0, 2147483647);</span>
+<span class="fc" id="L148">        g.repeat(&quot;satom_form3_text&quot;, &quot;@20&quot;, 0, 2147483647);</span>
+<span class="fc" id="L149">        g.repeat(&quot;satom_form4_text&quot;, &quot;@27&quot;, 0, 2147483647);</span>
+<span class="fc" id="L150">        g.repeat(&quot;satom_form5_text&quot;, &quot;@28&quot;, 1, 2147483647);</span>
+<span class="fc" id="L151">        g.repeat(&quot;slist_elements&quot;, &quot;slist_element&quot;, 0, 2147483647);</span>
+<span class="fc" id="L152">        g.sequence(&quot;@13&quot;, &quot;@11&quot;, &quot;@12&quot;);</span>
+<span class="fc" id="L153">        g.sequence(&quot;@19&quot;, &quot;@17&quot;, &quot;@18&quot;);</span>
+<span class="fc" id="L154">        g.sequence(&quot;@26&quot;, &quot;@24&quot;, &quot;@25&quot;);</span>
+<span class="fc" id="L155">        g.sequence(&quot;@58&quot;, &quot;@57&quot;, &quot;ANY_CHAR&quot;);</span>
+<span class="fc" id="L156">        g.sequence(&quot;@6&quot;, &quot;@4&quot;, &quot;@5&quot;);</span>
+<span class="fc" id="L157">        g.sequence(&quot;COMMENT&quot;, &quot;@53&quot;, &quot;@54&quot;, &quot;@55&quot;);</span>
+<span class="fc" id="L158">        g.sequence(&quot;ESCAPE_B&quot;, &quot;@35&quot;, &quot;@36&quot;);</span>
+<span class="fc" id="L159">        g.sequence(&quot;ESCAPE_DQ&quot;, &quot;@49&quot;, &quot;@50&quot;);</span>
+<span class="fc" id="L160">        g.sequence(&quot;ESCAPE_F&quot;, &quot;@41&quot;, &quot;@42&quot;);</span>
+<span class="fc" id="L161">        g.sequence(&quot;ESCAPE_N&quot;, &quot;@39&quot;, &quot;@40&quot;);</span>
+<span class="fc" id="L162">        g.sequence(&quot;ESCAPE_R&quot;, &quot;@43&quot;, &quot;@44&quot;);</span>
+<span class="fc" id="L163">        g.sequence(&quot;ESCAPE_SL&quot;, &quot;@45&quot;, &quot;@46&quot;);</span>
+<span class="fc" id="L164">        g.sequence(&quot;ESCAPE_SQ&quot;, &quot;@47&quot;, &quot;@48&quot;);</span>
+<span class="fc" id="L165">        g.sequence(&quot;ESCAPE_T&quot;, &quot;@37&quot;, &quot;@38&quot;);</span>
+<span class="fc" id="L166">        g.sequence(&quot;ESCAPE_U&quot;, &quot;@51&quot;, &quot;HEX_DIGIT&quot;, &quot;HEX_DIGIT&quot;, &quot;HEX_DIGIT&quot;, &quot;HEX_DIGIT&quot;);</span>
+<span class="fc" id="L167">        g.sequence(&quot;input&quot;, &quot;WS&quot;, &quot;slist_body&quot;, &quot;WS&quot;, &quot;END&quot;);</span>
+<span class="fc" id="L168">        g.sequence(&quot;satom_form1&quot;, &quot;@0&quot;, &quot;@1&quot;, &quot;satom_form1_text&quot;, &quot;@2&quot;, &quot;WS&quot;);</span>
+<span class="fc" id="L169">        g.sequence(&quot;satom_form2&quot;, &quot;@7&quot;, &quot;@8&quot;, &quot;satom_form2_text&quot;, &quot;@9&quot;, &quot;WS&quot;);</span>
+<span class="fc" id="L170">        g.sequence(&quot;satom_form3&quot;, &quot;@14&quot;, &quot;satom_form3_text&quot;, &quot;@15&quot;, &quot;WS&quot;);</span>
+<span class="fc" id="L171">        g.sequence(&quot;satom_form4&quot;, &quot;@21&quot;, &quot;satom_form4_text&quot;, &quot;@22&quot;, &quot;WS&quot;);</span>
+<span class="fc" id="L172">        g.sequence(&quot;satom_form5&quot;, &quot;satom_form5_text&quot;, &quot;WS&quot;);</span>
+<span class="fc" id="L173">        g.sequence(&quot;slist&quot;, &quot;@29&quot;, &quot;@31&quot;, &quot;slist_body&quot;, &quot;@33&quot;, &quot;@34&quot;, &quot;WS&quot;);</span>
+<span class="fc" id="L174">        g.sequence(&quot;slist_body&quot;, &quot;slist_start&quot;, &quot;WS&quot;, &quot;slist_elements&quot;, &quot;WS&quot;, &quot;slist_end&quot;, &quot;WS&quot;);</span>
+<span class="fc" id="L175">        g.sequence(&quot;slist_element&quot;, &quot;sexpr&quot;);</span>
+<span class="fc" id="L176">        g.str(&quot;@1&quot;, &quot;'&quot;);</span>
+<span class="fc" id="L177">        g.str(&quot;@14&quot;, &quot;'&quot;);</span>
+<span class="fc" id="L178">        g.str(&quot;@15&quot;, &quot;'&quot;);</span>
+<span class="fc" id="L179">        g.str(&quot;@16&quot;, &quot;'&quot;);</span>
+<span class="fc" id="L180">        g.str(&quot;@2&quot;, &quot;'&quot;);</span>
+<span class="fc" id="L181">        g.str(&quot;@3&quot;, &quot;'&quot;);</span>
+<span class="fc" id="L182">        g.str(&quot;@48&quot;, &quot;'&quot;);</span>
+<span class="fc" id="L183">        g.str(&quot;@53&quot;, &quot;(*&quot;);</span>
+<span class="fc" id="L184">        g.str(&quot;@55&quot;, &quot;*)&quot;);</span>
+<span class="fc" id="L185">        g.str(&quot;@56&quot;, &quot;*)&quot;);</span>
+<span class="fc" id="L186">        g.str(&quot;slist_end&quot;, &quot;&quot;);</span>
+<span class="fc" id="L187">        g.str(&quot;slist_start&quot;, &quot;&quot;);</span>
+
+        // Specify which rule is the root of the grammar.
+<span class="fc" id="L190">        g.setRoot(&quot;input&quot;);</span>
+
+        // Specify the number of tracing records to store concurrently.
+<span class="fc" id="L193">        g.setTraceCount(1024);</span>
+
+        // Perform the actual construction of the grammar object.
+<span class="fc" id="L196">        return g.build();</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ParserOutput parse (final char[] input)
+    {
+<span class="fc" id="L205">        return grammar.newParser().parse(input);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ParserOutput parse (final String input)
+    {
+<span class="fc" id="L214">        return parse(input.toCharArray());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

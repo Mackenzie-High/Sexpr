@@ -45,9 +45,10 @@ final class Parser
             throw new IllegalArgumentException("Parsing Failed At " + location.message());
         }
 
+        final SourceLocation location = new SourceLocation(source, 1, 1);
         final Visitor visitor = new Visitor(source, input);
         visitor.visit(output.parseTree());
-        final SList result = (SList) visitor.stack.pop();
+        final SList result = (SList) SList.copyOf(location, visitor.stack.stream().filter(x -> x instanceof Sexpr).map(x -> (Sexpr) x));
 
         return result;
     }

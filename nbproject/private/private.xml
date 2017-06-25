@@ -4,17 +4,14 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/SList.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/Schema.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/SourceLocation.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/SexprFactory.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/MatchNode.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/BaseAtom.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/SchemaBuilder.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/SchemaFactory.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/AbstractVisitor.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/Parser.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/test/com/mackenziehigh/sexpr/ParserTest.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/test/com/mackenziehigh/sexpr/SListTest.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/SexprMutator.java</file>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/SAtom.java</file>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/Sexpr.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/MatchResult.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/test/com/mackenziehigh/sexpr/SAtomTest.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/Visitor.java</file>
         </group>
     </open-files>
 </project-private>
