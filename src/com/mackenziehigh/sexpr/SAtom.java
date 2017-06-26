@@ -3,6 +3,7 @@ package com.mackenziehigh.sexpr;
 import com.mackenziehigh.sexpr.internal.Escaper;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -347,11 +348,11 @@ public final class SAtom
     {
         /**
          * If the content() contains whitespace, parentheses,
-         * at-symbols, single-quotes,or double-quotes,
+         * at-symbols, single-quotes, double-quotes, or is empty,
          * then escape and quote the string; otherwise,
          * return the content() itself.
          */
-        if (content.matches("[^\\s()@'\"]*"))
+        if (content.matches("[^\\s()@'\"]+"))
         {
             return content();
         }
@@ -435,6 +436,17 @@ public final class SAtom
     public boolean postorder (final Predicate<Sexpr> condition)
     {
         return condition.test(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void transverse (final Consumer<Sexpr> before,
+                            final Consumer<Sexpr> after)
+    {
+        before.accept(this);
+        after.accept(this);
     }
 
     /**

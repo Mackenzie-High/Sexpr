@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -367,6 +368,18 @@ public final class SList
     public boolean postorder (final Predicate<Sexpr> condition)
     {
         return stream().anyMatch(x -> x.postorder(condition)) || condition.test(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void transverse (final Consumer<Sexpr> before,
+                            final Consumer<Sexpr> after)
+    {
+        before.accept(this);
+        stream().forEach(x -> x.transverse(before, after));
+        after.accept(this);
     }
 
     /**

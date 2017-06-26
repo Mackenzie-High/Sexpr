@@ -1,6 +1,11 @@
 package com.mackenziehigh.sexpr;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -535,6 +540,7 @@ public class SAtomTest
      */
     @Test
     public void test20170617092746028764 ()
+            throws UnsupportedEncodingException
     {
         System.out.println("Test: 20170617092746028764");
 
@@ -619,11 +625,11 @@ public class SAtomTest
         assertTrue(atom.asClass() == atom.asClass()); // identity
 
         // byte[]
-        atom = new SAtom("Earth".getBytes());
+        atom = new SAtom("Earth".getBytes("UTF-8"));
         assertEquals("4561727468", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asByteArray().isPresent());
-        assertArrayEquals("Earth".getBytes(), atom.asByteArray().get());
+        assertArrayEquals("Earth".getBytes("UTF-8"), atom.asByteArray().get());
         assertTrue(atom.asByteArray() != atom.asByteArray()); // identity inequality
 
         final SourceLocation moon = new SourceLocation("Europa", 1, 2);
@@ -707,11 +713,11 @@ public class SAtomTest
         assertTrue(atom.asClass() == atom.asClass()); // identity
 
         // byte[]
-        atom = new SAtom(moon, "Earth".getBytes());
+        atom = new SAtom(moon, "Earth".getBytes("UTF-8"));
         assertEquals("4561727468", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asByteArray().isPresent());
-        assertArrayEquals("Earth".getBytes(), atom.asByteArray().get());
+        assertArrayEquals("Earth".getBytes("UTF-8"), atom.asByteArray().get());
         assertTrue(atom.asByteArray() != atom.asByteArray()); // identity inequality
     }
 
@@ -971,6 +977,46 @@ public class SAtomTest
 
         assertTrue(new SAtom("XYZ").bfs(x -> x.toString().equals("XYZ")));
         assertFalse(new SAtom("XYZ").bfs(x -> x.toString().equals("ABC")));
+    }
+
+    /**
+     * Test: 20170625213924913141
+     *
+     * <p>
+     * Method: <code>transverse</code>
+     * </p>
+     *
+     * <p>
+     * Case: normal
+     * </p>
+     */
+    @Test
+    public void test20170625213924913141 ()
+    {
+        System.out.println("Test: 20170625213924913141");
+
+        final Object BEFORE = new Object();
+        final Object AFTER = new Object();
+        final List<Object> record = new LinkedList<>();
+
+        final Consumer<Sexpr> before = x ->
+        {
+            record.add(BEFORE);
+            record.add(x);
+        };
+
+        final Consumer<Sexpr> after = x ->
+        {
+            record.add(AFTER);
+            record.add(x);
+        };
+
+        final SAtom atom = new SAtom(17);
+
+        // Method Under Test
+        atom.transverse(before, after);
+
+        assertEquals(Arrays.asList(BEFORE, atom, AFTER, atom), record);
     }
 
     /**

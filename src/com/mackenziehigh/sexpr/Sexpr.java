@@ -1,5 +1,6 @@
 package com.mackenziehigh.sexpr;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -92,6 +93,15 @@ public interface Sexpr<T extends Sexpr<T>>
      * @return true, if the node was found.
      */
     public boolean postorder (final Predicate<Sexpr> condition);
+
+    /**
+     * This method performs a transversal of the tree rooted at this node.
+     *
+     * @param before will be invoked upon entering each sub-tree.
+     * @param after will be invoked upon exiting each sub-tree.
+     */
+    public void transverse (Consumer<Sexpr> before,
+                            Consumer<Sexpr> after);
 
     /**
      * This method determines whether this object is a SAtom.

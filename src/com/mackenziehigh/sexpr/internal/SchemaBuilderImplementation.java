@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 /**
  * Implementation of SchemaBuilder.
  */
-final class SchemaBuilderImplementation
+public final class SchemaBuilderImplementation
         implements SchemaBuilder
 {
     /**

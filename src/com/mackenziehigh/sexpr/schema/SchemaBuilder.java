@@ -2,6 +2,7 @@ package com.mackenziehigh.sexpr.schema;
 
 import com.mackenziehigh.sexpr.SAtom;
 import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.internal.SchemaBuilderImplementation;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
@@ -15,6 +16,16 @@ import java.util.regex.Pattern;
  */
 public interface SchemaBuilder
 {
+    /**
+     * This method creates a an instance of this interface.
+     *
+     * @return the new instance.
+     */
+    public static SchemaBuilder create ()
+    {
+        return new SchemaBuilderImplementation();
+    }
+
     /**
      * This interface defines methods for selecting
      * the type of rule being defined.

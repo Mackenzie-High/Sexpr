@@ -1,0 +1,93 @@
+syntax = "proto3";
+package sexpr;
+option java_package = "com.mackenziehigh.sexpr.internal";
+
+/**
+ * Outer Container.
+ */
+message sexpr_t
+{
+    /**
+     * This is the optional MD5 checkson of the tree data.
+     */
+    bytes checksum = 1;
+
+    /**
+     * Binary tree_t structure.
+     */
+    bytes tree = 2;
+}
+
+/**
+ * Linearized Symbolic Expression.
+ */
+message tree_t
+{
+    repeated node_t nodes = 1;
+}
+
+/**
+ * Symbolic Expression Node.
+ */
+message node_t
+{
+    /**
+     * This corresponds to the SourceLocation in a Sexpr.
+     */
+    location_t location = 1;
+
+    /**
+     * This indicates the number of nodes to pop off
+     * the stack in order to recreate a SList object.
+     */
+    oneof optionalElementCount
+    {
+        int32 elementCount = 2;
+    }
+
+    /**
+     * If this node is an boolean atom, then this is the value thereof.
+     */
+    oneof optionalValueAsBoolean
+    {
+        bool valueAsBoolean = 3;
+    }
+
+    /**
+     * If this node is a char, byte, short, int, or long atom,
+     * then this is the value thereof.
+     */
+    oneof optionalValueAsLong
+    {
+        int64 valueAsLong = 4;
+    }
+
+    /**
+     * If this node is a double atom, then this is the value thereof.
+     */
+    oneof optionalValueAsDouble
+    {
+        double valueAsDouble = 5;
+    }
+
+    /**
+     * If this node can only be stored as a string,
+     * then this is the value thereof.
+     */
+    oneof optionalValueAsString
+    {
+        string valueAsString = 6;
+    }
+}
+
+/**
+ * Source Location.
+ */
+message location_t
+{
+    string source = 1;
+
+    int32 line = 2;
+
+    int32 column = 3;
+}

@@ -630,6 +630,52 @@ public class SListTest
     }
 
     /**
+     * Test: 20170625211426369036
+     *
+     * <p>
+     * Method: <code>transverse</code>
+     * </p>
+     *
+     * <p>
+     * Case: normal
+     * </p>
+     */
+    @Test
+    public void test20170625211426369036 ()
+    {
+        System.out.println("Test: 20170625211426369036");
+
+        /**
+         * Create a tree based on an image from Wikipedia.
+         * preorder is equivalent to DFS.
+         */
+        // https://commons.wikimedia.org/wiki/File:Depth-first-tree.svg
+        final SAtom N04 = new SAtom("4");
+        final SAtom N05 = new SAtom("5");
+        final SAtom N06 = new SAtom("6");
+        final SAtom N07 = new SAtom("7");
+        final SAtom N10 = new SAtom("10");
+        final SAtom N11 = new SAtom("11");
+        final SAtom N12 = new SAtom("12");
+        final SList N03 = SList.of(N04, N05);
+        final SList N02 = SList.of(N03, N06);
+        final SList N09 = SList.of(N10, N11);
+        final SList N08 = SList.of(N09, N12);
+        final SList N01 = SList.of(N02, N07, N08);
+        final SList tree = N01;
+
+        /**
+         * Perform a full tree transversal and record the visitation order.
+         */
+        final List<Sexpr> before = new ArrayList<>();
+        final List<Sexpr> after = new ArrayList<>();
+        tree.transverse(x -> before.add(x), x -> after.add(x));
+
+        assertEquals(Arrays.asList(N01, N02, N03, N04, N05, N06, N07, N08, N09, N10, N11, N12), before);
+        assertEquals(Arrays.asList(N04, N05, N03, N06, N02, N07, N10, N11, N09, N12, N08, N01), after);
+    }
+
+    /**
      * Test: 20170624212934872671
      *
      * <p>
@@ -2122,25 +2168,43 @@ public class SListTest
         /**
          * Empty String Literals.
          */
-        assertEquals("('')", SList.parse("Venus", "''"));
-        assertEquals("('')", SList.parse("Venus", "\"\""));
-        assertEquals("('')", SList.parse("Venus", ""));
-        assertEquals("('')", SList.parse("Venus", "@''"));
-        assertEquals("('')", SList.parse("Venus", "@\"\""));
+        assertEquals("('')", SList.parse("Venus", "''").toString());
+        assertEquals("('')", SList.parse("Venus", "\"\"").toString());
+        assertEquals("()", SList.parse("Venus", "").toString());
+        assertEquals("('')", SList.parse("Venus", "@''").toString());
+        assertEquals("('')", SList.parse("Venus", "@\"\"").toString());
 
         /**
          * Do escape sequences cause problems in string literals?
          */
-        assertEquals("('\\'')", SList.parse("Venus", "'\\''"));
-        assertEquals("('\\\"')", SList.parse("Venus", "\"\\\"\""));
-        assertEquals("('\\'')", SList.parse("Venus", "@'\\''"));
-        assertEquals("('\\\"')", SList.parse("Venus", "@\"\\\"\""));
+        assertEquals("('\\'')", SList.parse("Venus", "'\\''").toString());
+        assertEquals("('\\\"')", SList.parse("Venus", "\"\\\"\"").toString());
 
         /**
-         * Escape Sequences.
+         * Escape Sequences in Single Quote Strings
          */
-        assertEquals("\u1234\b\t\n\f\r\\\'\"", ((SAtom) SList.parse("Venus", "'''\\u1234\\b\\t\\n\\f\\r\\\\\\'\\\"'''").get(0)).content());
-        assertEquals("\u1234\b\t\n\f\r\\\'\"", ((SAtom) SList.parse("Venus", "\"\\u1234\\b\\t\\n\\f\\r\\\\\\'\\\"\"").get(0)).content());
+        assertEquals("\u1234", SList.parse("Venus", "'\\u1234'").get(0).toAtom().content());
+        assertEquals("\b", SList.parse("Venus", "'\\b'").get(0).toAtom().content());
+        assertEquals("\t", SList.parse("Venus", "'\\t'").get(0).toAtom().content());
+        assertEquals("\n", SList.parse("Venus", "'\\n'").get(0).toAtom().content());
+        assertEquals("\f", SList.parse("Venus", "'\\f'").get(0).toAtom().content());
+        assertEquals("\r", SList.parse("Venus", "'\\r'").get(0).toAtom().content());
+        assertEquals("\\", SList.parse("Venus", "'\\\\'").get(0).toAtom().content());
+        assertEquals("\'", SList.parse("Venus", "'\\\''").get(0).toAtom().content());
+        assertEquals("\"", SList.parse("Venus", "'\\\"'").get(0).toAtom().content());
+
+        /**
+         * Escape Sequences in Double Quote Strings
+         */
+        assertEquals("\u1234", SList.parse("Venus", "\"\\u1234\"").get(0).toAtom().content());
+        assertEquals("\b", SList.parse("Venus", "\"\\b\"").get(0).toAtom().content());
+        assertEquals("\t", SList.parse("Venus", "\"\\t\"").get(0).toAtom().content());
+        assertEquals("\n", SList.parse("Venus", "\"\\n\"").get(0).toAtom().content());
+        assertEquals("\f", SList.parse("Venus", "\"\\f\"").get(0).toAtom().content());
+        assertEquals("\r", SList.parse("Venus", "\"\\r\"").get(0).toAtom().content());
+        assertEquals("\\", SList.parse("Venus", "\"\\\\\"").get(0).toAtom().content());
+        assertEquals("\'", SList.parse("Venus", "\"\\\'\"").get(0).toAtom().content());
+        assertEquals("\"", SList.parse("Venus", "\"\\\"\"").get(0).toAtom().content());
     }
 
     /**
