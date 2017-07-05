@@ -1,7 +1,8 @@
-package com.mackenziehigh.sexpr.schema;
+package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
-import com.mackenziehigh.sexpr.schema.Schema.Rule;
+import com.mackenziehigh.sexpr.internal.schema.Schema.Rule;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,5 +84,32 @@ public final class MatchNode
     public int treeSize ()
     {
         return treeSize;
+    }
+
+    /**
+     * This method prints a description of this match to the output.
+     *
+     * @param out is where the description will be printed.
+     */
+    public void print (final PrintStream out)
+    {
+        if (rule.isAnonymous() == false)
+        {
+            out.println("BEFORE: " + rule.name());
+        }
+
+        if (treeSize == 1 && node.isAtom())
+        {
+            out.println("ATOM: " + node.toString());
+        }
+        else
+        {
+            children().forEach(x -> x.print(out));
+        }
+
+        if (rule.isAnonymous() == false)
+        {
+            out.println("AFTER: " + rule.name());
+        }
     }
 }

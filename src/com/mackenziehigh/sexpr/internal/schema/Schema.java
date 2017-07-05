@@ -1,9 +1,11 @@
-package com.mackenziehigh.sexpr.schema;
+package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * An instance of this interface is a pattern that describes a symbolic-expression.
@@ -23,11 +25,11 @@ public interface Schema
         public String name ();
 
         /**
-         * This method retrieves the schema that this rule is defined within.
+         * This method determines whether this is an implicitly named rule.
          *
-         * @return the enclosing schema.
+         * @return false, iff the user named this rule.
          */
-        public Schema schema ();
+        public boolean isAnonymous ();
     }
 
     /**
@@ -74,6 +76,8 @@ public interface Schema
      * @return true, iff the match was successful.
      */
     public boolean match (Sexpr tree,
+                          Function<String, Predicate<Sexpr>> resolveCondition,
+                          Function<String, Consumer<Sexpr>> resolveAction,
                           Consumer<MatchNode> onSuccess,
                           Consumer<Optional<Sexpr>> onFailure);
 }
