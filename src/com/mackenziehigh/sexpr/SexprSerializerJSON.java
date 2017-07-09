@@ -15,43 +15,40 @@
  */
 package com.mackenziehigh.sexpr;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * An instance of this class can serialize symbolic-expressions
  * to/from a textual representation using using JSON.
  */
 public final class SexprSerializerJSON
+        implements SexprSerializer<String>
 {
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Sexpr.class, new SexprAdapter().nullSafe())
+            .registerTypeAdapter(SAtom.class, new SexprAdapter().nullSafe())
+            .registerTypeAdapter(SList.class, new SexprAdapter().nullSafe())
+            .create();
+
     /**
      * This method converts a symbolic-expression to standardized JSON.
-     *
-     * <p>
-     * Each symbolic-list will be converted to a JSON Object.
-     * The JSON Object will contain two entries.
-     * Entry "location" will be a JSON Object describing the location().
-     * Entry "elements" will be a JSON List containing child nodes.
-     * </p>
-     *
-     * <p>
-     * Each symbolic-atom will be converted to a JSON Object.
-     * The JSON Object will contain two entries.
-     * The "content" entry will contain the content() string of the atom.
-     * The "location" entry will contain the location() of the atom.
-     * </p>
-     *
-     * <p>
-     * Each Source Location (X) will be converted to a JSON Object.
-     * The JSON Object will contain three entries.
-     * Entry "source" will be a string corresponding to the source() of X.
-     * Entry "line" will be an integer corresponding to the line() of X.
-     * Entry "column" will be an integer corresponding to the column() of X.
-     * </p>
      *
      * @param expression is the symbolic-expression to convert.
      * @return the JSON representation of the expression.
      */
-    public static String convertToJson (final Sexpr expression)
+    @Override
+    public String encode (final Sexpr expression)
     {
-        return null;
+        final String json = gson.toJson(expression);
+        return json;
     }
 
     /**
@@ -65,9 +62,73 @@ public final class SexprSerializerJSON
      * @param text is the JSON text to parse.
      * @return the symbolic-expression derived from the text.
      */
-    public static Sexpr convertFromJson (final String text)
+    @Override
+    public Sexpr decode (final String text)
     {
-        return null;
+        final Sexpr result = gson.fromJson(text, Sexpr.class);
+        return result;
     }
 
+    private final class SexprAdapter
+            extends TypeAdapter<Sexpr>
+    {
+        @Override
+        public Sexpr read (final JsonReader reader)
+                throws IOException
+        {
+            switch (reader.peek())
+            {
+                case BEGIN_ARRAY:
+                    reader.beginArray();
+                    final List<Sexpr> elements = new LinkedList<>();
+                    while (reader.peek() != JsonToken.END_ARRAY)
+                    {
+                        elements.add(read(reader));
+                    }
+                    reader.endArray();
+                    return SList.copyOf(elements);
+                case BOOLEAN:
+                    return new SAtom(reader.nextBoolean());
+                case NUMBER:
+                    return new SAtom(reader.nextString());
+                case STRING:
+                    return new SAtom(reader.nextString());
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        }
+
+        @Override
+        public void write (final JsonWriter writer,
+                           final Sexpr value)
+                throws IOException
+        {
+            if (value.isList())
+            {
+                writer.beginArray();
+                for (int i = 0; i < value.toList().size(); i++)
+                {
+                    write(writer, value.toList().get(i));
+                }
+                writer.endArray();
+            }
+            else if (value.toAtom().asLong().isPresent())
+            {
+                writer.value(value.toAtom().asLong().get());
+            }
+            else if (value.toAtom().asDouble().isPresent())
+            {
+                writer.value(value.toAtom().asDouble().get());
+            }
+            else if (value.toAtom().asBoolean().isPresent())
+            {
+                writer.value(value.toAtom().asBoolean().get());
+            }
+            else
+            {
+                writer.value(value.toAtom().content());
+            }
+        }
+
+    }
 }

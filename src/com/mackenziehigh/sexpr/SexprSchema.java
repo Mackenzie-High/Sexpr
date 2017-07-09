@@ -17,12 +17,15 @@ package com.mackenziehigh.sexpr;
 
 import com.mackenziehigh.sexpr.internal.schema.Schema;
 import com.mackenziehigh.sexpr.internal.schema.SchemaParser;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -47,13 +50,15 @@ public final class SexprSchema
     /**
      * This method configures the matcher to use a given schema.
      *
+     * @param source is a human-readable indicating where the schema is from.
      * @param schema is the schema for the matcher to use.
      * @return this.
      */
-    public static Builder fromString (final String schema)
+    public static Builder fromString (final String source,
+                                      final String schema)
     {
         final SchemaParser parser = new SchemaParser();
-        final Schema pattern = parser.parse("<dynamic>", schema);
+        final Schema pattern = parser.parse(source, schema);
         return new Builder(pattern);
     }
 
@@ -71,9 +76,7 @@ public final class SexprSchema
         final StringBuilder content = new StringBuilder();
         Files.readAllLines(file.toPath(), Charset.forName("UTF-8"))
                 .forEach(line -> content.append(line).append('\n'));
-        final SchemaParser parser = new SchemaParser();
-        final Schema pattern = parser.parse(source, content.toString());
-        return new Builder(pattern);
+        return fromString(source, content.toString());
     }
 
     /**
@@ -86,7 +89,20 @@ public final class SexprSchema
     public static Builder fromResource (final String path)
             throws IOException
     {
-        throw new IOException();
+        final StringBuilder schema = new StringBuilder();
+
+        try (InputStream in = SexprSchema.class.getResourceAsStream(path);
+             BufferedInputStream bin = new BufferedInputStream(in);
+             Scanner scanner = new Scanner(bin))
+        {
+            schema.append(scanner.nextLine()).append('\n');
+        }
+        catch (IOException | RuntimeException ex)
+        {
+            throw ex;
+        }
+
+        return fromString(path, schema.toString());
     }
 
     /**

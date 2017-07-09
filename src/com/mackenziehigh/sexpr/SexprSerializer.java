@@ -18,7 +18,21 @@ package com.mackenziehigh.sexpr;
 /**
  * An instance of this interface can serialize symbolic-expressions.
  */
-public interface SexprSerializer
+public interface SexprSerializer<T>
 {
+    /**
+     * Use this method to encode a symbolic-expression.
+     *
+     * @param expression is the symbolic-expression to encode.
+     * @return the encoded representation of the symbolic-expression.
+     */
+    public T encode (Sexpr expression);
 
+    /**
+     * Use this method to decode a symbolic-expression.
+     *
+     * @param input is the encoded representation of the symbolic-expression to decode.
+     * @return the symbolic-expression corresponding to the give input.
+     */
+    public Sexpr decode (T input);
 }

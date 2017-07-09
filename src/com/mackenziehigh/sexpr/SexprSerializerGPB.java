@@ -33,6 +33,7 @@ import java.util.stream.IntStream;
  * to/from a binary representation using Google Protocol Buffers.
  */
 public final class SexprSerializerGPB
+        implements SexprSerializer<byte[]>
 {
     /**
      * This method converts a symbolic-expression to binary data,
@@ -45,7 +46,8 @@ public final class SexprSerializerGPB
      * @param expression is the expression to convert.
      * @return the encoded expression.
      */
-    public static byte[] convertToBytes (final Sexpr expression)
+    @Override
+    public byte[] encode (final Sexpr expression)
     {
         final BinaryFormat.tree_t tree = linearize(expression);
         final byte[] data = tree.toByteArray();
@@ -58,7 +60,7 @@ public final class SexprSerializerGPB
         return message.toByteArray();
     }
 
-    private static byte[] computeMD5 (final byte[] data)
+    private byte[] computeMD5 (final byte[] data)
     {
         try
         {
@@ -72,7 +74,7 @@ public final class SexprSerializerGPB
         }
     }
 
-    private static BinaryFormat.tree_t linearize (final Sexpr tree)
+    private BinaryFormat.tree_t linearize (final Sexpr tree)
     {
         final Consumer<Sexpr> NOP = x ->
         {
@@ -93,12 +95,12 @@ public final class SexprSerializerGPB
         return builder.build();
     }
 
-    private static BinaryFormat.node_t encodeNode (final Sexpr node)
+    private BinaryFormat.node_t encodeNode (final Sexpr node)
     {
         return node.isAtom() ? encodeAtom(node.toAtom()) : encodeList(node.toList());
     }
 
-    private static BinaryFormat.node_t encodeAtom (final SAtom node)
+    private BinaryFormat.node_t encodeAtom (final SAtom node)
     {
         final BinaryFormat.node_t.Builder builder = BinaryFormat.node_t.newBuilder();
         builder.setLocation(encodeLocation(node.location()));
@@ -123,7 +125,7 @@ public final class SexprSerializerGPB
         return builder.build();
     }
 
-    private static BinaryFormat.node_t encodeList (final SList node)
+    private BinaryFormat.node_t encodeList (final SList node)
     {
         final BinaryFormat.node_t.Builder builder = BinaryFormat.node_t.newBuilder();
         builder.setLocation(encodeLocation(node.location()));
@@ -131,7 +133,7 @@ public final class SexprSerializerGPB
         return builder.build();
     }
 
-    private static BinaryFormat.location_t encodeLocation (final SourceLocation node)
+    private BinaryFormat.location_t encodeLocation (final SourceLocation node)
     {
         final BinaryFormat.location_t.Builder builder = BinaryFormat.location_t.newBuilder();
         builder.setSource(node.source());
@@ -150,32 +152,38 @@ public final class SexprSerializerGPB
      *
      * @param bytes is the binary data to convert.
      * @return the symbolic-expression derived from the binary data.
-     * @throws InvalidProtocolBufferException
      */
-    public static Sexpr convertFromBytes (final byte[] bytes)
-            throws InvalidProtocolBufferException
+    @Override
+    public Sexpr decode (final byte[] bytes)
     {
-        final BinaryFormat.sexpr_t outer = BinaryFormat.sexpr_t.parseFrom(bytes);
-
-        final byte[] expectedMD5 = outer.getChecksum().toByteArray();
-        final byte[] actualMD5 = computeMD5(outer.getTree().toByteArray());
-        final boolean checksumOK = Arrays.equals(expectedMD5, actualMD5);
-        if (checksumOK == false)
+        try
         {
-            // TODO: Stringify hashes
-            throw new RuntimeException(String.format("Corrupt Data: Expected MD5 = , Actual MD5 = "));
-        }
+            final BinaryFormat.sexpr_t outer = BinaryFormat.sexpr_t.parseFrom(bytes);
 
-        final BinaryFormat.tree_t tree = BinaryFormat.tree_t.parseFrom(outer.getTree());
-        final Stack<Sexpr> stack = new Stack<>();
-        tree.getNodesList().forEach(node -> decodeNode(stack, node));
-        // TODO: verify stack is size 1
-        final Sexpr root = stack.pop();
-        return root;
+            final byte[] expectedMD5 = outer.getChecksum().toByteArray();
+            final byte[] actualMD5 = computeMD5(outer.getTree().toByteArray());
+            final boolean checksumOK = Arrays.equals(expectedMD5, actualMD5);
+            if (checksumOK == false)
+            {
+                // TODO: Stringify hashes
+                throw new RuntimeException(String.format("Corrupt Data: Expected MD5 = , Actual MD5 = "));
+            }
+
+            final BinaryFormat.tree_t tree = BinaryFormat.tree_t.parseFrom(outer.getTree());
+            final Stack<Sexpr> stack = new Stack<>();
+            tree.getNodesList().forEach(node -> decodeNode(stack, node));
+            // TODO: verify stack is size 1
+            final Sexpr root = stack.pop();
+            return root;
+        }
+        catch (InvalidProtocolBufferException ex)
+        {
+            throw new RuntimeException(ex);
+        }
     }
 
-    private static void decodeNode (final Stack<Sexpr> stack,
-                                    final BinaryFormat.node_t node)
+    private void decodeNode (final Stack<Sexpr> stack,
+                             final BinaryFormat.node_t node)
     {
         if (node.getOptionalElementCountCase() == BinaryFormat.node_t.OptionalElementCountCase.OPTIONALELEMENTCOUNT_NOT_SET)
         {
@@ -187,8 +195,8 @@ public final class SexprSerializerGPB
         }
     }
 
-    private static void decodeAtom (final Stack<Sexpr> stack,
-                                    final BinaryFormat.node_t node)
+    private void decodeAtom (final Stack<Sexpr> stack,
+                             final BinaryFormat.node_t node)
     {
         final SourceLocation location = decodeLocation(node);
         final SAtom result;
@@ -217,8 +225,8 @@ public final class SexprSerializerGPB
         stack.push(result);
     }
 
-    private static void decodeList (final Stack<Sexpr> stack,
-                                    final BinaryFormat.node_t node)
+    private void decodeList (final Stack<Sexpr> stack,
+                             final BinaryFormat.node_t node)
     {
         final SourceLocation location = decodeLocation(node);
         final int elementCount = node.getElementCount();
@@ -228,7 +236,7 @@ public final class SexprSerializerGPB
         stack.push(result);
     }
 
-    private static SourceLocation decodeLocation (final BinaryFormat.node_t node)
+    private SourceLocation decodeLocation (final BinaryFormat.node_t node)
     {
         if (node.hasLocation())
         {
