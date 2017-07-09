@@ -35,6 +35,18 @@ import java.util.function.Predicate;
  */
 public final class SexprSchema
 {
+    public static final Consumer<Optional<Sexpr>> PRINT_FAILURE = x ->
+    {
+        if (x.isPresent())
+        {
+            System.out.println("Match Failed At " + x.get().location().message());
+        }
+        else
+        {
+            System.out.println("Match Totally Failed");
+        }
+    };
+
     private final Schema schema;
 
     /**
@@ -95,7 +107,10 @@ public final class SexprSchema
              BufferedInputStream bin = new BufferedInputStream(in);
              Scanner scanner = new Scanner(bin))
         {
-            schema.append(scanner.nextLine()).append('\n');
+            while (scanner.hasNextLine())
+            {
+                schema.append(scanner.nextLine()).append('\n');
+            }
         }
         catch (IOException | RuntimeException ex)
         {
