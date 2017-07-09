@@ -7,7 +7,7 @@ import high.mackenzie.snowflake.ITreeNodeVisitor;
  * This class was auto-generated using the Snowflake parser-generator.
  *
  * <p>
- * Generated On: Tue Jul 04 20:20:49 EDT 2017</p>
+ * Generated On: Sat Jul 08 20:03:48 EDT 2017</p>
  */
 abstract class AbstractVisitor
         implements ITreeNodeVisitor
@@ -32,30 +32,6 @@ abstract class AbstractVisitor
         else if ("root_directive".equals(name))
         {
             visit_root_directive(node);
-        }
-        else if ("pass_directive".equals(name))
-        {
-            visit_pass_directive(node);
-        }
-        else if ("action_directive".equals(name))
-        {
-            visit_action_directive(node);
-        }
-        else if ("setup_action".equals(name))
-        {
-            visit_setup_action(node);
-        }
-        else if ("close_action".equals(name))
-        {
-            visit_close_action(node);
-        }
-        else if ("before_action".equals(name))
-        {
-            visit_before_action(node);
-        }
-        else if ("after_action".equals(name))
-        {
-            visit_after_action(node);
         }
         else if ("assignment".equals(name))
         {
@@ -136,10 +112,6 @@ abstract class AbstractVisitor
         else if ("not_rule".equals(name))
         {
             visit_not_rule(node);
-        }
-        else if ("any_rule".equals(name))
-        {
-            visit_any_rule(node);
         }
         else if ("predicate_rule".equals(name))
         {
@@ -588,26 +560,6 @@ abstract class AbstractVisitor
     }
 
     /**
-     * This method visits a parse-tree node created by rule "action_directive".
-     */
-    protected void visit_action_directive (ITreeNode node)
-    {
-        // You should *not* place your code right here.
-        // Instead, you should override this method via a subclass.
-        visitUnknown(node); // Default Behavior
-    }
-
-    /**
-     * This method visits a parse-tree node created by rule "after_action".
-     */
-    protected void visit_after_action (ITreeNode node)
-    {
-        // You should *not* place your code right here.
-        // Instead, you should override this method via a subclass.
-        visitUnknown(node); // Default Behavior
-    }
-
-    /**
      * This method visits a parse-tree node created by rule "and_rule".
      */
     protected void visit_and_rule (ITreeNode node)
@@ -628,16 +580,6 @@ abstract class AbstractVisitor
     }
 
     /**
-     * This method visits a parse-tree node created by rule "any_rule".
-     */
-    protected void visit_any_rule (ITreeNode node)
-    {
-        // You should *not* place your code right here.
-        // Instead, you should override this method via a subclass.
-        visitUnknown(node); // Default Behavior
-    }
-
-    /**
      * This method visits a parse-tree node created by rule "assignment".
      */
     protected void visit_assignment (ITreeNode node)
@@ -651,26 +593,6 @@ abstract class AbstractVisitor
      * This method visits a parse-tree node created by rule "atom_rule".
      */
     protected void visit_atom_rule (ITreeNode node)
-    {
-        // You should *not* place your code right here.
-        // Instead, you should override this method via a subclass.
-        visitUnknown(node); // Default Behavior
-    }
-
-    /**
-     * This method visits a parse-tree node created by rule "before_action".
-     */
-    protected void visit_before_action (ITreeNode node)
-    {
-        // You should *not* place your code right here.
-        // Instead, you should override this method via a subclass.
-        visitUnknown(node); // Default Behavior
-    }
-
-    /**
-     * This method visits a parse-tree node created by rule "close_action".
-     */
-    protected void visit_close_action (ITreeNode node)
     {
         // You should *not* place your code right here.
         // Instead, you should override this method via a subclass.
@@ -938,16 +860,6 @@ abstract class AbstractVisitor
     }
 
     /**
-     * This method visits a parse-tree node created by rule "pass_directive".
-     */
-    protected void visit_pass_directive (ITreeNode node)
-    {
-        // You should *not* place your code right here.
-        // Instead, you should override this method via a subclass.
-        visitUnknown(node); // Default Behavior
-    }
-
-    /**
      * This method visits a parse-tree node created by rule "predicate_rule".
      */
     protected void visit_predicate_rule (ITreeNode node)
@@ -1021,16 +933,6 @@ abstract class AbstractVisitor
      * This method visits a parse-tree node created by rule "sequence_start".
      */
     protected void visit_sequence_start (ITreeNode node)
-    {
-        // You should *not* place your code right here.
-        // Instead, you should override this method via a subclass.
-        visitUnknown(node); // Default Behavior
-    }
-
-    /**
-     * This method visits a parse-tree node created by rule "setup_action".
-     */
-    protected void visit_setup_action (ITreeNode node)
     {
         // You should *not* place your code right here.
         // Instead, you should override this method via a subclass.

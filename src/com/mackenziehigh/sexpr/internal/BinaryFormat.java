@@ -113,8 +113,7 @@ public final class BinaryFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_sexpr_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.Builder.class);
     }
 
     public static final int CHECKSUM_FIELD_NUMBER = 1;
@@ -191,7 +190,7 @@ public final class BinaryFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t) obj;
+            com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t) obj;
 
       boolean result = true;
       result = result && getChecksum()
@@ -319,14 +318,13 @@ public final class BinaryFormat {
         com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_sexpr_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_sexpr_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_sexpr_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_sexpr_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.newBuilder()
@@ -355,15 +353,15 @@ public final class BinaryFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_sexpr_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_sexpr_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t build() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -371,7 +369,7 @@ public final class BinaryFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t(this);
+                com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t(this);
         result.checksum_ = checksum_;
         result.tree_ = tree_;
         onBuilt();
@@ -433,7 +431,7 @@ public final class BinaryFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -595,7 +593,7 @@ public final class BinaryFormat {
     /**
      * <code>repeated .sexpr.node_t nodes = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.BinaryFormat.node_t getNodes(int index);
+        com.mackenziehigh.sexpr.internal.BinaryFormat.node_t getNodes(int index);
     /**
      * <code>repeated .sexpr.node_t nodes = 1;</code>
      */
@@ -608,7 +606,7 @@ public final class BinaryFormat {
     /**
      * <code>repeated .sexpr.node_t nodes = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder getNodesOrBuilder(
+        com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder getNodesOrBuilder(
         int index);
   }
   /**
@@ -661,8 +659,7 @@ public final class BinaryFormat {
                 nodes_ = new java.util.ArrayList<com.mackenziehigh.sexpr.internal.BinaryFormat.node_t>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              nodes_.add(
-                  input.readMessage(com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.parser(), extensionRegistry));
+              nodes_.add(input.readMessage(com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.parser(), extensionRegistry));
               break;
             }
           }
@@ -687,8 +684,7 @@ public final class BinaryFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_tree_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.Builder.class);
     }
 
     public static final int NODES_FIELD_NUMBER = 1;
@@ -765,7 +761,7 @@ public final class BinaryFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t) obj;
+            com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t) obj;
 
       boolean result = true;
       result = result && getNodesList()
@@ -891,14 +887,13 @@ public final class BinaryFormat {
         com.mackenziehigh.sexpr.internal.BinaryFormat.tree_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_tree_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_tree_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_tree_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_tree_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.newBuilder()
@@ -930,15 +925,15 @@ public final class BinaryFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_tree_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_tree_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t build() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -946,7 +941,7 @@ public final class BinaryFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t(this);
+                com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t(this);
         int from_bitField0_ = bitField0_;
         if (nodesBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1036,7 +1031,7 @@ public final class BinaryFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -1061,7 +1056,7 @@ public final class BinaryFormat {
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.BinaryFormat.node_t, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder> nodesBuilder_;
+            com.mackenziehigh.sexpr.internal.BinaryFormat.node_t, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder> nodesBuilder_;
 
       /**
        * <code>repeated .sexpr.node_t nodes = 1;</code>
@@ -1161,7 +1156,7 @@ public final class BinaryFormat {
        * <code>repeated .sexpr.node_t nodes = 1;</code>
        */
       public Builder addNodes(
-          com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder builderForValue) {
+            com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder builderForValue) {
         if (nodesBuilder_ == null) {
           ensureNodesIsMutable();
           nodes_.add(builderForValue.build());
@@ -1258,16 +1253,14 @@ public final class BinaryFormat {
        * <code>repeated .sexpr.node_t nodes = 1;</code>
        */
       public com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder addNodesBuilder() {
-        return getNodesFieldBuilder().addBuilder(
-            com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.getDefaultInstance());
+        return getNodesFieldBuilder().addBuilder(com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.getDefaultInstance());
       }
       /**
        * <code>repeated .sexpr.node_t nodes = 1;</code>
        */
       public com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder addNodesBuilder(
           int index) {
-        return getNodesFieldBuilder().addBuilder(
-            index, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.getDefaultInstance());
+        return getNodesFieldBuilder().addBuilder(index, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.getDefaultInstance());
       }
       /**
        * <code>repeated .sexpr.node_t nodes = 1;</code>
@@ -1277,11 +1270,11 @@ public final class BinaryFormat {
         return getNodesFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.BinaryFormat.node_t, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder> 
+            com.mackenziehigh.sexpr.internal.BinaryFormat.node_t, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder> 
           getNodesFieldBuilder() {
         if (nodesBuilder_ == null) {
           nodesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.mackenziehigh.sexpr.internal.BinaryFormat.node_t, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder>(
+                    com.mackenziehigh.sexpr.internal.BinaryFormat.node_t, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder>(
                   nodes_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
@@ -1360,7 +1353,7 @@ public final class BinaryFormat {
      *
      * <code>.sexpr.location_t location = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.BinaryFormat.location_t getLocation();
+        com.mackenziehigh.sexpr.internal.BinaryFormat.location_t getLocation();
     /**
      * <pre>
      **
@@ -1369,7 +1362,7 @@ public final class BinaryFormat {
      *
      * <code>.sexpr.location_t location = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder getLocationOrBuilder();
+        com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder getLocationOrBuilder();
 
     /**
      * <code>int32 elementCount = 2;</code>
@@ -1456,7 +1449,7 @@ public final class BinaryFormat {
               break;
             }
             case 10: {
-              com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder subBuilder = null;
+                        com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder subBuilder = null;
               if (location_ != null) {
                 subBuilder = location_.toBuilder();
               }
@@ -1513,8 +1506,7 @@ public final class BinaryFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_node_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder.class);
     }
 
     private int optionalElementCountCase_ = 0;
@@ -1901,7 +1893,7 @@ public final class BinaryFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.BinaryFormat.node_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.BinaryFormat.node_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.node_t) obj;
+            com.mackenziehigh.sexpr.internal.BinaryFormat.node_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.node_t) obj;
 
       boolean result = true;
       result = result && (hasLocation() == other.hasLocation());
@@ -2130,14 +2122,13 @@ public final class BinaryFormat {
         com.mackenziehigh.sexpr.internal.BinaryFormat.node_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_node_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_node_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_node_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_node_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.newBuilder()
@@ -2178,15 +2169,15 @@ public final class BinaryFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_node_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_node_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.node_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.node_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.node_t build() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.node_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.BinaryFormat.node_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2194,7 +2185,7 @@ public final class BinaryFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.node_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.node_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.node_t(this);
+                com.mackenziehigh.sexpr.internal.BinaryFormat.node_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.node_t(this);
         if (locationBuilder_ == null) {
           result.location_ = location_;
         } else {
@@ -2323,7 +2314,7 @@ public final class BinaryFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.node_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.BinaryFormat.node_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -2414,7 +2405,7 @@ public final class BinaryFormat {
 
       private com.mackenziehigh.sexpr.internal.BinaryFormat.location_t location_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.BinaryFormat.location_t, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder> locationBuilder_;
+            com.mackenziehigh.sexpr.internal.BinaryFormat.location_t, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder> locationBuilder_;
       /**
        * <pre>
        **
@@ -2471,7 +2462,7 @@ public final class BinaryFormat {
        * <code>.sexpr.location_t location = 1;</code>
        */
       public Builder setLocation(
-          com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder builderForValue) {
+            com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder builderForValue) {
         if (locationBuilder_ == null) {
           location_ = builderForValue.build();
           onChanged();
@@ -2493,7 +2484,7 @@ public final class BinaryFormat {
         if (locationBuilder_ == null) {
           if (location_ != null) {
             location_ =
-              com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.newBuilder(location_).mergeFrom(value).buildPartial();
+                        com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.newBuilder(location_).mergeFrom(value).buildPartial();
           } else {
             location_ = value;
           }
@@ -2549,7 +2540,7 @@ public final class BinaryFormat {
           return locationBuilder_.getMessageOrBuilder();
         } else {
           return location_ == null ?
-              com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.getDefaultInstance() : location_;
+                    com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.getDefaultInstance() : location_;
         }
       }
       /**
@@ -2561,11 +2552,11 @@ public final class BinaryFormat {
        * <code>.sexpr.location_t location = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.BinaryFormat.location_t, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder> 
+            com.mackenziehigh.sexpr.internal.BinaryFormat.location_t, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder> 
           getLocationFieldBuilder() {
         if (locationBuilder_ == null) {
           locationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.mackenziehigh.sexpr.internal.BinaryFormat.location_t, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder>(
+                    com.mackenziehigh.sexpr.internal.BinaryFormat.location_t, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder>(
                   getLocation(),
                   getParentForChildren(),
                   isClean());
@@ -2928,8 +2919,7 @@ public final class BinaryFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_location_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder.class);
     }
 
     public static final int SOURCE_FIELD_NUMBER = 1;
@@ -3036,7 +3026,7 @@ public final class BinaryFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.BinaryFormat.location_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.BinaryFormat.location_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.location_t) obj;
+            com.mackenziehigh.sexpr.internal.BinaryFormat.location_t other = (com.mackenziehigh.sexpr.internal.BinaryFormat.location_t) obj;
 
       boolean result = true;
       result = result && getSource()
@@ -3168,14 +3158,13 @@ public final class BinaryFormat {
         com.mackenziehigh.sexpr.internal.BinaryFormat.location_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_location_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_location_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_location_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_location_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.class, com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.newBuilder()
@@ -3206,15 +3195,15 @@ public final class BinaryFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_location_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.internal_static_sexpr_location_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.location_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.BinaryFormat.location_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.location_t build() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.location_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.BinaryFormat.location_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3222,7 +3211,7 @@ public final class BinaryFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.BinaryFormat.location_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.location_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.location_t(this);
+                com.mackenziehigh.sexpr.internal.BinaryFormat.location_t result = new com.mackenziehigh.sexpr.internal.BinaryFormat.location_t(this);
         result.source_ = source_;
         result.line_ = line_;
         result.column_ = column_;
@@ -3289,7 +3278,7 @@ public final class BinaryFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.BinaryFormat.location_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.BinaryFormat.location_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {

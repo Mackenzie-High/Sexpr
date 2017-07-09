@@ -39,7 +39,7 @@ public final class SchemaParser
 
         final Visitor visitor = new Visitor();
         visitor.visit(output.parseTree());
-        final Schema schema = visitor.g.build();
+        final Schema schema = visitor.g;
 
         return schema;
     }

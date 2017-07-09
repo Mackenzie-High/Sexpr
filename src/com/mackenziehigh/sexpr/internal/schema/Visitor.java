@@ -2,7 +2,7 @@ package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.internal.Escaper;
 import com.mackenziehigh.sexpr.internal.schema.Schema.Rule;
-import com.mackenziehigh.sexpr.internal.schema.SchemaBuilder.SequenceElement;
+import com.mackenziehigh.sexpr.internal.schema.Schema.SequenceElement;
 import high.mackenzie.snowflake.ITreeNode;
 import high.mackenzie.snowflake.TreeNode;
 import java.util.LinkedList;
@@ -21,7 +21,7 @@ final class Visitor
 
     private static final Object SEQ_START = new Object();
 
-    public final SchemaBuilder g = new SchemaBuilder();
+    public final Schema g = new Schema();
 
     private final Stack<Object> operands = new Stack<>();
 
@@ -284,7 +284,7 @@ final class Visitor
         final int maximum = (Integer) operands.pop();
         final int minimum = (Integer) operands.pop();
         final String rule = ((Rule) operands.pop()).name();
-        final SequenceElement element = new SchemaBuilder.SequenceElement()
+        final SequenceElement element = new Schema.SequenceElement()
         {
             @Override
             public String element ()
@@ -313,49 +313,4 @@ final class Visitor
     {
         operands.push(SEQ_START);
     }
-
-    @Override
-    protected void visit_setup_action (ITreeNode node)
-    {
-        visitChildren(node);
-        final String action = (String) operands.pop();
-        g.defineSetupAction(action);
-    }
-
-    @Override
-    protected void visit_close_action (ITreeNode node)
-    {
-        visitChildren(node);
-        final String action = (String) operands.pop();
-        g.defineCloseAction(action);
-    }
-
-    @Override
-    protected void visit_before_action (ITreeNode node)
-    {
-        visitChildren(node);
-        final String action = (String) operands.pop();
-        final String rule = (String) operands.pop();
-        final String pass = (String) operands.pop();
-        g.defineBeforeAction(pass, rule, action);
-    }
-
-    @Override
-    protected void visit_after_action (ITreeNode node)
-    {
-        visitChildren(node);
-        final String action = (String) operands.pop();
-        final String rule = (String) operands.pop();
-        final String pass = (String) operands.pop();
-        g.defineAfterAction(pass, rule, action);
-    }
-
-    @Override
-    protected void visit_pass_directive (ITreeNode node)
-    {
-        visitChildren(node);
-        final String name = (String) operands.pop();
-        g.definePass(name);
-    }
-
 }

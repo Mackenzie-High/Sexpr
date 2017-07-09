@@ -1,7 +1,11 @@
-package com.mackenziehigh.sexpr;
+package com.mackenziehigh.sexpr.internal;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.mackenziehigh.sexpr.SAtom;
+import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.SourceLocation;
 import com.mackenziehigh.sexpr.internal.BinaryFormat.location_t;
 import com.mackenziehigh.sexpr.internal.BinaryFormat.node_t;
 import com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t;

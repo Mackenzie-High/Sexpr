@@ -25,11 +25,11 @@ public final class JsonFormat {
     /**
      * <code>.sexpr.atom_t atom = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.atom_t getAtom();
+        com.mackenziehigh.sexpr.internal.JsonFormat.atom_t getAtom();
     /**
      * <code>.sexpr.atom_t atom = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder getAtomOrBuilder();
+        com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder getAtomOrBuilder();
 
     /**
      * <code>.sexpr.list_t list = 2;</code>
@@ -38,11 +38,11 @@ public final class JsonFormat {
     /**
      * <code>.sexpr.list_t list = 2;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.list_t getList();
+        com.mackenziehigh.sexpr.internal.JsonFormat.list_t getList();
     /**
      * <code>.sexpr.list_t list = 2;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder getListOrBuilder();
+        com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder getListOrBuilder();
   }
   /**
    * Protobuf type {@code sexpr.sexpr_t}
@@ -84,7 +84,7 @@ public final class JsonFormat {
               break;
             }
             case 10: {
-              com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder subBuilder = null;
+                        com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder subBuilder = null;
               if (atom_ != null) {
                 subBuilder = atom_.toBuilder();
               }
@@ -97,7 +97,7 @@ public final class JsonFormat {
               break;
             }
             case 18: {
-              com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder subBuilder = null;
+                        com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder subBuilder = null;
               if (list_ != null) {
                 subBuilder = list_.toBuilder();
               }
@@ -128,8 +128,7 @@ public final class JsonFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_sexpr_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder.class);
     }
 
     public static final int ATOM_FIELD_NUMBER = 1;
@@ -220,7 +219,7 @@ public final class JsonFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t) obj;
+            com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t) obj;
 
       boolean result = true;
       result = result && (hasAtom() == other.hasAtom());
@@ -353,14 +352,13 @@ public final class JsonFormat {
         com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_sexpr_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_sexpr_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_sexpr_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_sexpr_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.newBuilder()
@@ -397,15 +395,15 @@ public final class JsonFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_sexpr_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_sexpr_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t build() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -413,7 +411,7 @@ public final class JsonFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t(this);
+                com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t(this);
         if (atomBuilder_ == null) {
           result.atom_ = atom_;
         } else {
@@ -483,7 +481,7 @@ public final class JsonFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -499,7 +497,7 @@ public final class JsonFormat {
 
       private com.mackenziehigh.sexpr.internal.JsonFormat.atom_t atom_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.atom_t, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder> atomBuilder_;
+            com.mackenziehigh.sexpr.internal.JsonFormat.atom_t, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder> atomBuilder_;
       /**
        * <code>.sexpr.atom_t atom = 1;</code>
        */
@@ -536,7 +534,7 @@ public final class JsonFormat {
        * <code>.sexpr.atom_t atom = 1;</code>
        */
       public Builder setAtom(
-          com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder builderForValue) {
+            com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder builderForValue) {
         if (atomBuilder_ == null) {
           atom_ = builderForValue.build();
           onChanged();
@@ -553,7 +551,7 @@ public final class JsonFormat {
         if (atomBuilder_ == null) {
           if (atom_ != null) {
             atom_ =
-              com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.newBuilder(atom_).mergeFrom(value).buildPartial();
+                        com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.newBuilder(atom_).mergeFrom(value).buildPartial();
           } else {
             atom_ = value;
           }
@@ -594,18 +592,18 @@ public final class JsonFormat {
           return atomBuilder_.getMessageOrBuilder();
         } else {
           return atom_ == null ?
-              com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.getDefaultInstance() : atom_;
+                    com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.getDefaultInstance() : atom_;
         }
       }
       /**
        * <code>.sexpr.atom_t atom = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.atom_t, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder> 
+            com.mackenziehigh.sexpr.internal.JsonFormat.atom_t, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder> 
           getAtomFieldBuilder() {
         if (atomBuilder_ == null) {
           atomBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.mackenziehigh.sexpr.internal.JsonFormat.atom_t, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder>(
+                    com.mackenziehigh.sexpr.internal.JsonFormat.atom_t, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder>(
                   getAtom(),
                   getParentForChildren(),
                   isClean());
@@ -616,7 +614,7 @@ public final class JsonFormat {
 
       private com.mackenziehigh.sexpr.internal.JsonFormat.list_t list_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.list_t, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder> listBuilder_;
+            com.mackenziehigh.sexpr.internal.JsonFormat.list_t, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder> listBuilder_;
       /**
        * <code>.sexpr.list_t list = 2;</code>
        */
@@ -653,7 +651,7 @@ public final class JsonFormat {
        * <code>.sexpr.list_t list = 2;</code>
        */
       public Builder setList(
-          com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder builderForValue) {
+            com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder builderForValue) {
         if (listBuilder_ == null) {
           list_ = builderForValue.build();
           onChanged();
@@ -670,7 +668,7 @@ public final class JsonFormat {
         if (listBuilder_ == null) {
           if (list_ != null) {
             list_ =
-              com.mackenziehigh.sexpr.internal.JsonFormat.list_t.newBuilder(list_).mergeFrom(value).buildPartial();
+                        com.mackenziehigh.sexpr.internal.JsonFormat.list_t.newBuilder(list_).mergeFrom(value).buildPartial();
           } else {
             list_ = value;
           }
@@ -711,18 +709,18 @@ public final class JsonFormat {
           return listBuilder_.getMessageOrBuilder();
         } else {
           return list_ == null ?
-              com.mackenziehigh.sexpr.internal.JsonFormat.list_t.getDefaultInstance() : list_;
+                    com.mackenziehigh.sexpr.internal.JsonFormat.list_t.getDefaultInstance() : list_;
         }
       }
       /**
        * <code>.sexpr.list_t list = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.list_t, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder> 
+            com.mackenziehigh.sexpr.internal.JsonFormat.list_t, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder> 
           getListFieldBuilder() {
         if (listBuilder_ == null) {
           listBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.mackenziehigh.sexpr.internal.JsonFormat.list_t, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder>(
+                    com.mackenziehigh.sexpr.internal.JsonFormat.list_t, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder>(
                   getList(),
                   getParentForChildren(),
                   isClean());
@@ -791,7 +789,7 @@ public final class JsonFormat {
     /**
      * <code>repeated .sexpr.sexpr_t elements = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t getElements(int index);
+        com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t getElements(int index);
     /**
      * <code>repeated .sexpr.sexpr_t elements = 1;</code>
      */
@@ -804,7 +802,7 @@ public final class JsonFormat {
     /**
      * <code>repeated .sexpr.sexpr_t elements = 1;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder getElementsOrBuilder(
+        com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder getElementsOrBuilder(
         int index);
 
     /**
@@ -814,11 +812,11 @@ public final class JsonFormat {
     /**
      * <code>.sexpr.location_t location = 2;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.location_t getLocation();
+        com.mackenziehigh.sexpr.internal.JsonFormat.location_t getLocation();
     /**
      * <code>.sexpr.location_t location = 2;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder getLocationOrBuilder();
+        com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder getLocationOrBuilder();
   }
   /**
    * Protobuf type {@code sexpr.list_t}
@@ -865,12 +863,11 @@ public final class JsonFormat {
                 elements_ = new java.util.ArrayList<com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              elements_.add(
-                  input.readMessage(com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.parser(), extensionRegistry));
+              elements_.add(input.readMessage(com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.parser(), extensionRegistry));
               break;
             }
             case 18: {
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder subBuilder = null;
+                        com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder subBuilder = null;
               if (location_ != null) {
                 subBuilder = location_.toBuilder();
               }
@@ -904,8 +901,7 @@ public final class JsonFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_list_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.JsonFormat.list_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.list_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder.class);
     }
 
     private int bitField0_;
@@ -1011,7 +1007,7 @@ public final class JsonFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.JsonFormat.list_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.JsonFormat.list_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.list_t) obj;
+            com.mackenziehigh.sexpr.internal.JsonFormat.list_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.list_t) obj;
 
       boolean result = true;
       result = result && getElementsList()
@@ -1141,14 +1137,13 @@ public final class JsonFormat {
         com.mackenziehigh.sexpr.internal.JsonFormat.list_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_list_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_list_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_list_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.JsonFormat.list_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_list_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.list_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.list_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.JsonFormat.list_t.newBuilder()
@@ -1186,15 +1181,15 @@ public final class JsonFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_list_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_list_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.list_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.list_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.list_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.list_t build() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.list_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.JsonFormat.list_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1202,7 +1197,7 @@ public final class JsonFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.list_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.list_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.list_t(this);
+                com.mackenziehigh.sexpr.internal.JsonFormat.list_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.list_t(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (elementsBuilder_ == null) {
@@ -1302,7 +1297,7 @@ public final class JsonFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.JsonFormat.list_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.JsonFormat.list_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -1327,7 +1322,7 @@ public final class JsonFormat {
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder> elementsBuilder_;
+            com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder> elementsBuilder_;
 
       /**
        * <code>repeated .sexpr.sexpr_t elements = 1;</code>
@@ -1427,7 +1422,7 @@ public final class JsonFormat {
        * <code>repeated .sexpr.sexpr_t elements = 1;</code>
        */
       public Builder addElements(
-          com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder builderForValue) {
+            com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder builderForValue) {
         if (elementsBuilder_ == null) {
           ensureElementsIsMutable();
           elements_.add(builderForValue.build());
@@ -1524,16 +1519,14 @@ public final class JsonFormat {
        * <code>repeated .sexpr.sexpr_t elements = 1;</code>
        */
       public com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder addElementsBuilder() {
-        return getElementsFieldBuilder().addBuilder(
-            com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.getDefaultInstance());
+        return getElementsFieldBuilder().addBuilder(com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.getDefaultInstance());
       }
       /**
        * <code>repeated .sexpr.sexpr_t elements = 1;</code>
        */
       public com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder addElementsBuilder(
           int index) {
-        return getElementsFieldBuilder().addBuilder(
-            index, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.getDefaultInstance());
+        return getElementsFieldBuilder().addBuilder(index, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.getDefaultInstance());
       }
       /**
        * <code>repeated .sexpr.sexpr_t elements = 1;</code>
@@ -1543,11 +1536,11 @@ public final class JsonFormat {
         return getElementsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder> 
+            com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder> 
           getElementsFieldBuilder() {
         if (elementsBuilder_ == null) {
           elementsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder>(
+                    com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.sexpr_tOrBuilder>(
                   elements_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
@@ -1559,7 +1552,7 @@ public final class JsonFormat {
 
       private com.mackenziehigh.sexpr.internal.JsonFormat.location_t location_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> locationBuilder_;
+            com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> locationBuilder_;
       /**
        * <code>.sexpr.location_t location = 2;</code>
        */
@@ -1596,7 +1589,7 @@ public final class JsonFormat {
        * <code>.sexpr.location_t location = 2;</code>
        */
       public Builder setLocation(
-          com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder builderForValue) {
+            com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder builderForValue) {
         if (locationBuilder_ == null) {
           location_ = builderForValue.build();
           onChanged();
@@ -1613,7 +1606,7 @@ public final class JsonFormat {
         if (locationBuilder_ == null) {
           if (location_ != null) {
             location_ =
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t.newBuilder(location_).mergeFrom(value).buildPartial();
+                        com.mackenziehigh.sexpr.internal.JsonFormat.location_t.newBuilder(location_).mergeFrom(value).buildPartial();
           } else {
             location_ = value;
           }
@@ -1654,18 +1647,18 @@ public final class JsonFormat {
           return locationBuilder_.getMessageOrBuilder();
         } else {
           return location_ == null ?
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t.getDefaultInstance() : location_;
+                    com.mackenziehigh.sexpr.internal.JsonFormat.location_t.getDefaultInstance() : location_;
         }
       }
       /**
        * <code>.sexpr.location_t location = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> 
+            com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> 
           getLocationFieldBuilder() {
         if (locationBuilder_ == null) {
           locationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder>(
+                    com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder>(
                   getLocation(),
                   getParentForChildren(),
                   isClean());
@@ -1743,11 +1736,11 @@ public final class JsonFormat {
     /**
      * <code>.sexpr.location_t location = 2;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.location_t getLocation();
+        com.mackenziehigh.sexpr.internal.JsonFormat.location_t getLocation();
     /**
      * <code>.sexpr.location_t location = 2;</code>
      */
-    com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder getLocationOrBuilder();
+        com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder getLocationOrBuilder();
   }
   /**
    * Protobuf type {@code sexpr.atom_t}
@@ -1796,7 +1789,7 @@ public final class JsonFormat {
               break;
             }
             case 18: {
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder subBuilder = null;
+                        com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder subBuilder = null;
               if (location_ != null) {
                 subBuilder = location_.toBuilder();
               }
@@ -1827,8 +1820,7 @@ public final class JsonFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_atom_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder.class);
     }
 
     public static final int CONTENT_FIELD_NUMBER = 1;
@@ -1931,7 +1923,7 @@ public final class JsonFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.JsonFormat.atom_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.JsonFormat.atom_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.atom_t) obj;
+            com.mackenziehigh.sexpr.internal.JsonFormat.atom_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.atom_t) obj;
 
       boolean result = true;
       result = result && getContent()
@@ -2059,14 +2051,13 @@ public final class JsonFormat {
         com.mackenziehigh.sexpr.internal.JsonFormat.atom_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_atom_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_atom_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_atom_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_atom_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.newBuilder()
@@ -2099,15 +2090,15 @@ public final class JsonFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_atom_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_atom_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.atom_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.atom_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.atom_t build() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.atom_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.JsonFormat.atom_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2115,7 +2106,7 @@ public final class JsonFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.atom_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.atom_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.atom_t(this);
+                com.mackenziehigh.sexpr.internal.JsonFormat.atom_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.atom_t(this);
         result.content_ = content_;
         if (locationBuilder_ == null) {
           result.location_ = location_;
@@ -2182,7 +2173,7 @@ public final class JsonFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.JsonFormat.atom_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.JsonFormat.atom_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -2267,7 +2258,7 @@ public final class JsonFormat {
 
       private com.mackenziehigh.sexpr.internal.JsonFormat.location_t location_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> locationBuilder_;
+            com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> locationBuilder_;
       /**
        * <code>.sexpr.location_t location = 2;</code>
        */
@@ -2304,7 +2295,7 @@ public final class JsonFormat {
        * <code>.sexpr.location_t location = 2;</code>
        */
       public Builder setLocation(
-          com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder builderForValue) {
+            com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder builderForValue) {
         if (locationBuilder_ == null) {
           location_ = builderForValue.build();
           onChanged();
@@ -2321,7 +2312,7 @@ public final class JsonFormat {
         if (locationBuilder_ == null) {
           if (location_ != null) {
             location_ =
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t.newBuilder(location_).mergeFrom(value).buildPartial();
+                        com.mackenziehigh.sexpr.internal.JsonFormat.location_t.newBuilder(location_).mergeFrom(value).buildPartial();
           } else {
             location_ = value;
           }
@@ -2362,18 +2353,18 @@ public final class JsonFormat {
           return locationBuilder_.getMessageOrBuilder();
         } else {
           return location_ == null ?
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t.getDefaultInstance() : location_;
+                    com.mackenziehigh.sexpr.internal.JsonFormat.location_t.getDefaultInstance() : location_;
         }
       }
       /**
        * <code>.sexpr.location_t location = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> 
+            com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder> 
           getLocationFieldBuilder() {
         if (locationBuilder_ == null) {
           locationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder>(
+                    com.mackenziehigh.sexpr.internal.JsonFormat.location_t, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder, com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder>(
                   getLocation(),
                   getParentForChildren(),
                   isClean());
@@ -2536,8 +2527,7 @@ public final class JsonFormat {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_location_t_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.sexpr.internal.JsonFormat.location_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder.class);
+          .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.location_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder.class);
     }
 
     public static final int SOURCE_FIELD_NUMBER = 1;
@@ -2644,7 +2634,7 @@ public final class JsonFormat {
       if (!(obj instanceof com.mackenziehigh.sexpr.internal.JsonFormat.location_t)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.sexpr.internal.JsonFormat.location_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.location_t) obj;
+            com.mackenziehigh.sexpr.internal.JsonFormat.location_t other = (com.mackenziehigh.sexpr.internal.JsonFormat.location_t) obj;
 
       boolean result = true;
       result = result && getSource()
@@ -2776,14 +2766,13 @@ public final class JsonFormat {
         com.mackenziehigh.sexpr.internal.JsonFormat.location_tOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_location_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_location_t_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_location_t_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.sexpr.internal.JsonFormat.location_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder.class);
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_location_t_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(com.mackenziehigh.sexpr.internal.JsonFormat.location_t.class, com.mackenziehigh.sexpr.internal.JsonFormat.location_t.Builder.class);
       }
 
       // Construct using com.mackenziehigh.sexpr.internal.JsonFormat.location_t.newBuilder()
@@ -2814,15 +2803,15 @@ public final class JsonFormat {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_location_t_descriptor;
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.internal_static_sexpr_location_t_descriptor;
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.location_t getDefaultInstanceForType() {
-        return com.mackenziehigh.sexpr.internal.JsonFormat.location_t.getDefaultInstance();
+        return  com.mackenziehigh.sexpr.internal.JsonFormat.location_t.getDefaultInstance();
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.location_t build() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.location_t result = buildPartial();
+                com.mackenziehigh.sexpr.internal.JsonFormat.location_t result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2830,7 +2819,7 @@ public final class JsonFormat {
       }
 
       public com.mackenziehigh.sexpr.internal.JsonFormat.location_t buildPartial() {
-        com.mackenziehigh.sexpr.internal.JsonFormat.location_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.location_t(this);
+                com.mackenziehigh.sexpr.internal.JsonFormat.location_t result = new com.mackenziehigh.sexpr.internal.JsonFormat.location_t(this);
         result.source_ = source_;
         result.line_ = line_;
         result.column_ = column_;
@@ -2897,7 +2886,7 @@ public final class JsonFormat {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.sexpr.internal.JsonFormat.location_t parsedMessage = null;
+                com.mackenziehigh.sexpr.internal.JsonFormat.location_t parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {

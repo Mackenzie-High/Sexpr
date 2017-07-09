@@ -1,32 +1,22 @@
 package com.mackenziehigh.sexpr;
 
-import com.mackenziehigh.sexpr.internal.schema.MatchNode;
 import com.mackenziehigh.sexpr.internal.schema.Schema;
 import com.mackenziehigh.sexpr.internal.schema.SchemaParser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
  * An instance of this class can be used to determine
  * whether a symbolic-expression matches a schema (pattern).
- *
- * TODO predefined actions
  */
-public final class Matcher
+public final class SexprSchema
 {
-    private final Map<String, Predicate<Sexpr>> requirements = new HashMap<>();
-
-    private final Map<String, Consumer<Sexpr>> actions = new HashMap<>();
-
     private final Schema schema;
 
     /**
@@ -34,7 +24,7 @@ public final class Matcher
      *
      * @param schema is the schema that symbolic-expressions must match.
      */
-    private Matcher (final Schema schema)
+    private SexprSchema (final Schema schema)
     {
         this.schema = Objects.requireNonNull(schema, "schema");
     }
@@ -89,16 +79,21 @@ public final class Matcher
      * matches a given symbolic-expression.
      *
      * <p>
-     * If the match is successful, then the onSuccess function(s)
-     * will be invoked passing-in the root of the match-tree
-     * that describes the individual successful rule matches.
+     * If the match is successful, then the match-tree
+     * will be traversed once for each translation-pass
+     * that was defined previously. Upon encountering
+     * the successful match of a rule (R) during a
+     * translation-pass, the before-actions of (R)
+     * will be executed, then the subordinate matches
+     * will be visited and their actions will be executed,
+     * and then the after-actions of (R) will be executed.
      * </p>
      *
      * <p>
-     * If the match is unsuccessful, then the onFailure function(s)
+     * If the match is unsuccessful, then the failure-handler function
      * will be invoked passing-in the highest numbered node that
      * was successfully matched. If no node was successfully matched,
-     * then an empty optional will be passed-in to the function(s).
+     * then an empty optional will be passed-in to the function.
      * Conceptually, the highest numbered node that is successfully
      * matched will be close to the site of failure; therefore,
      * the location of the node is useful for generating human
@@ -112,13 +107,8 @@ public final class Matcher
      */
     public boolean match (final Sexpr tree)
     {
-
-        final Function<String, Predicate<Sexpr>> resolveCondition = name -> requirements.get(name);
-        final Function<String, Consumer<Sexpr>> resolveAction = name -> actions.get(name);
-        final Consumer<MatchNode> onSuccess = x -> System.out.println("Success!");
-        final Consumer<Optional<Sexpr>> onFailure = x -> System.out.println("Failed At: " + (x.isPresent() ? x.get().location().message() : "TOTAL FAILURE"));
-
-        final boolean match = schema.match(tree, resolveCondition, resolveAction, onSuccess, onFailure);
+        Objects.requireNonNull(tree, "tree");
+        final boolean match = schema.match(tree);
         return match;
     }
 
@@ -127,7 +117,10 @@ public final class Matcher
      */
     public static final class Builder
     {
-        private Matcher instance;
+        /**
+         * This is the instance that is being constructed.
+         */
+        private SexprSchema instance;
 
         /**
          * Sole Constructor.
@@ -137,13 +130,7 @@ public final class Matcher
         private Builder (final Schema schema)
         {
             Objects.requireNonNull(schema, "schema");
-            this.instance = new Matcher(schema);
-            addPredefinedActions();
-        }
-
-        private void addPredefinedActions ()
-        {
-            action("$PRINTLN", x -> System.out.println(x.toString()));
+            this.instance = new SexprSchema(schema);
         }
 
         /**
@@ -164,64 +151,96 @@ public final class Matcher
             Objects.requireNonNull(name, "name");
             Objects.requireNonNull(condition, "condition");
             Objects.requireNonNull(instance, "build() was already called.");
-
-            if (instance.requirements.containsKey(name))
-            {
-                throw new IllegalArgumentException("Duplicate Predicate: " + name);
-            }
-
-            instance.requirements.put(name, condition);
+            instance.schema.defineCondition(name, condition);
             return this;
         }
 
         /**
-         * Use this method to define an action that can be used within a schema.
+         * Use this method to declare another translation pass.
          *
          * <p>
-         * Inside of the schema, the predicate must be referenced via
-         * either a 'before' or 'after' directive.
+         * Call this method multiple times in order to declare multiple passes.
+         * The translation passes will occur in the order of those invocations.
          * </p>
          *
-         * @param name is the name that will be used to identify the predicate.
+         * @param name is the name of the new translation pass.
+         * @return this.
+         */
+        public Builder pass (final String name)
+        {
+            Objects.requireNonNull(name, "name");
+            instance.schema.definePass(name);
+            return this;
+        }
+
+        /**
+         * Use this method to define an action that will be executed before
+         * matches of a named rule during a specific pass.
+         *
+         * @param pass is the name of the pass that this action applies to.
+         * @param rule is the name of the rule that this action applies to.
          * @param action is the action itself.
          * @return this.
          * @throws IllegalArgumentException if the name already identifies a action.
          */
-        public Builder action (final String name,
+        public Builder before (final String pass,
+                               final String rule,
                                final Consumer<Sexpr> action)
         {
-            Objects.requireNonNull(name, "name");
+            Objects.requireNonNull(pass, "pass");
+            Objects.requireNonNull(rule, "rule");
             Objects.requireNonNull(action, "action");
             Objects.requireNonNull(instance, "build() was already called.");
-
-            if (instance.actions.containsValue(name))
-            {
-                throw new IllegalArgumentException("Duplicate Action: " + name);
-            }
-
-            instance.actions.put(name, action);
+            instance.schema.defineBeforeAction(pass, rule, action);
             return this;
         }
 
         /**
-         * Use this method to obtain the new Matcher object.
+         * Use this method to define an action that will be executed after
+         * matches of a named rule during a specific pass.
+         *
+         * @param pass is the name of the pass that this action applies to.
+         * @param rule is the name of the rule that this action applies to.
+         * @param action is the action itself.
+         * @return this.
+         * @throws IllegalArgumentException if the name already identifies a action.
+         */
+        public Builder after (final String pass,
+                              final String rule,
+                              final Consumer<Sexpr> action)
+        {
+            Objects.requireNonNull(pass, "pass");
+            Objects.requireNonNull(rule, "rule");
+            Objects.requireNonNull(action, "action");
+            Objects.requireNonNull(instance, "build() was already called.");
+            instance.schema.defineAfterAction(pass, rule, action);
+            return this;
+        }
+
+        /**
+         * This method specifies the action to perform
+         * when a match attempt is unsuccessful.
+         *
+         *
+         * @param handler will handle unsuccessful matches.
+         * @return this.
+         */
+        public Builder setFailureHandler (final Consumer<Optional<Sexpr>> handler)
+        {
+            instance.schema.setFailureHandler(handler);
+            return this;
+        }
+
+        /**
+         * Use this method to obtain the new schema object.
          *
          * @return the new matcher.
          */
-        public Matcher build ()
+        public SexprSchema build ()
         {
-            final Matcher result = instance;
+            final SexprSchema result = instance;
             instance = null;
             return result;
         }
-    }
-
-    public static void main (String[] args)
-            throws IOException
-    {
-        final Matcher m = Matcher.fromFile(new File("/home/mackenzie/Schema.s")).build();
-        final Sexpr tree = SList.parse("", "(div (p (div)) (p 123))");
-
-        m.match(tree);
     }
 }
