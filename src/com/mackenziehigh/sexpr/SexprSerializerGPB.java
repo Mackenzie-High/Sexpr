@@ -1,15 +1,23 @@
-package com.mackenziehigh.sexpr.internal;
+/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.mackenziehigh.sexpr.SAtom;
-import com.mackenziehigh.sexpr.SList;
-import com.mackenziehigh.sexpr.Sexpr;
-import com.mackenziehigh.sexpr.SourceLocation;
-import com.mackenziehigh.sexpr.internal.BinaryFormat.location_t;
-import com.mackenziehigh.sexpr.internal.BinaryFormat.node_t;
-import com.mackenziehigh.sexpr.internal.BinaryFormat.sexpr_t;
-import com.mackenziehigh.sexpr.internal.BinaryFormat.tree_t;
+import com.mackenziehigh.sexpr.internal.BinaryFormat;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -21,10 +29,10 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 /**
- * This class provides static methods for converting
- * a symbolic-expression to and from other formats.
+ * An instance of this class can serialize symbolic-expressions
+ * to/from a binary representation using Google Protocol Buffers.
  */
-public final class Serializer
+public final class SexprSerializerGPB
 {
     /**
      * This method converts a symbolic-expression to binary data,
@@ -39,14 +47,14 @@ public final class Serializer
      */
     public static byte[] convertToBytes (final Sexpr expression)
     {
-        final tree_t tree = linearize(expression);
+        final BinaryFormat.tree_t tree = linearize(expression);
         final byte[] data = tree.toByteArray();
         final byte[] hash = computeMD5(data);
 
-        final sexpr_t.Builder builder = sexpr_t.newBuilder();
+        final BinaryFormat.sexpr_t.Builder builder = BinaryFormat.sexpr_t.newBuilder();
         builder.setChecksum(ByteString.copyFrom(hash));
         builder.setTree(ByteString.copyFrom(data));
-        final sexpr_t message = builder.build();
+        final BinaryFormat.sexpr_t message = builder.build();
         return message.toByteArray();
     }
 
@@ -64,14 +72,14 @@ public final class Serializer
         }
     }
 
-    private static tree_t linearize (final Sexpr tree)
+    private static BinaryFormat.tree_t linearize (final Sexpr tree)
     {
         final Consumer<Sexpr> NOP = x ->
         {
             // Pass
         };
 
-        final List<node_t> nodes = new ArrayList<>(tree.treeSize());
+        final List<BinaryFormat.node_t> nodes = new ArrayList<>(tree.treeSize());
 
         final Consumer<Sexpr> encode = x ->
         {
@@ -80,19 +88,19 @@ public final class Serializer
 
         tree.transverse(NOP, encode);
 
-        final tree_t.Builder builder = tree_t.newBuilder();
+        final BinaryFormat.tree_t.Builder builder = BinaryFormat.tree_t.newBuilder();
         nodes.forEach(x -> builder.addNodes(x));
         return builder.build();
     }
 
-    private static node_t encodeNode (final Sexpr node)
+    private static BinaryFormat.node_t encodeNode (final Sexpr node)
     {
         return node.isAtom() ? encodeAtom(node.toAtom()) : encodeList(node.toList());
     }
 
-    private static node_t encodeAtom (final SAtom node)
+    private static BinaryFormat.node_t encodeAtom (final SAtom node)
     {
-        final node_t.Builder builder = node_t.newBuilder();
+        final BinaryFormat.node_t.Builder builder = BinaryFormat.node_t.newBuilder();
         builder.setLocation(encodeLocation(node.location()));
 
         if (node.asLong().isPresent())
@@ -115,17 +123,17 @@ public final class Serializer
         return builder.build();
     }
 
-    private static node_t encodeList (final SList node)
+    private static BinaryFormat.node_t encodeList (final SList node)
     {
-        final node_t.Builder builder = node_t.newBuilder();
+        final BinaryFormat.node_t.Builder builder = BinaryFormat.node_t.newBuilder();
         builder.setLocation(encodeLocation(node.location()));
         builder.setElementCount(node.size());
         return builder.build();
     }
 
-    private static location_t encodeLocation (final SourceLocation node)
+    private static BinaryFormat.location_t encodeLocation (final SourceLocation node)
     {
-        final location_t.Builder builder = location_t.newBuilder();
+        final BinaryFormat.location_t.Builder builder = BinaryFormat.location_t.newBuilder();
         builder.setSource(node.source());
         builder.setLine(node.line());
         builder.setColumn(node.column());
@@ -147,7 +155,7 @@ public final class Serializer
     public static Sexpr convertFromBytes (final byte[] bytes)
             throws InvalidProtocolBufferException
     {
-        final sexpr_t outer = sexpr_t.parseFrom(bytes);
+        final BinaryFormat.sexpr_t outer = BinaryFormat.sexpr_t.parseFrom(bytes);
 
         final byte[] expectedMD5 = outer.getChecksum().toByteArray();
         final byte[] actualMD5 = computeMD5(outer.getTree().toByteArray());
@@ -158,7 +166,7 @@ public final class Serializer
             throw new RuntimeException(String.format("Corrupt Data: Expected MD5 = , Actual MD5 = "));
         }
 
-        final tree_t tree = tree_t.parseFrom(outer.getTree());
+        final BinaryFormat.tree_t tree = BinaryFormat.tree_t.parseFrom(outer.getTree());
         final Stack<Sexpr> stack = new Stack<>();
         tree.getNodesList().forEach(node -> decodeNode(stack, node));
         // TODO: verify stack is size 1
@@ -167,9 +175,9 @@ public final class Serializer
     }
 
     private static void decodeNode (final Stack<Sexpr> stack,
-                                    final node_t node)
+                                    final BinaryFormat.node_t node)
     {
-        if (node.getOptionalElementCountCase() == node_t.OptionalElementCountCase.OPTIONALELEMENTCOUNT_NOT_SET)
+        if (node.getOptionalElementCountCase() == BinaryFormat.node_t.OptionalElementCountCase.OPTIONALELEMENTCOUNT_NOT_SET)
         {
             decodeAtom(stack, node);
         }
@@ -180,24 +188,24 @@ public final class Serializer
     }
 
     private static void decodeAtom (final Stack<Sexpr> stack,
-                                    final node_t node)
+                                    final BinaryFormat.node_t node)
     {
         final SourceLocation location = decodeLocation(node);
         final SAtom result;
 
-        if (node.getOptionalValueAsBooleanCase() == node_t.OptionalValueAsBooleanCase.VALUEASBOOLEAN)
+        if (node.getOptionalValueAsBooleanCase() == BinaryFormat.node_t.OptionalValueAsBooleanCase.VALUEASBOOLEAN)
         {
             result = new SAtom(location, node.getValueAsBoolean());
         }
-        else if (node.getOptionalValueAsLongCase() == node_t.OptionalValueAsLongCase.VALUEASLONG)
+        else if (node.getOptionalValueAsLongCase() == BinaryFormat.node_t.OptionalValueAsLongCase.VALUEASLONG)
         {
             result = new SAtom(location, node.getValueAsLong());
         }
-        else if (node.getOptionalValueAsDoubleCase() == node_t.OptionalValueAsDoubleCase.VALUEASDOUBLE)
+        else if (node.getOptionalValueAsDoubleCase() == BinaryFormat.node_t.OptionalValueAsDoubleCase.VALUEASDOUBLE)
         {
             result = new SAtom(location, node.getValueAsDouble());
         }
-        else if (node.getOptionalValueAsStringCase() == node_t.OptionalValueAsStringCase.VALUEASSTRING)
+        else if (node.getOptionalValueAsStringCase() == BinaryFormat.node_t.OptionalValueAsStringCase.VALUEASSTRING)
         {
             result = new SAtom(location, node.getValueAsString());
         }
@@ -210,7 +218,7 @@ public final class Serializer
     }
 
     private static void decodeList (final Stack<Sexpr> stack,
-                                    final node_t node)
+                                    final BinaryFormat.node_t node)
     {
         final SourceLocation location = decodeLocation(node);
         final int elementCount = node.getElementCount();
@@ -220,7 +228,7 @@ public final class Serializer
         stack.push(result);
     }
 
-    private static SourceLocation decodeLocation (final node_t node)
+    private static SourceLocation decodeLocation (final BinaryFormat.node_t node)
     {
         if (node.hasLocation())
         {
@@ -233,65 +241,5 @@ public final class Serializer
         {
             return SourceLocation.DEFAULT;
         }
-    }
-
-    /**
-     * This method converts a symbolic-expression to standardized JSON.
-     *
-     * <p>
-     * Each symbolic-list will be converted to a JSON Object.
-     * The JSON Object will contain two entries.
-     * Entry "location" will be a JSON Object describing the location().
-     * Entry "elements" will be a JSON List containing child nodes.
-     * </p>
-     *
-     * <p>
-     * Each symbolic-atom will be converted to a JSON Object.
-     * The JSON Object will contain two entries.
-     * The "content" entry will contain the content() string of the atom.
-     * The "location" entry will contain the location() of the atom.
-     * </p>
-     *
-     * <p>
-     * Each Source Location (X) will be converted to a JSON Object.
-     * The JSON Object will contain three entries.
-     * Entry "source" will be a string corresponding to the source() of X.
-     * Entry "line" will be an integer corresponding to the line() of X.
-     * Entry "column" will be an integer corresponding to the column() of X.
-     * </p>
-     *
-     * @param expression is the symbolic-expression to convert.
-     * @return the JSON representation of the expression.
-     */
-    public static String convertToJson (final Sexpr expression)
-    {
-        return null;
-    }
-
-    /**
-     * This method converts a string of JSON text to a symbolic-expression.
-     *
-     * <p>
-     * The JSON text must be formatted according to
-     * the contract of the convertToJSON(*) method.
-     * </p>
-     *
-     * @param text is the JSON text to parse.
-     * @return the symbolic-expression derived from the text.
-     */
-    public static Sexpr convertFromJson (final String text)
-    {
-        return null;
-    }
-
-    public static void main (String[] args)
-            throws InvalidProtocolBufferException
-    {
-        final SList tree = SList.parse("Mars", "(@'1\\b 7' 2.89) 3 (4 5 'true')");
-
-        final byte[] bytes = Serializer.convertToBytes(tree);
-        final Sexpr decoded = Serializer.convertFromBytes(bytes);
-
-        System.out.println(decoded);
     }
 }

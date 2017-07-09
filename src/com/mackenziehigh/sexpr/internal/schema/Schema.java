@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.SAtom;
@@ -5,7 +20,6 @@ import com.mackenziehigh.sexpr.SList;
 import com.mackenziehigh.sexpr.Sexpr;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -20,7 +34,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * An instance of this class is a pattern that describes a symbolic-expression.
@@ -111,6 +124,7 @@ public final class Schema
              */
             final MatchNode match = new MatchNode(rule, node, children);
             matches.push(match);
+
             return match;
         }
 
@@ -120,7 +134,7 @@ public final class Schema
          *
          * @param rule is the rule invoking this method.
          * @param node is the node that was unsuccessfully matched.
-         * @return null.
+         * @return null always.
          */
         private MatchNode exitOnFailure (final Sexpr node)
         {
@@ -136,6 +150,7 @@ public final class Schema
              * Undo push(node) in enter(node).
              */
             matches.pop();
+
             return null;
         }
     }
@@ -234,7 +249,7 @@ public final class Schema
     /**
      * This supplier supplies the name of the root rule of the schema.
      */
-    private Supplier<Rule> rootSupplier = () -> rules.get("root");
+    private String root = "root";
 
     /**
      * This map maps the names of user-defined conditions
@@ -309,6 +324,7 @@ public final class Schema
      */
     public void setFailureHandler (final Consumer<Optional<Sexpr>> handler)
     {
+        Objects.requireNonNull(handler, "handler");
         failureHandler = handler;
     }
 
@@ -320,6 +336,7 @@ public final class Schema
      */
     private Rule define (final Rule rule)
     {
+        Objects.requireNonNull(rule, "rule");
         rules.put(rule.name(), rule);
         return rule;
     }
@@ -327,12 +344,13 @@ public final class Schema
     /**
      * Use this method to specify the root rule of this schema.
      *
-     * @param name is the name of the root rule.
+     * @param root is the name of the root rule.
      */
-    public void defineRoot (final String name)
+    public void defineRoot (final String root)
     {
-        usedRules.add(name);
-        rootSupplier = () -> rules.get(name);
+        Objects.requireNonNull(root, "root");
+        usedRules.add(root);
+        this.root = root;
     }
 
     /**
@@ -344,6 +362,8 @@ public final class Schema
     public void defineCondition (final String name,
                                  final Predicate<Sexpr> condition)
     {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(condition, "condition");
         conditions.put(name, condition);
     }
 
@@ -357,6 +377,14 @@ public final class Schema
     final Rule defineNamedRule (final String name,
                                 final String body)
     {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(body, "body");
+
+        if (rules.containsKey(name))
+        {
+            throw new IllegalStateException("Duplicate Rule: " + name);
+        }
+
         usedRules.add(name);
         usedRules.add(body);
 
@@ -395,6 +423,8 @@ public final class Schema
      */
     final Rule defineReference (final String name)
     {
+        Objects.requireNonNull(name, "name");
+
         usedRules.add(name);
 
         /**
@@ -424,6 +454,9 @@ public final class Schema
      */
     final Rule defineAndRule (final List<String> operands)
     {
+        Objects.requireNonNull(operands, "operands");
+        operands.forEach(operand -> Objects.requireNonNull(operand, "operand"));
+
         usedRules.addAll(operands);
 
         final Rule rule = new Rule()
@@ -450,6 +483,9 @@ public final class Schema
      */
     final Rule defineOrRule (final List<String> operands)
     {
+        Objects.requireNonNull(operands, "operands");
+        operands.forEach(operand -> Objects.requireNonNull(operand, "operand"));
+
         usedRules.addAll(operands);
 
         final Rule rule = new Rule()
@@ -476,6 +512,8 @@ public final class Schema
      */
     final Rule defineNotRule (final String operand)
     {
+        Objects.requireNonNull(operand, "operand");
+
         usedRules.add(operand);
 
         final Rule rule = new Rule()
@@ -502,6 +540,20 @@ public final class Schema
      */
     final Rule defineSequenceRule (final List<? extends SequenceElement> operands)
     {
+        Objects.requireNonNull(operands, "operands");
+        operands.forEach(operand -> Objects.requireNonNull(operand, "operand"));
+
+        for (SequenceElement operand : operands)
+        {
+            if (operand.maximum() < operand.minimum())
+            {
+                final String message = String.format("Invalid Range: { %d, %d }",
+                                                     operand.minimum(),
+                                                     operand.maximum());
+                throw new IllegalStateException(message);
+            }
+        }
+
         operands.forEach(x -> usedRules.add(x.element()));
 
         final Rule rule = new Rule()
@@ -522,6 +574,12 @@ public final class Schema
                                      final MatchState state,
                                      final Sexpr node)
     {
+        Objects.requireNonNull(rule, "rule");
+        Objects.requireNonNull(operands, "operands");
+        operands.forEach(operand -> Objects.requireNonNull(operand, "operand"));
+        Objects.requireNonNull(state, "state");
+        Objects.requireNonNull(node, "node");
+
         state.enter(node);
 
         if (node.isList() == false)
@@ -614,6 +672,8 @@ seq:    for (SequenceElement operand : operands)
      */
     final Rule defineRegexRule (final String pattern)
     {
+        Objects.requireNonNull(pattern, "pattern");
+
         return defineRuleByPredicate(x -> x.isAtom() && x.toAtom().content().matches(pattern));
     }
 
@@ -626,6 +686,8 @@ seq:    for (SequenceElement operand : operands)
      */
     final Rule defineConstantRule (final String value)
     {
+        Objects.requireNonNull(value, "value");
+
         return defineRuleByPredicate(x -> x.isAtom() && x.toAtom().content().equals(value));
     }
 
@@ -645,6 +707,12 @@ seq:    for (SequenceElement operand : operands)
                                 final double maximum,
                                 final boolean maximumInclusive)
     {
+        if (maximum < minimum)
+        {
+            final String message = String.format("Invalid Range: maximum (%f) < minimum (%f)", maximum, minimum);
+            throw new IllegalArgumentException(message);
+        }
+
         return defineRuleByPredicate(x -> x.isAtom()
                                           && x.toAtom().asFloat().isPresent()
                                           && (minimumInclusive ? minimum <= x.toAtom().asFloat().get() : minimum < x.toAtom().asFloat().get())
@@ -660,7 +728,9 @@ seq:    for (SequenceElement operand : operands)
      */
     final Rule definePredicateRule (final String name)
     {
-        return null;
+        Objects.requireNonNull(name, "name");
+
+        return defineRuleByPredicate(x -> Optional.ofNullable(conditions.get(name)).get().test(x));
     }
 
     /**
@@ -672,6 +742,8 @@ seq:    for (SequenceElement operand : operands)
      */
     private Rule defineRuleByPredicate (final Predicate<Sexpr> condition)
     {
+        Objects.requireNonNull(condition, "condition");
+
         final Rule rule = new Rule()
         {
             @Override
@@ -706,11 +778,13 @@ seq:    for (SequenceElement operand : operands)
 
     public void defineSetupAction (final Consumer<Sexpr> action)
     {
+        Objects.requireNonNull(action, "action");
         setupActions.add(action);
     }
 
     public void defineCloseAction (final Consumer<Sexpr> action)
     {
+        Objects.requireNonNull(action, "action");
         closeActions.add(action);
     }
 
@@ -718,6 +792,10 @@ seq:    for (SequenceElement operand : operands)
                                     final String rule,
                                     final Consumer<Sexpr> action)
     {
+        Objects.requireNonNull(pass, "pass");
+        Objects.requireNonNull(rule, "rule");
+        Objects.requireNonNull(action, "action");
+
         if (beforeActions.containsKey(pass) == false)
         {
             beforeActions.put(pass, new TreeMap<>());
@@ -735,6 +813,10 @@ seq:    for (SequenceElement operand : operands)
                                    final String rule,
                                    final Consumer<Sexpr> action)
     {
+        Objects.requireNonNull(pass, "pass");
+        Objects.requireNonNull(rule, "rule");
+        Objects.requireNonNull(action, "action");
+
         if (afterActions.containsKey(pass) == false)
         {
             afterActions.put(pass, new TreeMap<>());
@@ -749,34 +831,6 @@ seq:    for (SequenceElement operand : operands)
     }
 
     /**
-     * This method retrieves the root rule of the schema.
-     *
-     * @return the root rule.
-     * @throws IllegalStateException if no root rule was defined.
-     */
-    final Rule root ()
-    {
-        final Rule root = rootSupplier.get();
-
-        if (root == null)
-        {
-            throw new IllegalStateException("No Root Rule");
-        }
-
-        return root;
-    }
-
-    /**
-     * This method returns all of the rules defined in this schema.
-     *
-     * @return a map that maps rule-names to rules.
-     */
-    final SortedMap<String, Rule> rules ()
-    {
-        return Collections.unmodifiableSortedMap(rules);
-    }
-
-    /**
      * This method performs a match-attempt.
      *
      * @param tree is the symbolic-expression that this schema may match.
@@ -784,9 +838,24 @@ seq:    for (SequenceElement operand : operands)
      */
     public boolean match (final Sexpr tree)
     {
+        Objects.requireNonNull(tree, "tree");
+
+        /**
+         * Verify that this schema is well-defined.
+         */
+        validate();
+
+        /**
+         * Perform the match attempt.
+         */
         final MatchState state = new MatchState();
-        final Rule root = (Rule) root();
-        final MatchNode match = root.match(state, tree);
+        final Rule rootRule = rules.get(root);
+        final MatchNode match = rootRule.match(state, tree);
+
+        /**
+         * If the match-attempt failed, then report the failure;
+         * otherwise, execute the user-defined passes and actions.
+         */
         if (match == null)
         {
             failureHandler.accept(state.lastSuccess());
@@ -796,6 +865,20 @@ seq:    for (SequenceElement operand : operands)
         {
             executeActions(match);
             return true;
+        }
+    }
+
+    private void validate ()
+    {
+        requireRoot();
+        checkForUndefinedRules();
+    }
+
+    private void requireRoot ()
+    {
+        if (rules.containsKey(root) == false)
+        {
+            throw new IllegalStateException("No Root Rule");
         }
     }
 
