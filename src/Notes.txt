@@ -1,0 +1,24 @@
+
+TODO:
++ Implement and test annotation based action binding.
++ Implement and test Builder stack.
++ Implement and test String Printer.
++ Improve exceptional causes by using custom exception types.
++ A Schema only needs validated once, not per match attempt.
++ Finish testing Sexpr Schema, including:
++ + Exceptions in actions.
++ + Exception is conditions.
++ + Predicate Rules, generally.
++ + Order of operations.
++ + Nested rules.
++ + Anonymous rules.
++ + Schema immutability after calling build().
++ Finish implementation and testing of GPB serialization.
++ Finish implementation and testing of JSON serialization.
++ Consider adding Base64 decoding of atoms,
+  or replacing the current byte-array representation,
+  since Base64 is a more common format.
+
+
+
+

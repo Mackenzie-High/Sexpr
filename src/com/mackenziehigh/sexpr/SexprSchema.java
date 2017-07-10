@@ -35,6 +35,10 @@ import java.util.function.Predicate;
  */
 public final class SexprSchema
 {
+    /**
+     * This function can be used as a default failure-handler that will
+     * print the approximate location of match failures to standard-output.
+     */
     public static final Consumer<Optional<Sexpr>> PRINT_FAILURE = x ->
     {
         if (x.isPresent())

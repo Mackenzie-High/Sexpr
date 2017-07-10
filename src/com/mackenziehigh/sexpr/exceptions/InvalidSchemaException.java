@@ -1,4 +1,4 @@
-package com.mackenziehigh.sexpr.internal;
+package com.mackenziehigh.sexpr.exceptions;
 
 /**
  * This type of exception indicates a problem within a schema definition.
