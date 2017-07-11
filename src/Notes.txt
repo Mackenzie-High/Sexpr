@@ -16,6 +16,9 @@ TODO:
 + + Schema immutability after calling build().
 + Finish implementation and testing of GPB serialization.
 + Finish implementation and testing of JSON serialization.
++ Test parseFile and parseResource.
++ + Normal Cases
++ + File/Resource not found.
 
 
 

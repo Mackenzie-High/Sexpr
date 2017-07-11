@@ -572,7 +572,7 @@ public final class SList
             throw ex;
         }
 
-        return parse(path, path);
+        return parse(path, text.toString());
     }
 
     /**
