@@ -268,6 +268,21 @@ public final class SexprSchema
         }
 
         /**
+         * Given an object containing properly annotated methods,
+         * define the conditions and actions defined therein.
+         *
+         * @param object contains condition and action definitions.
+         * @return this.
+         */
+        public Builder defineViaAnnotations (final Object object)
+        {
+            Objects.requireNonNull(object, "object");
+            Objects.requireNonNull(instance, "build() was already called.");
+            instance.schema.defineViaReflection(object);
+            return this;
+        }
+
+        /**
          * This method specifies the action to perform
          * when a match attempt is unsuccessful.
          *

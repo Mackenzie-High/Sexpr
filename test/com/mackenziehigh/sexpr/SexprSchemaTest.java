@@ -530,4 +530,490 @@ public class SexprSchemaTest
          */
         parse("root = matches '[';", "X");
     }
+
+    /**
+     * Test: 20170711022745123106
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Define Predicate-Rule Condition using Sexpr Parameter.
+     * </p>
+     */
+    @Test
+    public void test20170711022745123106 ()
+    {
+        System.out.println("Test: 20170711022745123106");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123175
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Define Predicate-Rule Condition using SAtom Parameter.
+     * </p>
+     */
+    @Test
+    public void test20170711022745123175 ()
+    {
+        System.out.println("Test: 20170711022745123175");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123201
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Define Predicate-Rule Condition using SList Parameter.
+     * </p>
+     */
+    @Test
+    public void test20170711022745123201 ()
+    {
+        System.out.println("Test: 20170711022745123201");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123225
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Predicate-Rule Condition with Invalid Parameter Count.
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711022745123225 ()
+    {
+        System.out.println("Test: 20170711022745123225");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123247
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Predicate-Rule Condition with Invalid Parameter Type.
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711022745123247 ()
+    {
+        System.out.println("Test: 20170711022745123247");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123269
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Predicate-Rule Condition with Invalid Return Type.
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711022745123269 ()
+    {
+        System.out.println("Test: 20170711022745123269");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123289
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Predicate-Rule Condition with Invalid Throws Clause.
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711022745123289 ()
+    {
+        System.out.println("Test: 20170711022745123289");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123310
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Before-Action with Sexpr Parameter
+     * </p>
+     */
+    @Test
+    public void test20170711022745123310 ()
+    {
+        System.out.println("Test: 20170711022745123310");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123330
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Before-Action with SAtom Parameter
+     * </p>
+     */
+    @Test
+    public void test20170711022745123330 ()
+    {
+        System.out.println("Test: 20170711022745123330");
+        fail();
+    }
+
+    /**
+     * Test: 20170711022745123349
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Before-Action with SList Parameter
+     * </p>
+     */
+    @Test
+    public void test20170711022745123349 ()
+    {
+        System.out.println("Test: 20170711022745123349");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488273
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Before-Action with Invalid Parameter Count
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711023511488273 ()
+    {
+        System.out.println("Test: 20170711023511488273");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488349
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Before-Action with Invalid Parameter Type
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711023511488349 ()
+    {
+        System.out.println("Test: 20170711023511488349");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488378
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Before-Action with Invalid Return Type
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711023511488378 ()
+    {
+        System.out.println("Test: 20170711023511488378");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488405
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Before-Action with Invalid Throws Clause
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711023511488405 ()
+    {
+        System.out.println("Test: 20170711023511488405");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488430
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: After-Action with Sexpr Parameter
+     * </p>
+     */
+    @Test
+    public void test20170711023511488430 ()
+    {
+        System.out.println("Test: 20170711023511488430");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488453
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: After-Action with SAtom Parameter
+     * </p>
+     */
+    @Test
+    public void test20170711023511488453 ()
+    {
+        System.out.println("Test: 20170711023511488453");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488474
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: After-Action with SList Parameter
+     * </p>
+     */
+    @Test
+    public void test20170711023511488474 ()
+    {
+        System.out.println("Test: 20170711023511488474");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488494
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: After-Action with Invalid Parameter Count
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711023511488494 ()
+    {
+        System.out.println("Test: 20170711023511488494");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488514
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: After-Action with Invalid Parameter Type
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711023511488514 ()
+    {
+        System.out.println("Test: 20170711023511488514");
+        fail();
+    }
+
+    /**
+     * Test: 20170711023511488534
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: After-Action with Invalid Return Type
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711023511488534 ()
+    {
+        System.out.println("Test: 20170711023511488534");
+        fail();
+    }
+
+    /**
+     * Test: 20170711024605706433
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: After-Action with Invalid Throws Clause
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711024605706433 ()
+    {
+        System.out.println("Test: 20170711024605706433");
+        fail();
+    }
+
+    /**
+     * Test: 20170711024605706505
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: No Such Translation Pass for Predicate-Rule Condition
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711024605706505 ()
+    {
+        System.out.println("Test: 20170711024605706505");
+        fail();
+    }
+
+    /**
+     * Test: 20170711024605706536
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: No Such Translation Pass for Before-Action
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711024605706536 ()
+    {
+        System.out.println("Test: 20170711024605706536");
+        fail();
+    }
+
+    /**
+     * Test: 20170711024605706563
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: No Such Translation Pass for After-Action
+     * </p>
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void test20170711024605706563 ()
+    {
+        System.out.println("Test: 20170711024605706563");
+        fail();
+    }
+
+    /**
+     * Test: 20170711024605706593
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Overridden Translation Pass for Predicate-Rule Condition
+     * </p>
+     */
+    @Test
+    public void test20170711024605706593 ()
+    {
+        System.out.println("Test: 20170711024605706593");
+        fail();
+    }
+
+    /**
+     * Test: 20170711025550465323
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Overridden Translation Pass for Before-Action
+     * </p>
+     */
+    @Test
+    public void test20170711025550465323 ()
+    {
+        System.out.println("Test: 20170711025550465323");
+        fail();
+    }
+
+    /**
+     * Test: 20170711025550465390
+     *
+     * <p>
+     * Method: <code>defineViaAnnotations</code>
+     * </p>
+     *
+     * <p>
+     * Case: Overridden Translation Pass for After-Action
+     * </p>
+     */
+    @Test
+    public void test20170711025550465390 ()
+    {
+        System.out.println("Test: 20170711025550465390");
+        fail();
+    }
 }
