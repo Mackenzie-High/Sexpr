@@ -19,5 +19,5 @@ public @interface Condition
      *
      * @return the name of the condition.
      */
-    public String name ();
+    public String value ();
 }

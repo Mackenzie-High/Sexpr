@@ -18,6 +18,7 @@ package com.mackenziehigh.sexpr.internal.schema;
 import com.mackenziehigh.sexpr.SAtom;
 import com.mackenziehigh.sexpr.SList;
 import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.annotations.After;
 import com.mackenziehigh.sexpr.annotations.Before;
 import com.mackenziehigh.sexpr.annotations.Condition;
 import com.mackenziehigh.sexpr.annotations.Pass;
@@ -39,7 +40,6 @@ import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import com.mackenziehigh.sexpr.annotations.After;
 
 /**
  * An instance of this class is a pattern that describes a symbolic-expression.
@@ -869,7 +869,7 @@ seq:    for (SequenceElement operand : operands)
     {
         if (object.getClass().isAnnotationPresent(Pass.class))
         {
-            final String name = object.getClass().getAnnotation(Pass.class).name();
+            final String name = object.getClass().getAnnotation(Pass.class).value();
             return Optional.of(name);
         }
         else
@@ -883,7 +883,7 @@ seq:    for (SequenceElement operand : operands)
     {
         if (method.isAnnotationPresent(Pass.class))
         {
-            final String name = method.getAnnotation(Pass.class).name();
+            final String name = method.getAnnotation(Pass.class).value();
             return name;
         }
         else if (defaultPass.isPresent())
@@ -903,7 +903,7 @@ seq:    for (SequenceElement operand : operands)
         /**
          * Obtain the user-defined name of the condition.
          */
-        final String name = method.getAnnotation(Condition.class).name();
+        final String name = method.getAnnotation(Condition.class).value();
 
         /**
          * The method cannot throw any checked exceptions.
@@ -975,7 +975,7 @@ seq:    for (SequenceElement operand : operands)
         /**
          * Obtain the user-defined name of the rule that this action applies to.
          */
-        final String rule = method.getAnnotation(Before.class).rule();
+        final String rule = method.getAnnotation(Before.class).value();
 
         /**
          * The method cannot throw any checked exceptions.
@@ -1047,7 +1047,7 @@ seq:    for (SequenceElement operand : operands)
         /**
          * Obtain the user-defined name of the rule that this action applies to.
          */
-        final String rule = method.getAnnotation(Before.class).rule();
+        final String rule = method.getAnnotation(Before.class).value();
 
         /**
          * The method cannot throw any checked exceptions.
@@ -1114,6 +1114,7 @@ seq:    for (SequenceElement operand : operands)
         {
             try
             {
+                method.setAccessible(true);
                 return method.invoke(object, x);
             }
             catch (Throwable ex)

@@ -19,5 +19,5 @@ public @interface Before
      *
      * @return the name of a rule in a symbolic-expression schema.
      */
-    public String rule ();
+    public String value ();
 }

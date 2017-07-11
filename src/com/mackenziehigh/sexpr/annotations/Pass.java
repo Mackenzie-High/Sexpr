@@ -22,5 +22,5 @@ public @interface Pass
      *
      * @return the name of the translation-pass.
      */
-    public String name ();
+    public String value ();
 }

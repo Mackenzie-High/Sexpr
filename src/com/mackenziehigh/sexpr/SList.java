@@ -16,6 +16,12 @@
 package com.mackenziehigh.sexpr;
 
 import com.mackenziehigh.sexpr.internal.Parser;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -532,5 +539,61 @@ public final class SList
     {
         final Parser p = new Parser(Objects.requireNonNull(location));
         return p.parse(Objects.requireNonNull(input));
+    }
+
+    /**
+     * This method converts the textual representation of a resource file
+     * to an actual corresponding SList object.
+     *
+     * <p>
+     * See method parse(*) for more parsing details.
+     * </p>
+     *
+     * @param path is the path to the resource file.
+     * @return the new symbolic-list.
+     * @throws IOException if the resource cannot be read.
+     */
+    public static SList parseResource (final String path)
+            throws IOException
+    {
+        final StringBuilder text = new StringBuilder();
+
+        try (InputStream in = SList.class.getResourceAsStream(path);
+             BufferedInputStream bin = new BufferedInputStream(in);
+             Scanner scanner = new Scanner(bin))
+        {
+            while (scanner.hasNextLine())
+            {
+                text.append(scanner.nextLine()).append('\n');
+            }
+        }
+        catch (IOException | RuntimeException ex)
+        {
+            throw ex;
+        }
+
+        return parse(path, path);
+    }
+
+    /**
+     * This method converts the textual representation of a text file
+     * to an actual corresponding SList object.
+     *
+     * <p>
+     * See method parse(*) for more parsing details.
+     * </p>
+     *
+     * @param file is the path to the file.
+     * @return the new symbolic-list.
+     * @throws IOException if the resource cannot be read.
+     */
+    public SList parseFile (final File file)
+            throws IOException
+    {
+        final String source = file.toString();
+        final StringBuilder content = new StringBuilder();
+        Files.readAllLines(file.toPath(), Charset.forName("UTF-8"))
+                .forEach(line -> content.append(line).append('\n'));
+        return parse(source, content.toString());
     }
 }
