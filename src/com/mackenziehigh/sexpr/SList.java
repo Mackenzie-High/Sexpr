@@ -587,7 +587,7 @@ public final class SList
      * @return the new symbolic-list.
      * @throws IOException if the resource cannot be read.
      */
-    public SList parseFile (final File file)
+    public static SList parseFile (final File file)
             throws IOException
     {
         final String source = file.toString();
