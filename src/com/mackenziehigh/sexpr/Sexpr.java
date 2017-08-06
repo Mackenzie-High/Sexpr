@@ -164,7 +164,14 @@ public interface Sexpr<T extends Sexpr<T>>
      */
     public default SAtom toAtom ()
     {
-        return (SAtom) this;
+        if (this instanceof SAtom)
+        {
+            return (SAtom) this;
+        }
+        else
+        {
+            throw new ClassCastException(toString());
+        }
     }
 
     /**
@@ -182,7 +189,14 @@ public interface Sexpr<T extends Sexpr<T>>
      */
     public default SList toList ()
     {
-        return (SList) this;
+        if (this instanceof SList)
+        {
+            return (SList) this;
+        }
+        else
+        {
+            throw new ClassCastException(toString());
+        }
     }
 
     /**

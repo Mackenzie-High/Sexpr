@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -100,7 +100,7 @@ public final class SList
      */
     public static SList copyOf (final Iterable&lt;? extends Sexpr&gt; list)
     {
-<span class="nc" id="L103">        return new SList(SourceLocation.DEFAULT, list.iterator());</span>
+<span class="fc" id="L103">        return new SList(SourceLocation.DEFAULT, list.iterator());</span>
     }
 
     /**
@@ -124,7 +124,7 @@ public final class SList
      */
     public static SList copyOf (final Stream&lt;? extends Sexpr&gt; stream)
     {
-<span class="nc" id="L127">        return new SList(SourceLocation.DEFAULT, stream.iterator());</span>
+<span class="fc" id="L127">        return new SList(SourceLocation.DEFAULT, stream.iterator());</span>
     }
 
     /**
@@ -148,7 +148,7 @@ public final class SList
      */
     public static SList copyOf (final Iterator&lt;? extends Sexpr&gt; stream)
     {
-<span class="nc" id="L151">        return new SList(SourceLocation.DEFAULT, stream);</span>
+<span class="fc" id="L151">        return new SList(SourceLocation.DEFAULT, stream);</span>
     }
 
     /**
@@ -161,7 +161,7 @@ public final class SList
     public static SList copyOf (final SourceLocation location,
                                 final Iterator&lt;? extends Sexpr&gt; stream)
     {
-<span class="nc" id="L164">        return new SList(location, stream);</span>
+<span class="fc" id="L164">        return new SList(location, stream);</span>
     }
 
     /**
@@ -182,7 +182,7 @@ public final class SList
     public static SList fromMap (final SourceLocation location,
                                  final Map&lt;? extends Sexpr, ? extends Sexpr&gt; map)
     {
-<span class="nc" id="L185">        return copyOf(location, createMap(location, map));</span>
+<span class="fc" id="L185">        return copyOf(location, createMap(location, map));</span>
     }
 
     /**
@@ -206,24 +206,24 @@ public final class SList
                                  final Map&lt;? extends Sexpr, ? extends Sexpr&gt; map,
                                  final Sexpr separator)
     {
-<span class="nc" id="L209">        return copyOf(location, createMap(location, map, separator));</span>
+<span class="fc" id="L209">        return copyOf(location, createMap(location, map, separator));</span>
     }
 
     private static List&lt;Sexpr&gt; createMap (final SourceLocation location,
                                           final Map&lt;? extends Sexpr, ? extends Sexpr&gt; map)
     {
-<span class="nc" id="L215">        final List&lt;Sexpr&gt; outer = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L216">        map.forEach((x, y) -&gt; outer.add(SList.of(location, x, y)));</span>
-<span class="nc" id="L217">        return outer;</span>
+<span class="fc" id="L215">        final List&lt;Sexpr&gt; outer = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L216">        map.forEach((x, y) -&gt; outer.add(SList.of(location, x, y)));</span>
+<span class="fc" id="L217">        return outer;</span>
     }
 
     private static List&lt;Sexpr&gt; createMap (final SourceLocation location,
                                           final Map&lt;? extends Sexpr, ? extends Sexpr&gt; map,
                                           final Sexpr separator)
     {
-<span class="nc" id="L224">        final List&lt;Sexpr&gt; outer = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L225">        map.forEach((x, y) -&gt; outer.add(SList.of(location, x, separator, y)));</span>
-<span class="nc" id="L226">        return outer;</span>
+<span class="fc" id="L224">        final List&lt;Sexpr&gt; outer = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L225">        map.forEach((x, y) -&gt; outer.add(SList.of(location, x, separator, y)));</span>
+<span class="fc" id="L226">        return outer;</span>
     }
 
     /**
@@ -381,26 +381,26 @@ public final class SList
      */
     public Optional&lt;Map&lt;Sexpr, Sexpr&gt;&gt; asMap ()
     {
-<span class="nc" id="L384">        final Map&lt;Sexpr, Sexpr&gt; map = new LinkedHashMap&lt;&gt;(size());</span>
+<span class="fc" id="L384">        final Map&lt;Sexpr, Sexpr&gt; map = new TreeMap&lt;&gt;();</span>
 
-<span class="nc bnc" id="L386" title="All 2 branches missed.">        for (Sexpr element : this)</span>
+<span class="fc bfc" id="L386" title="All 2 branches covered.">        for (Sexpr element : this)</span>
         {
-<span class="nc bnc" id="L388" title="All 2 branches missed.">            if (element.isList() == false)</span>
+<span class="pc bpc" id="L388" title="1 of 2 branches missed.">            if (element.isList() == false)</span>
             {
 <span class="nc" id="L390">                return Optional.empty();</span>
             }
-<span class="nc bnc" id="L392" title="All 2 branches missed.">            else if (((SList) element).size() != 2)</span>
+<span class="fc bfc" id="L392" title="All 2 branches covered.">            else if (((SList) element).size() &lt; 2)</span>
             {
-<span class="nc" id="L394">                return Optional.empty();</span>
+<span class="fc" id="L394">                return Optional.empty();</span>
             }
             else
             {
-<span class="nc" id="L398">                final SList pair = (SList) element;</span>
-<span class="nc" id="L399">                map.put(pair.first(), pair.last());</span>
+<span class="fc" id="L398">                final SList entry = (SList) element;</span>
+<span class="fc" id="L399">                map.put(entry.first(), entry.last());</span>
             }
-<span class="nc" id="L401">        }</span>
+<span class="fc" id="L401">        }</span>
 
-<span class="nc" id="L403">        return Optional.of(Collections.unmodifiableMap(map));</span>
+<span class="fc" id="L403">        return Optional.of(Collections.unmodifiableMap(map));</span>
     }
 
     /**
@@ -484,8 +484,8 @@ public final class SList
     }
 
     /**
-     * This method converts the textual representation of a Sexpr
-     * to an actual corresponding Sexpr object.
+     * This method converts the textual representation of a SList
+     * to an actual corresponding SList object.
      *
      * &lt;p&gt;
      * This method inserts an implicit symbolic-list into the input.
@@ -502,6 +502,5 @@ public final class SList
 <span class="fc" id="L502">        final Parser p = new Parser(Objects.requireNonNull(location));</span>
 <span class="fc" id="L503">        return p.parse(Objects.requireNonNull(input));</span>
     }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

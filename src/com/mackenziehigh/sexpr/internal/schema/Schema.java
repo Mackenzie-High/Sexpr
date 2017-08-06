@@ -1047,7 +1047,7 @@ seq:    for (SequenceElement operand : operands)
         /**
          * Obtain the user-defined name of the rule that this action applies to.
          */
-        final String rule = method.getAnnotation(Before.class).value();
+        final String rule = method.getAnnotation(After.class).value();
 
         /**
          * The method cannot throw any checked exceptions.
@@ -1119,7 +1119,7 @@ seq:    for (SequenceElement operand : operands)
             }
             catch (Throwable ex)
             {
-                throw new RuntimeException(ex);
+                throw new RuntimeException(x.toString(), ex);
             }
         };
 
@@ -1205,12 +1205,7 @@ seq:    for (SequenceElement operand : operands)
     private void executeActions (final MatchNode tree)
     {
         setupActions.forEach(action -> action.accept(tree.node()));
-
-        for (String pass : passes)
-        {
-            executeActions(pass, tree);
-        }
-
+        passes.forEach(pass -> executeActions(pass, tree));
         closeActions.forEach(action -> action.accept(tree.node()));
     }
 

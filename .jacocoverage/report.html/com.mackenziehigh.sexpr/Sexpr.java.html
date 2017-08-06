@@ -133,6 +133,42 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
     }
 
     /**
+     * Cast this object to SAtom.
+     *
+     * &lt;p&gt;
+     * This method could be considered a bad API design choice.
+     * However, the inclusion of this method makes the use of
+     * fluent chained-methods calls clearer and easier to write;
+     * therefore, the benefits outweigh the down-sides here.
+     * &lt;/p&gt;
+     *
+     * @return this.
+     * @throws ClassCastException if isAtom() is false.
+     */
+    public default SAtom toAtom ()
+    {
+<span class="fc" id="L150">        return (SAtom) this;</span>
+    }
+
+    /**
+     * Cast this object to SList.
+     *
+     * &lt;p&gt;
+     * This method could be considered a bad API design choice.
+     * However, the inclusion of this method makes the use of
+     * fluent chained-methods calls clearer and easier to write;
+     * therefore, the benefits outweigh the down-sides here.
+     * &lt;/p&gt;
+     *
+     * @return this.
+     * @throws ClassCastException if isList() is false.
+     */
+    public default SList toList ()
+    {
+<span class="fc" id="L168">        return (SList) this;</span>
+    }
+
+    /**
      * This method retrieves the textual representation of this symbolic expression.
      *
      * @return this object as a string.

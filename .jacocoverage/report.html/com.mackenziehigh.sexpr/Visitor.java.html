@@ -52,7 +52,7 @@ final class Visitor
     private void createAtom (final ITreeNode node,
                              final boolean expand)
     {
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        final String text = new String(expand ? Escaper.instance.expand(node.text()) : node.text().toCharArray());</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        final String text = new String(expand ? Escaper.instance.expand(node.text()) : node.text().toCharArray());</span>
 <span class="fc" id="L56">        final SAtom atom = new SAtom(locate(node), text);</span>
 <span class="fc" id="L57">        stack.push(atom);</span>
 <span class="fc" id="L58">    }</span>
@@ -101,8 +101,8 @@ final class Visitor
     @Override
     protected void visit_satom_form3_text (ITreeNode node)
     {
-<span class="nc" id="L104">        createAtom(node, true);</span>
-<span class="nc" id="L105">    }</span>
+<span class="fc" id="L104">        createAtom(node, true);</span>
+<span class="fc" id="L105">    }</span>
 
     @Override
     protected void visit_satom_form2_text (ITreeNode node)
