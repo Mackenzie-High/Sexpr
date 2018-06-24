@@ -23,7 +23,7 @@ option java_package = "com.mackenziehigh.sexpr.internal";
 message sexpr_t
 {
     /**
-     * This is the optional MD5 checkson of the tree data.
+     * This is the optional MD5 checksum of the tree data.
      */
     bytes checksum = 1;
 

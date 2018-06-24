@@ -1,6 +1,6 @@
 
 TODO:
-+ Add a way of quickly and reliably computing the size of a Sexpr in chars and bytes. 
++ Add a way of quickly and reliably computing the size of a Sexpr in chars and bytes.
 + Implement and test annotation based action binding.
 + Implement and test Builder stack.
 + Implement and test String Printer.
@@ -20,7 +20,10 @@ TODO:
 + Test parseFile and parseResource.
 + + Normal Cases
 + + File/Resource not found.
-
++ Add a JavaFX GUI Visualizer Dialog
++ Consider replacing SAtom constructors with factory methods.
++ Add factory interface.
++ Add caching factory.
 
 
 

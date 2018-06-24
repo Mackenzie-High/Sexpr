@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
  */
 public final class StringPrinter
 {
-    private final int step;
+    private final int tabsize;
 
     private final StringBuilder text;
 
@@ -35,23 +35,23 @@ public final class StringPrinter
      * Sole Constructor.
      *
      * @param capacity is the expected capacity of the output string.
-     * @param step is the number of spaces per indentation level.
+     * @param tabsize is the number of spaces per indentation level.
      */
     public StringPrinter (final int capacity,
-                          final int step)
+                          final int tabsize)
     {
-        if (capacity > 0)
+        if (capacity <= 0)
         {
             throw new IllegalArgumentException("capacity <= 0");
         }
 
-        if (step > 0)
+        if (tabsize < 0)
         {
             throw new IllegalArgumentException("tabsize <= 0");
         }
 
         this.text = new StringBuilder(capacity);
-        this.step = step;
+        this.tabsize = tabsize;
     }
 
     /**
@@ -111,7 +111,7 @@ public final class StringPrinter
      */
     public StringPrinter print (final Object value)
     {
-        text.append(repeat(" ", indent * step)).append(value);
+        text.append(repeat(" ", indent * tabsize)).append(value);
         return this;
     }
 
@@ -134,7 +134,7 @@ public final class StringPrinter
      */
     public StringPrinter println (final Object value)
     {
-        text.append(repeat(" ", indent * step)).append(value).append("\n");
+        text.append(repeat(" ", indent * tabsize)).append(value).append("\n");
         return this;
     }
 
@@ -148,7 +148,7 @@ public final class StringPrinter
     public StringPrinter printf (final String format,
                                  final Object... args)
     {
-        text.append(repeat(" ", indent * step)).append(String.format(format, args));
+        text.append(repeat(" ", indent * tabsize)).append(String.format(format, args));
         return this;
     }
 

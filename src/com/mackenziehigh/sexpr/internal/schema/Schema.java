@@ -43,7 +43,7 @@ import java.util.function.Predicate;
 
 /**
  * An instance of this class is a pattern that describes a symbolic-expression.
- * THis class provides the actual implementation of schemas.
+ * This class provides the actual implementation of schemas.
  */
 public final class Schema
 {
