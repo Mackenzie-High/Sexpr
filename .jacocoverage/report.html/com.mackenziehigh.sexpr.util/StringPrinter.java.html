@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>StringPrinter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Sexpr&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr.util</a> &gt; <span class="el_source">StringPrinter.java</span></div><h1>StringPrinter.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr.util;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
+
+/**
+ * Instances of this class simplify the creation of indented text.
+ */
+public final class StringPrinter
+{
+    private final int tabsize;
+
+    private final StringBuilder text;
+
+<span class="nc" id="L32">    private int indent = 0;</span>
+
+    /**
+     * Sole Constructor.
+     *
+     * @param capacity is the expected capacity of the output string.
+     * @param tabsize is the number of spaces per indentation level.
+     */
+    public StringPrinter (final int capacity,
+                          final int tabsize)
+<span class="nc" id="L42">    {</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (capacity &lt;= 0)</span>
+        {
+<span class="nc" id="L45">            throw new IllegalArgumentException(&quot;capacity &lt;= 0&quot;);</span>
+        }
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (tabsize &lt; 0)</span>
+        {
+<span class="nc" id="L50">            throw new IllegalArgumentException(&quot;tabsize &lt;= 0&quot;);</span>
+        }
+
+<span class="nc" id="L53">        this.text = new StringBuilder(capacity);</span>
+<span class="nc" id="L54">        this.tabsize = tabsize;</span>
+<span class="nc" id="L55">    }</span>
+
+    /**
+     * Use this method in order to make subsequent output more indented.
+     *
+     * @return this.
+     */
+    public StringPrinter increment ()
+    {
+<span class="nc" id="L64">        ++indent;</span>
+<span class="nc" id="L65">        return this;</span>
+    }
+
+    /**
+     * Use this method in order to make subsequent output less indented.
+     *
+     * @return this.
+     */
+    public StringPrinter decrement ()
+    {
+<span class="nc" id="L75">        --indent;</span>
+<span class="nc" id="L76">        return this;</span>
+    }
+
+    /**
+     * Use this method in order to make subsequent output more or less indented.
+     *
+     * @param value is the new indentation level.
+     * @return this.
+     */
+    public StringPrinter setIndent (final int value)
+    {
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (value &gt;= 0)</span>
+        {
+<span class="nc" id="L89">            throw new IllegalArgumentException(&quot;value &lt; 0&quot;);</span>
+        }
+
+<span class="nc" id="L92">        this.indent = value;</span>
+<span class="nc" id="L93">        return this;</span>
+    }
+
+    /**
+     * Use this method in order to retrieve the current indentation level.
+     *
+     * @return the current level of indentation.
+     */
+    public int getIndent ()
+    {
+<span class="nc" id="L103">        return indent;</span>
+    }
+
+    /**
+     * Use this method to print a value to the output string.
+     *
+     * @param value is the value to print.
+     * @return this.
+     */
+    public StringPrinter print (final Object value)
+    {
+<span class="nc" id="L114">        text.append(repeat(&quot; &quot;, indent * tabsize)).append(value);</span>
+<span class="nc" id="L115">        return this;</span>
+    }
+
+    /**
+     * Use this method to print a newline to the output string.
+     *
+     * @return this.
+     */
+    public StringPrinter println ()
+    {
+<span class="nc" id="L125">        text.append(&quot;\n&quot;);</span>
+<span class="nc" id="L126">        return this;</span>
+    }
+
+    /**
+     * Use this method to print a value and a newline to the output string.
+     *
+     * @param value is the value to print.
+     * @return this.
+     */
+    public StringPrinter println (final Object value)
+    {
+<span class="nc" id="L137">        text.append(repeat(&quot; &quot;, indent * tabsize)).append(value).append(&quot;\n&quot;);</span>
+<span class="nc" id="L138">        return this;</span>
+    }
+
+    /**
+     * Use this method to print a formated value to the output string.
+     *
+     * @param format is the format specifier string.
+     * @param args are the values to substitute into the format string.
+     * @return this.
+     */
+    public StringPrinter printf (final String format,
+                                 final Object... args)
+    {
+<span class="nc" id="L151">        text.append(repeat(&quot; &quot;, indent * tabsize)).append(String.format(format, args));</span>
+<span class="nc" id="L152">        return this;</span>
+    }
+
+    /**
+     * Use this method to print a series of values to the output string, one per line.
+     *
+     * @param values is the value to print.
+     * @return this.
+     */
+    public StringPrinter printlns (final Iterable&lt;?&gt; values)
+    {
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        for (Object line : values)</span>
+        {
+<span class="nc" id="L165">            println(line);</span>
+<span class="nc" id="L166">        }</span>
+<span class="nc" id="L167">        return this;</span>
+    }
+
+    /**
+     * This method prints the string representation of an iterable.
+     *
+     * @param iterable is the iterable itself.
+     * @param prefix is a string to prepend onto the result.
+     * @param separator is the substring used to separate elements in the result.
+     * @param suffix is a string to append onto the result.
+     * @return this.
+     */
+    public StringPrinter printList (final Iterable&lt;?&gt; iterable,
+                                    final String prefix,
+                                    final String separator,
+                                    final String suffix)
+    {
+<span class="nc" id="L184">        Objects.requireNonNull(iterable, &quot;iterable&quot;);</span>
+<span class="nc" id="L185">        Objects.requireNonNull(prefix, &quot;prefix&quot;);</span>
+<span class="nc" id="L186">        Objects.requireNonNull(separator, &quot;separator&quot;);</span>
+<span class="nc" id="L187">        Objects.requireNonNull(suffix, &quot;suffix&quot;);</span>
+
+<span class="nc" id="L189">        final List&lt;Object&gt; elements = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L190">        iterable.forEach(x -&gt; elements.add(x));</span>
+
+<span class="nc" id="L192">        final StringBuilder result = new StringBuilder();</span>
+
+<span class="nc" id="L194">        result.append(prefix);</span>
+        {
+<span class="nc" id="L196">            int count = 0;</span>
+
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            for (Object arg : elements)</span>
+            {
+<span class="nc" id="L200">                ++count;</span>
+
+<span class="nc" id="L202">                result.append(arg);</span>
+
+<span class="nc bnc" id="L204" title="All 2 branches missed.">                if (count &lt; elements.size())</span>
+                {
+<span class="nc" id="L206">                    result.append(separator);</span>
+                }
+<span class="nc" id="L208">            }</span>
+        }
+<span class="nc" id="L210">        result.append(suffix);</span>
+
+<span class="nc" id="L212">        print(result.toString());</span>
+
+<span class="nc" id="L214">        return this;</span>
+    }
+
+    /**
+     * Use this method to retrieve the output string.
+     *
+     * @return the generated output.
+     */
+    public String output ()
+    {
+<span class="nc" id="L224">        return text.toString();</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString ()
+    {
+<span class="nc" id="L233">        return output();</span>
+    }
+
+    private String repeat (final String value,
+                           final int count)
+    {
+<span class="nc" id="L239">        final StringBuilder result = new StringBuilder();</span>
+<span class="nc" id="L240">        IntStream.range(0, count).forEach(i -&gt; result.append(value));</span>
+<span class="nc" id="L241">        return result.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

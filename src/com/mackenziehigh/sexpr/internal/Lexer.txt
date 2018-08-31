@@ -1,0 +1,79 @@
+%%
+
+%class Lexer
+%final
+%unicode
+%line
+%column
+%standalone
+
+%{
+    final com.mackenziehigh.sexpr.util.BuilderStack stack = new com.mackenziehigh.sexpr.util.BuilderStack();
+%}
+
+// Atoms
+FORM1 = @[\'][^\']*[\']
+FORM2 = @[\"][^\"]*[\"]
+FORM3 = [\']((\\\')|[^\'])*[\']
+FORM4 = [\"]((\\\")|[^\"])*[\"]
+FORM5 = [^ \t\r\n\"\'#\(\)]+
+
+COMMENT = #[^\n\r]*
+SPACE = [ \t\r\n]
+
+OPEN = [\(]
+CLOSE = [\)]
+
+%%
+
+{OPEN}
+{
+    stack.begin();
+}
+
+{CLOSE}
+{
+    stack.end();
+}
+
+{FORM1}
+{
+    LexerHelpers.pushAtomForm1(stack, yytext(), yyline, yycolumn);
+}
+
+{FORM2}
+{
+    LexerHelpers.pushAtomForm2(stack, yytext(), yyline, yycolumn);
+}
+
+{FORM3}
+{
+    LexerHelpers.pushAtomForm3(stack, yytext(), yyline, yycolumn);
+}
+
+{FORM4}
+{
+    LexerHelpers.pushAtomForm4(stack, yytext(), yyline, yycolumn);
+}
+
+{FORM5}
+{
+    LexerHelpers.pushAtomForm5(stack, yytext(), yyline, yycolumn);
+}
+
+{COMMENT}
+{
+    // IGNORE
+}
+
+{SPACE}
+{
+    // IGNORE
+}
+
+.
+{
+    System.out.println("DOT = " + yytext() + "TT");
+    System.exit(1); // TODO
+}
+

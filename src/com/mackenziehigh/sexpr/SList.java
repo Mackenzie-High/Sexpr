@@ -537,8 +537,8 @@ public final class SList
     public static SList parse (final String location,
                                final String input)
     {
-        final Parser p = new Parser(Objects.requireNonNull(location));
-        return p.parse(Objects.requireNonNull(input));
+        final SList root = Parser.parse(location, input);
+        return root;
     }
 
     /**

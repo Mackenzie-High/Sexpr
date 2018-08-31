@@ -1,5 +1,6 @@
 
 TODO:
++ Check generics everywhere: Sexpr<?> instead of Sexpr.
 + Add a way of quickly and reliably computing the size of a Sexpr in chars and bytes.
 + Implement and test annotation based action binding.
 + Implement and test Builder stack.

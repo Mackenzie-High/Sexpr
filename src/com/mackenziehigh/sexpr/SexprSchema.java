@@ -286,7 +286,6 @@ public final class SexprSchema
          * This method specifies the action to perform
          * when a match attempt is unsuccessful.
          *
-         *
          * @param handler will handle unsuccessful matches.
          * @return this.
          */

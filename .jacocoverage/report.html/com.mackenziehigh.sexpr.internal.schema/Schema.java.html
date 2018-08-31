@@ -1,0 +1,1230 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Schema.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Sexpr&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr.internal.schema</a> &gt; <span class="el_source">Schema.java</span></div><h1>Schema.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr.internal.schema;
+
+import com.mackenziehigh.sexpr.SAtom;
+import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.annotations.After;
+import com.mackenziehigh.sexpr.annotations.Before;
+import com.mackenziehigh.sexpr.annotations.Condition;
+import com.mackenziehigh.sexpr.annotations.Pass;
+import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.Stack;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * An instance of this class is a pattern that describes a symbolic-expression.
+ * This class provides the actual implementation of schemas.
+ */
+public final class Schema
+{
+    /**
+     * This counter is used to create names for anonymous rules.
+     */
+<span class="fc" id="L53">    private static int counter = 1;</span>
+
+    /**
+     * This maintains important state during a match attempt.
+     */
+<span class="fc" id="L58">    private final class MatchState</span>
+    {
+        /**
+         * This stack is used to store match-nodes.
+         * Whenever a successful match occurs, it will be placed onto this stack.
+         * Matches will be popped of this stack and made the children of other matches.
+         */
+<span class="fc" id="L65">        private final Stack&lt;Object&gt; matches = new Stack&lt;&gt;();</span>
+
+        /**
+         * This was the last node in the symbolic-expression
+         * that was successfully matched.
+         */
+<span class="fc" id="L71">        private Sexpr lastSuccess = null;</span>
+
+        /**
+         * This method retrieves the last node in the symbolic-expression
+         * that was successfully matched by a rule in the schema,
+         * if such a node exists.
+         *
+         * &lt;p&gt;
+         * The last successful node is useful for debugging purposes.
+         * &lt;/p&gt;
+         *
+         * @return the site of the last successful match, if any.
+         */
+        public Optional&lt;Sexpr&gt; lastSuccess ()
+        {
+<span class="fc" id="L86">            return Optional.ofNullable(lastSuccess);</span>
+        }
+
+        /**
+         * This method is invoked whenever a rule begins a match-attempt.
+         *
+         * @param node is the node that the rule is attempting to match.
+         */
+        private void enter (final Sexpr node)
+        {
+<span class="fc" id="L96">            Objects.requireNonNull(node, &quot;node&quot;);</span>
+<span class="fc" id="L97">            matches.push(node);</span>
+<span class="fc" id="L98">        }</span>
+
+        /**
+         * This method is invoked whenever a rule exits a match-attempt
+         * due to the fact that the rule successfully matched.
+         *
+         * @param rule is the rule invoking this method.
+         * @param node is the node that was successfully matched.
+         * @return the representation of the successful match.
+         */
+        private MatchNode exitOnSuccess (final Rule rule,
+                                         final Sexpr node)
+        {
+<span class="fc" id="L111">            lastSuccess = node;</span>
+
+            /**
+             * Remove any successful child matches from the stack.
+             */
+<span class="fc" id="L116">            final LinkedList&lt;MatchNode&gt; children = new LinkedList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            while (matches.peek() != node)</span>
+            {
+<span class="fc" id="L120">                children.addFirst((MatchNode) matches.pop());</span>
+            }
+
+            /**
+             * Undo push(node) in enter(node).
+             */
+<span class="fc" id="L126">            matches.pop();</span>
+
+            /**
+             * Create the representation of the successful match.
+             */
+<span class="fc" id="L131">            final MatchNode match = new MatchNode(rule, node, children);</span>
+<span class="fc" id="L132">            matches.push(match);</span>
+
+<span class="fc" id="L134">            return match;</span>
+        }
+
+        /**
+         * This method is invoked whenever a rule exits a match-attempt
+         * due to the fact that the rule failed to match the node.
+         *
+         * @param rule is the rule invoking this method.
+         * @param node is the node that was unsuccessfully matched.
+         * @return null always.
+         */
+        private MatchNode exitOnFailure (final Sexpr node)
+        {
+            /**
+             * Remove any successful child matches from the stack.
+             */
+<span class="fc bfc" id="L150" title="All 2 branches covered.">            while (matches.peek() != node)</span>
+            {
+<span class="fc" id="L152">                matches.pop();</span>
+            }
+
+            /**
+             * Undo push(node) in enter(node).
+             */
+<span class="fc" id="L158">            matches.pop();</span>
+
+<span class="fc" id="L160">            return null;</span>
+        }
+    }
+
+    /**
+     * An instance of this interface is a constraint on a single node in a symbolic-expression.
+     */
+<span class="fc" id="L167">    abstract class Rule</span>
+    {
+        /**
+         * The default-name starts with a '#' sign,
+         * since '#' starts comments in schemas
+         * we can be sure that no rule will (ever)
+         * have such a name.
+         */
+<span class="fc" id="L175">        private final String defaultName = &quot;#&quot; + counter++;</span>
+
+        /**
+         * This method determines whether this rule matches the given node.
+         *
+         * &lt;p&gt;
+         * This method must invoke state.enter(node).
+         * This method must invoke state.exitOnSuccess(node)
+         * or state.exitOnFailure(node) depending on the result.
+         * &lt;/p&gt;
+         *
+         * @param state maintains the state of the overall match attempt.
+         * @param node may obey the pattern described by this rule.
+         * @return an object representing the successful match of this rule,
+         * or null, if this rule does not match the given node.
+         */
+        public abstract MatchNode match (MatchState state,
+                                         Sexpr node);
+
+        /**
+         * This method retrieves the name of this rule.
+         *
+         * @return the name of this rule.
+         */
+        public String name ()
+        {
+<span class="fc" id="L201">            return defaultName;</span>
+        }
+
+        /**
+         * This method determines whether this is an implicitly named rule.
+         *
+         * @return false, iff the user named this rule.
+         */
+        public boolean isAnonymous ()
+        {
+<span class="nc" id="L211">            return true;</span>
+        }
+    }
+
+    /**
+     * An instance of this interface represents a single element in a sequence-rule.
+     */
+    interface SequenceElement
+    {
+        /**
+         * This method retrieves the name of the rule that describes the sequence element.
+         *
+         * @return the name of a rule in the schema.
+         */
+        public String element ();
+
+        /**
+         * This method retrieves the minimum number of times that the element must repeat.
+         *
+         * @return the lower bound of the sequence-element.
+         */
+        public int minimum ();
+
+        /**
+         * This method retrieves the maximum number of times that the element must repeat.
+         *
+         * @return the upper bound of the sequence-element.
+         */
+        public int maximum ();
+    }
+
+    /**
+     * This function will be invoked on failed match attempts.
+     */
+<span class="fc" id="L245">    private Consumer&lt;Optional&lt;Sexpr&gt;&gt; failureHandler = x -&gt;</span>
+    {
+        // Pass.
+<span class="fc" id="L248">    };</span>
+
+    /**
+     * These are all of the rules that are defined within the schema.
+     */
+<span class="fc" id="L253">    private final SortedMap&lt;String, Rule&gt; rules = new TreeMap&lt;&gt;();</span>
+
+    /**
+     * This supplier supplies the name of the root rule of the schema.
+     */
+<span class="fc" id="L258">    private String root = &quot;root&quot;;</span>
+
+    /**
+     * This map maps the names of user-defined conditions
+     * to the definitions of those conditions, if any.
+     */
+<span class="fc" id="L264">    private final Map&lt;String, Predicate&lt;Sexpr&gt;&gt; conditions = new TreeMap&lt;&gt;();</span>
+
+    /**
+     * These are the names of the user-defined translation passes.
+     */
+<span class="fc" id="L269">    private final List&lt;String&gt; passes = new LinkedList&lt;&gt;();</span>
+
+    /**
+     * These are the actions to perform before the first
+     * translation pass upon a successful match.
+     */
+<span class="fc" id="L275">    private final List&lt;Consumer&lt;Sexpr&gt;&gt; setupActions = new LinkedList&lt;&gt;();</span>
+
+    /**
+     * These are the actions to perform after the last
+     * translation pass upon a successful match.
+     */
+<span class="fc" id="L281">    private final List&lt;Consumer&lt;Sexpr&gt;&gt; closeActions = new LinkedList&lt;&gt;();</span>
+
+    /**
+     * This map maps the name of a translation pass (P) to a map that maps the name
+     * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
+     * that will be performed for each successful match of (R) during pass (P).
+     */
+<span class="fc" id="L288">    private final Map&lt;String, Map&lt;String, List&lt;Consumer&lt;Sexpr&gt;&gt;&gt;&gt; beforeActions = new TreeMap&lt;&gt;();</span>
+
+    /**
+     * This map maps the name of a translation pass (P) to a map that maps the name
+     * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
+     * that will be performed for each successful match of (R) during pass (P).
+     */
+<span class="fc" id="L295">    private final Map&lt;String, Map&lt;String, List&lt;Consumer&lt;Sexpr&gt;&gt;&gt;&gt; afterActions = new TreeMap&lt;&gt;();</span>
+
+    /**
+     * These are the names of all of the rules that have been used in the schema.
+     * This may include undefined rules due to typos, etc, made by the user.
+     * Such problems need to be detected and reported.
+     */
+<span class="fc" id="L302">    private final Set&lt;String&gt; usedRules = new TreeSet&lt;&gt;();</span>
+
+    /**
+     * Sole Constructor.
+     */
+    public Schema ()
+<span class="fc" id="L308">    {</span>
+        /**
+         * Define the predefined rules, whose names always start with a '$' by convention.
+         */
+<span class="pc" id="L312">        rules.put(&quot;$ANY&quot;, defineRuleByPredicate(x -&gt; true));</span>
+<span class="pc bpc" id="L313" title="1 of 4 branches missed.">        rules.put(&quot;$BOOLEAN&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asBoolean().isPresent()));</span>
+<span class="pc bnc" id="L314" title="All 4 branches missed.">        rules.put(&quot;$CHAR&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asChar().isPresent()));</span>
+<span class="pc bpc" id="L315" title="1 of 4 branches missed.">        rules.put(&quot;$BYTE&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asByte().isPresent()));</span>
+<span class="pc bpc" id="L316" title="1 of 4 branches missed.">        rules.put(&quot;$SHORT&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asShort().isPresent()));</span>
+<span class="pc bpc" id="L317" title="1 of 4 branches missed.">        rules.put(&quot;$INT&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asInt().isPresent()));</span>
+<span class="pc bpc" id="L318" title="1 of 4 branches missed.">        rules.put(&quot;$LONG&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asLong().isPresent()));</span>
+<span class="pc bnc" id="L319" title="All 4 branches missed.">        rules.put(&quot;$FLOAT&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asFloat().isPresent()));</span>
+<span class="pc bnc" id="L320" title="All 4 branches missed.">        rules.put(&quot;$DOUBLE&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asDouble().isPresent()));</span>
+<span class="pc bnc" id="L321" title="All 4 branches missed.">        rules.put(&quot;$CLASS&quot;, defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().asClass().isPresent()));</span>
+<span class="pc" id="L322">        rules.put(&quot;$ATOM&quot;, defineRuleByPredicate(x -&gt; x.isAtom()));</span>
+<span class="pc" id="L323">        rules.put(&quot;$LIST&quot;, defineRuleByPredicate(x -&gt; x.isList()));</span>
+<span class="fc" id="L324">    }</span>
+
+    /**
+     * This method sets the failure-handler.
+     *
+     * @param handler is the new handler.
+     */
+    public void setFailureHandler (final Consumer&lt;Optional&lt;Sexpr&gt;&gt; handler)
+    {
+<span class="nc" id="L333">        Objects.requireNonNull(handler, &quot;handler&quot;);</span>
+<span class="nc" id="L334">        failureHandler = handler;</span>
+<span class="nc" id="L335">    }</span>
+
+    /**
+     * This method causes a rule to be added to this schema.
+     *
+     * @param rule is the rule to add.
+     * @return the rule.
+     */
+    private Rule define (final Rule rule)
+    {
+<span class="fc" id="L345">        Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="fc" id="L346">        rules.put(rule.name(), rule);</span>
+<span class="fc" id="L347">        return rule;</span>
+    }
+
+    /**
+     * Use this method to specify the root rule of this schema.
+     *
+     * @param root is the name of the root rule.
+     */
+    public void defineRoot (final String root)
+    {
+<span class="nc" id="L357">        Objects.requireNonNull(root, &quot;root&quot;);</span>
+<span class="nc" id="L358">        usedRules.add(root);</span>
+<span class="nc" id="L359">        this.root = root;</span>
+<span class="nc" id="L360">    }</span>
+
+    /**
+     * This method defines a condition that can be referenced by a 'require' rule.
+     *
+     * @param name is the name of the user-defined condition.
+     * @param condition is the user-defined condition itself.
+     */
+    public void defineCondition (final String name,
+                                 final Predicate&lt;Sexpr&gt; condition)
+    {
+<span class="nc" id="L371">        Objects.requireNonNull(name, &quot;name&quot;);</span>
+<span class="nc" id="L372">        Objects.requireNonNull(condition, &quot;condition&quot;);</span>
+<span class="nc" id="L373">        conditions.put(name, condition);</span>
+<span class="nc" id="L374">    }</span>
+
+    /**
+     * Use this method to create a rule that provides a name for another rule.
+     *
+     * @param name is the name of the new rule.
+     * @param body is the name of the referenced (usually anonymous) rule.
+     * @return the new rule.
+     */
+    final Rule defineNamedRule (final String name,
+                                final String body)
+    {
+<span class="fc" id="L386">        Objects.requireNonNull(name, &quot;name&quot;);</span>
+<span class="fc" id="L387">        Objects.requireNonNull(body, &quot;body&quot;);</span>
+
+<span class="fc bfc" id="L389" title="All 2 branches covered.">        if (rules.containsKey(name))</span>
+        {
+<span class="fc" id="L391">            throw new IllegalStateException(&quot;Duplicate Rule: &quot; + name);</span>
+        }
+
+<span class="fc" id="L394">        usedRules.add(name);</span>
+<span class="fc" id="L395">        usedRules.add(body);</span>
+
+<span class="fc" id="L397">        final Rule rule = new Rule()</span>
+<span class="fc" id="L398">        {</span>
+            @Override
+            public String name ()
+            {
+<span class="fc" id="L402">                return name;</span>
+            }
+
+            @Override
+            public boolean isAnonymous ()
+            {
+<span class="nc" id="L408">                return false;</span>
+            }
+
+            @Override
+            public MatchNode match (final MatchState state,
+                                    final Sexpr node)
+            {
+<span class="fc" id="L415">                state.enter(node);</span>
+<span class="fc bfc" id="L416" title="All 2 branches covered.">                final boolean answer = rules.get(body).match(state, node) != null;</span>
+<span class="fc bfc" id="L417" title="All 2 branches covered.">                return answer ? state.exitOnSuccess(this, node) : state.exitOnFailure(node);</span>
+            }
+        };
+
+<span class="fc" id="L421">        return define(rule);</span>
+    }
+
+    /**
+     * Use this method to create a rule that is a lazy reference to another rule.
+     *
+     * @param name is the name of the new rule.
+     * @return the new rule.
+     */
+    final Rule defineReference (final String name)
+    {
+<span class="fc" id="L432">        Objects.requireNonNull(name, &quot;name&quot;);</span>
+
+<span class="fc" id="L434">        usedRules.add(name);</span>
+
+        /**
+         * This type of rule is a special-case.
+         * Do *not* invoke enter(*), exitOnSuccess(*), or exitOnFailure(*),
+         * because that would break how action execution works.
+         */
+<span class="fc" id="L441">        final Rule rule = new Rule()</span>
+<span class="fc" id="L442">        {</span>
+            @Override
+            public MatchNode match (final MatchState state,
+                                    final Sexpr node)
+            {
+<span class="fc" id="L447">                return rules.get(name).match(state, node);</span>
+            }
+        };
+
+<span class="fc" id="L451">        return define(rule);</span>
+    }
+
+    /**
+     * Use this method to define a rule that will only successfully match
+     * a node when a series of operand rules always match the node.
+     *
+     * @param operands must all match the same node in order for the new rule to match.
+     * @return the new rule.
+     */
+    final Rule defineAndRule (final List&lt;String&gt; operands)
+    {
+<span class="fc" id="L463">        Objects.requireNonNull(operands, &quot;operands&quot;);</span>
+<span class="fc" id="L464">        operands.forEach(operand -&gt; Objects.requireNonNull(operand, &quot;operand&quot;));</span>
+
+<span class="fc" id="L466">        usedRules.addAll(operands);</span>
+
+<span class="fc" id="L468">        final Rule rule = new Rule()</span>
+<span class="fc" id="L469">        {</span>
+            @Override
+            public MatchNode match (final MatchState state,
+                                    final Sexpr node)
+            {
+<span class="fc" id="L474">                state.enter(node);</span>
+<span class="fc bfc" id="L475" title="All 2 branches covered.">                final boolean answer = operands.stream().map(name -&gt; rules.get(name)).allMatch(rule -&gt; rule.match(state, node) != null);</span>
+<span class="fc bfc" id="L476" title="All 2 branches covered.">                return answer ? state.exitOnSuccess(this, node) : state.exitOnFailure(node);</span>
+            }
+        };
+
+<span class="fc" id="L480">        return define(rule);</span>
+    }
+
+    /**
+     * Use this method to define a rule that will successfully match a node
+     * when the first of a series of operand rules matches the node.
+     *
+     * @param operands are the options that may match the node.
+     * @return the new rule.
+     */
+    final Rule defineOrRule (final List&lt;String&gt; operands)
+    {
+<span class="fc" id="L492">        Objects.requireNonNull(operands, &quot;operands&quot;);</span>
+<span class="fc" id="L493">        operands.forEach(operand -&gt; Objects.requireNonNull(operand, &quot;operand&quot;));</span>
+
+<span class="fc" id="L495">        usedRules.addAll(operands);</span>
+
+<span class="fc" id="L497">        final Rule rule = new Rule()</span>
+<span class="fc" id="L498">        {</span>
+            @Override
+            public MatchNode match (final MatchState state,
+                                    final Sexpr node)
+            {
+<span class="fc" id="L503">                state.enter(node);</span>
+<span class="fc bfc" id="L504" title="All 2 branches covered.">                final boolean answer = operands.stream().map(name -&gt; rules.get(name)).anyMatch(rule -&gt; rule.match(state, node) != null);</span>
+<span class="fc bfc" id="L505" title="All 2 branches covered.">                return answer ? state.exitOnSuccess(this, node) : state.exitOnFailure(node);</span>
+            }
+        };
+
+<span class="fc" id="L509">        return define(rule);</span>
+    }
+
+    /**
+     * Use this method to define a rule that will only successfully
+     * match a node when a given operand rule fails to match.
+     *
+     * @param operand the rule that is negated by the new rule.
+     * @return the new rule.
+     */
+    final Rule defineNotRule (final String operand)
+    {
+<span class="fc" id="L521">        Objects.requireNonNull(operand, &quot;operand&quot;);</span>
+
+<span class="fc" id="L523">        usedRules.add(operand);</span>
+
+<span class="fc" id="L525">        final Rule rule = new Rule()</span>
+<span class="fc" id="L526">        {</span>
+            @Override
+            public MatchNode match (final MatchState state,
+                                    final Sexpr node)
+            {
+<span class="fc" id="L531">                state.enter(node);</span>
+<span class="fc bfc" id="L532" title="All 2 branches covered.">                final boolean answer = rules.get(operand).match(state, node) == null;</span>
+<span class="fc bfc" id="L533" title="All 2 branches covered.">                return answer ? state.exitOnSuccess(this, node) : state.exitOnFailure(node);</span>
+            }
+        };
+
+<span class="fc" id="L537">        return define(rule);</span>
+    }
+
+    /**
+     * Use this method to define a rule that will only successfully
+     * match a symbolic-list that obeys a proscribed sequence.
+     *
+     * @param operands describe the elements in the sequence.
+     * @return the new rule.
+     */
+    final Rule defineSequenceRule (final List&lt;? extends SequenceElement&gt; operands)
+    {
+<span class="fc" id="L549">        Objects.requireNonNull(operands, &quot;operands&quot;);</span>
+<span class="fc" id="L550">        operands.forEach(operand -&gt; Objects.requireNonNull(operand, &quot;operand&quot;));</span>
+
+<span class="fc bfc" id="L552" title="All 2 branches covered.">        for (SequenceElement operand : operands)</span>
+        {
+<span class="fc bfc" id="L554" title="All 2 branches covered.">            if (operand.maximum() &lt; operand.minimum())</span>
+            {
+<span class="fc" id="L556">                final String message = String.format(&quot;Invalid Range: { %d, %d }&quot;,</span>
+<span class="fc" id="L557">                                                     operand.minimum(),</span>
+<span class="fc" id="L558">                                                     operand.maximum());</span>
+<span class="fc" id="L559">                throw new IllegalStateException(message);</span>
+            }
+<span class="fc" id="L561">        }</span>
+
+<span class="fc" id="L563">        operands.forEach(x -&gt; usedRules.add(x.element()));</span>
+
+<span class="fc" id="L565">        final Rule rule = new Rule()</span>
+<span class="fc" id="L566">        {</span>
+            @Override
+            public MatchNode match (final MatchState state,
+                                    final Sexpr node)
+            {
+<span class="fc" id="L571">                return sequenceMatch(this, operands, state, node);</span>
+            }
+        };
+
+<span class="fc" id="L575">        return define(rule);</span>
+    }
+
+    private MatchNode sequenceMatch (final Rule rule,
+                                     final List&lt;? extends SequenceElement&gt; operands,
+                                     final MatchState state,
+                                     final Sexpr node)
+    {
+<span class="fc" id="L583">        Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="fc" id="L584">        Objects.requireNonNull(operands, &quot;operands&quot;);</span>
+<span class="fc" id="L585">        operands.forEach(operand -&gt; Objects.requireNonNull(operand, &quot;operand&quot;));</span>
+<span class="fc" id="L586">        Objects.requireNonNull(state, &quot;state&quot;);</span>
+<span class="fc" id="L587">        Objects.requireNonNull(node, &quot;node&quot;);</span>
+
+<span class="fc" id="L589">        state.enter(node);</span>
+
+<span class="pc bpc" id="L591" title="1 of 2 branches missed.">        if (node.isList() == false)</span>
+        {
+<span class="nc" id="L593">            return state.exitOnFailure(node);</span>
+        }
+
+<span class="fc" id="L596">        final Deque&lt;Sexpr&gt; nodes = new ArrayDeque&lt;&gt;(node.toList());</span>
+
+<span class="fc bfc" id="L598" title="All 2 branches covered.">seq:    for (SequenceElement operand : operands)</span>
+        {
+            int i;
+
+            /**
+             * The operand rule must match at least the minimum number of times.
+             */
+<span class="fc bfc" id="L605" title="All 2 branches covered.">            for (i = 0; i &lt; operand.minimum(); i++)</span>
+            {
+                /**
+                 * If no more nodes are in the list, then the rule has failed to match,
+                 * because the minium match count was not reached for this operand rule.
+                 */
+<span class="pc bpc" id="L611" title="1 of 2 branches missed.">                if (nodes.isEmpty())</span>
+                {
+<span class="nc" id="L613">                    return state.exitOnFailure(node);</span>
+                }
+
+<span class="fc" id="L616">                final Sexpr next = nodes.peek();</span>
+<span class="fc" id="L617">                final MatchNode match = rules.get(operand.element()).match(state, next);</span>
+
+<span class="fc bfc" id="L619" title="All 2 branches covered.">                if (match == null)</span>
+                {
+<span class="fc" id="L621">                    return state.exitOnFailure(node);</span>
+                }
+                else
+                {
+<span class="fc" id="L625">                    nodes.pop();</span>
+                }
+            }
+
+            /**
+             * The operand rule can continue to match until the maximum is reached.
+             */
+<span class="fc bfc" id="L632" title="All 2 branches covered.">            for (i = i + 0; i &lt; operand.maximum(); i++)</span>
+            {
+                /**
+                 * If no more nodes are in the list, then goto the next operand rule,
+                 * because the tail rules may be require to match more than zero times.
+                 * In that case, the overall sequence rule has failed,
+                 * even though the current operand rule succeeded.
+                 */
+<span class="pc bpc" id="L640" title="1 of 2 branches missed.">                if (nodes.isEmpty())</span>
+                {
+<span class="nc" id="L642">                    continue seq;</span>
+                }
+
+<span class="fc" id="L645">                final Sexpr next = nodes.peek();</span>
+<span class="fc" id="L646">                final MatchNode match = rules.get(operand.element()).match(state, next);</span>
+
+<span class="fc bfc" id="L648" title="All 2 branches covered.">                if (match == null)</span>
+                {
+<span class="fc" id="L650">                    continue seq; // Go to the next operand rule.</span>
+                }
+                else
+                {
+<span class="fc" id="L654">                    nodes.pop();</span>
+                }
+            }
+<span class="fc" id="L657">        }</span>
+
+        /**
+         * If there are still more nodes in the list,
+         * then the sequence-rule only described the prefix of the list,
+         * which we do not consider to be a true match of the list.
+         */
+<span class="fc bfc" id="L664" title="All 2 branches covered.">        if (nodes.isEmpty() == false)</span>
+        {
+<span class="fc" id="L666">            return state.exitOnFailure(node);</span>
+        }
+
+<span class="fc" id="L669">        return state.exitOnSuccess(rule, node);</span>
+    }
+
+    /**
+     * Use this method to define a rule that will only successfully match
+     * a symbolic-atom whose content() matches a given regular-expression.
+     *
+     * @param pattern is the given symbolic-expression.
+     * @return the new rule.
+     */
+    final Rule defineRegexRule (final String pattern)
+    {
+<span class="fc" id="L681">        Objects.requireNonNull(pattern, &quot;pattern&quot;);</span>
+
+<span class="pc bpc" id="L683" title="1 of 4 branches missed.">        return defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().content().matches(pattern));</span>
+    }
+
+    /**
+     * Use this method to define a rule that will only successfully
+     * match a symbolic-atom whose content() equals the given value.
+     *
+     * @param value is the value that must be the content() of the node.
+     * @return the new rule.
+     */
+    final Rule defineConstantRule (final String value)
+    {
+<span class="fc" id="L695">        Objects.requireNonNull(value, &quot;value&quot;);</span>
+
+<span class="pc bpc" id="L697" title="1 of 4 branches missed.">        return defineRuleByPredicate(x -&gt; x.isAtom() &amp;&amp; x.toAtom().content().equals(value));</span>
+    }
+
+    /**
+     * Use this method to define a rule that will only successfully
+     * match a symbolic-atom whose numeric representation is
+     * within the proscribed range.
+     *
+     * @param minimum is the lower-bound of the acceptable range.
+     * @param minimumInclusive is true, iff the lower-bound is inclusive.
+     * @param maximum is the upper-bound of the acceptable range.
+     * @param maximumInclusive is true, iff the upper-bound is inclusive.
+     * @return the new rule.
+     */
+    final Rule defineRangeRule (final double minimum,
+                                final boolean minimumInclusive,
+                                final double maximum,
+                                final boolean maximumInclusive)
+    {
+<span class="fc bfc" id="L716" title="All 2 branches covered.">        if (maximum &lt; minimum)</span>
+        {
+<span class="fc" id="L718">            final String message = String.format(&quot;Invalid Range: maximum (%f) &lt; minimum (%f)&quot;, maximum, minimum);</span>
+<span class="fc" id="L719">            throw new IllegalArgumentException(message);</span>
+        }
+
+<span class="pc bpc" id="L722" title="1 of 2 branches missed.">        return defineRuleByPredicate(x -&gt; x.isAtom()</span>
+<span class="pc bpc" id="L723" title="1 of 4 branches missed.">                                          &amp;&amp; x.toAtom().asFloat().isPresent()</span>
+<span class="fc bfc" id="L724" title="All 6 branches covered.">                                          &amp;&amp; (minimumInclusive ? minimum &lt;= x.toAtom().asFloat().get() : minimum &lt; x.toAtom().asFloat().get())</span>
+<span class="fc bfc" id="L725" title="All 4 branches covered.">                                          &amp;&amp; (maximumInclusive ? maximum &gt;= x.toAtom().asFloat().get() : maximum &gt; x.toAtom().asFloat().get()));</span>
+    }
+
+    /**
+     * Use this method to define a new rule that will only successfully
+     * match a node when a user-defined predicate matches the node.
+     *
+     * @param name is the name of the user-defined requirement.
+     * @return the new rule.
+     */
+    final Rule definePredicateRule (final String name)
+    {
+<span class="nc" id="L737">        Objects.requireNonNull(name, &quot;name&quot;);</span>
+
+<span class="nc" id="L739">        return defineRuleByPredicate(x -&gt; Optional.ofNullable(conditions.get(name)).get().test(x));</span>
+    }
+
+    /**
+     * Use this method to define a new rule that will only successfully
+     * match a node when a given predicate matches the node.
+     *
+     * @param condition is the predicate.
+     * @return the new rule.
+     */
+    private Rule defineRuleByPredicate (final Predicate&lt;Sexpr&gt; condition)
+    {
+<span class="fc" id="L751">        Objects.requireNonNull(condition, &quot;condition&quot;);</span>
+
+<span class="fc" id="L753">        final Rule rule = new Rule()</span>
+<span class="fc" id="L754">        {</span>
+            @Override
+            public MatchNode match (final MatchState state,
+                                    final Sexpr node)
+            {
+<span class="fc" id="L759">                state.enter(node);</span>
+<span class="fc" id="L760">                final boolean answer = condition.test(node);</span>
+<span class="fc bfc" id="L761" title="All 2 branches covered.">                return answer ? state.exitOnSuccess(this, node) : state.exitOnFailure(node);</span>
+            }
+        };
+
+<span class="fc" id="L765">        return define(rule);</span>
+    }
+
+    /**
+     * Use this method to define another compiler pass.
+     *
+     * &lt;p&gt;
+     * The order in which this method is invoked will
+     * define the order of compiler passes relative
+     * to one another.
+     * &lt;/p&gt;
+     *
+     * @param name is the name of the new compiler pass.
+     */
+    public void definePass (final String name)
+    {
+<span class="nc" id="L781">        Objects.requireNonNull(name, &quot;name&quot;);</span>
+<span class="nc" id="L782">        passes.add(name);</span>
+<span class="nc" id="L783">    }</span>
+
+    public void defineSetupAction (final Consumer&lt;Sexpr&gt; action)
+    {
+<span class="nc" id="L787">        Objects.requireNonNull(action, &quot;action&quot;);</span>
+<span class="nc" id="L788">        setupActions.add(action);</span>
+<span class="nc" id="L789">    }</span>
+
+    public void defineCloseAction (final Consumer&lt;Sexpr&gt; action)
+    {
+<span class="nc" id="L793">        Objects.requireNonNull(action, &quot;action&quot;);</span>
+<span class="nc" id="L794">        closeActions.add(action);</span>
+<span class="nc" id="L795">    }</span>
+
+    public void defineBeforeAction (final String pass,
+                                    final String rule,
+                                    final Consumer&lt;Sexpr&gt; action)
+    {
+<span class="nc" id="L801">        Objects.requireNonNull(pass, &quot;pass&quot;);</span>
+<span class="nc" id="L802">        Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="nc" id="L803">        Objects.requireNonNull(action, &quot;action&quot;);</span>
+
+<span class="nc bnc" id="L805" title="All 2 branches missed.">        if (beforeActions.containsKey(pass) == false)</span>
+        {
+<span class="nc" id="L807">            beforeActions.put(pass, new TreeMap&lt;&gt;());</span>
+        }
+
+<span class="nc bnc" id="L810" title="All 2 branches missed.">        if (beforeActions.get(pass).containsKey(rule) == false)</span>
+        {
+<span class="nc" id="L812">            beforeActions.get(pass).put(rule, new LinkedList&lt;&gt;());</span>
+        }
+
+<span class="nc" id="L815">        beforeActions.get(pass).get(rule).add(action);</span>
+<span class="nc" id="L816">    }</span>
+
+    public void defineAfterAction (final String pass,
+                                   final String rule,
+                                   final Consumer&lt;Sexpr&gt; action)
+    {
+<span class="nc" id="L822">        Objects.requireNonNull(pass, &quot;pass&quot;);</span>
+<span class="nc" id="L823">        Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="nc" id="L824">        Objects.requireNonNull(action, &quot;action&quot;);</span>
+
+<span class="nc bnc" id="L826" title="All 2 branches missed.">        if (afterActions.containsKey(pass) == false)</span>
+        {
+<span class="nc" id="L828">            afterActions.put(pass, new TreeMap&lt;&gt;());</span>
+        }
+
+<span class="nc bnc" id="L831" title="All 2 branches missed.">        if (afterActions.get(pass).containsKey(rule) == false)</span>
+        {
+<span class="nc" id="L833">            afterActions.get(pass).put(rule, new LinkedList&lt;&gt;());</span>
+        }
+
+<span class="nc" id="L836">        afterActions.get(pass).get(rule).add(action);</span>
+<span class="nc" id="L837">    }</span>
+
+    /**
+     * Given an object containing properly annotated methods,
+     * define the conditions and actions defined therein.
+     *
+     * @param object contains condition and action definitions.
+     */
+    public void defineViaReflection (final Object object)
+    {
+<span class="nc" id="L847">        final Optional&lt;String&gt; defaultPass = getDefaultPass(object);</span>
+
+<span class="nc bnc" id="L849" title="All 2 branches missed.">        for (Method method : object.getClass().getMethods())</span>
+        {
+<span class="nc bnc" id="L851" title="All 2 branches missed.">            if (method.isAnnotationPresent(Condition.class))</span>
+            {
+<span class="nc" id="L853">                defineConditionViaReflection(defaultPass, object, method);</span>
+            }
+
+<span class="nc bnc" id="L856" title="All 2 branches missed.">            if (method.isAnnotationPresent(Before.class))</span>
+            {
+<span class="nc" id="L858">                defineBeforeActionByReflection(defaultPass, object, method);</span>
+            }
+
+<span class="nc bnc" id="L861" title="All 2 branches missed.">            if (method.isAnnotationPresent(After.class))</span>
+            {
+<span class="nc" id="L863">                defineAfterActionByReflection(defaultPass, object, method);</span>
+            }
+        }
+<span class="nc" id="L866">    }</span>
+
+    private Optional&lt;String&gt; getDefaultPass (final Object object)
+    {
+<span class="nc bnc" id="L870" title="All 2 branches missed.">        if (object.getClass().isAnnotationPresent(Pass.class))</span>
+        {
+<span class="nc" id="L872">            final String name = object.getClass().getAnnotation(Pass.class).value();</span>
+<span class="nc" id="L873">            return Optional.of(name);</span>
+        }
+        else
+        {
+<span class="nc" id="L877">            return Optional.empty();</span>
+        }
+    }
+
+    private String getPass (final Optional&lt;String&gt; defaultPass,
+                            final Method method)
+    {
+<span class="nc bnc" id="L884" title="All 2 branches missed.">        if (method.isAnnotationPresent(Pass.class))</span>
+        {
+<span class="nc" id="L886">            final String name = method.getAnnotation(Pass.class).value();</span>
+<span class="nc" id="L887">            return name;</span>
+        }
+<span class="nc bnc" id="L889" title="All 2 branches missed.">        else if (defaultPass.isPresent())</span>
+        {
+<span class="nc" id="L891">            return defaultPass.get();</span>
+        }
+        else
+        {
+<span class="nc" id="L895">            throw new IllegalArgumentException(&quot;No translation pass was specified on either the class or method.&quot;);</span>
+        }
+    }
+
+    private void defineConditionViaReflection (final Optional&lt;String&gt; defaultPass,
+                                               final Object object,
+                                               final Method method)
+    {
+        /**
+         * Obtain the user-defined name of the condition.
+         */
+<span class="nc" id="L906">        final String name = method.getAnnotation(Condition.class).value();</span>
+
+        /**
+         * The method cannot throw any checked exceptions.
+         */
+<span class="nc bnc" id="L911" title="All 2 branches missed.">        if (method.getExceptionTypes().length != 0)</span>
+        {
+<span class="nc" id="L913">            final String message = String.format(&quot;Do *not* throw checked exceptions in (%s).&quot;, method.toString());</span>
+<span class="nc" id="L914">            throw new IllegalArgumentException(message);</span>
+        }
+
+        /**
+         * The return-type of the method must be boolean.
+         */
+<span class="nc bnc" id="L920" title="All 2 branches missed.">        if (method.getReturnType().equals(boolean.class) == false)</span>
+        {
+<span class="nc" id="L922">            final String message = String.format(&quot;You must return boolean from (%s), not %s.&quot;,</span>
+<span class="nc" id="L923">                                                 method.toString(),</span>
+<span class="nc" id="L924">                                                 method.getReturnType().getName());</span>
+<span class="nc" id="L925">            throw new IllegalArgumentException(message);</span>
+        }
+
+        /**
+         * The method must take exactly one argument,
+         * which must be a symbolic-expression.
+         */
+<span class="nc bnc" id="L932" title="All 2 branches missed.">        if (method.getParameterCount() != 1)</span>
+        {
+<span class="nc" id="L934">            final String message = String.format(&quot;Method (%s) must take exactly one parameter.&quot;, method.toString());</span>
+<span class="nc" id="L935">            throw new IllegalArgumentException(message);</span>
+        }
+<span class="nc bnc" id="L937" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(Sexpr.class))</span>
+        {
+<span class="nc" id="L939">            final Function&lt;Sexpr, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc" id="L940">            final Predicate&lt;Sexpr&gt; condition = x -&gt; (Boolean) invocation.apply(x);</span>
+<span class="nc" id="L941">            defineCondition(name, condition);</span>
+<span class="nc" id="L942">        }</span>
+<span class="nc bnc" id="L943" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(SAtom.class))</span>
+        {
+<span class="nc" id="L945">            final Function&lt;SAtom, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc bnc" id="L946" title="All 2 branches missed.">            final Predicate&lt;Sexpr&gt; condition = x -&gt; x.isAtom() ? (Boolean) invocation.apply(x.toAtom()) : false;</span>
+<span class="nc" id="L947">            defineCondition(name, condition);</span>
+<span class="nc" id="L948">        }</span>
+<span class="nc bnc" id="L949" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(SList.class))</span>
+        {
+<span class="nc" id="L951">            final Function&lt;SList, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc bnc" id="L952" title="All 2 branches missed.">            final Predicate&lt;Sexpr&gt; condition = x -&gt; x.isList() ? (Boolean) invocation.apply(x.toList()) : false;</span>
+<span class="nc" id="L953">            defineCondition(name, condition);</span>
+<span class="nc" id="L954">        }</span>
+        else
+        {
+<span class="nc" id="L957">            final String message = String.format(&quot;Method (%s) must take a %s|%s|%s as its only parameter.&quot;,</span>
+<span class="nc" id="L958">                                                 method.toString(),</span>
+<span class="nc" id="L959">                                                 Sexpr.class.getName(),</span>
+<span class="nc" id="L960">                                                 SAtom.class.getName(),</span>
+<span class="nc" id="L961">                                                 SList.class.getName());</span>
+<span class="nc" id="L962">            throw new IllegalArgumentException(message);</span>
+        }
+<span class="nc" id="L964">    }</span>
+
+    private void defineBeforeActionByReflection (final Optional&lt;String&gt; defaultPass,
+                                                 final Object object,
+                                                 final Method method)
+    {
+        /**
+         * Obtain the name of the translation pass that this action applies to.
+         */
+<span class="nc" id="L973">        final String pass = getPass(defaultPass, method);</span>
+
+        /**
+         * Obtain the user-defined name of the rule that this action applies to.
+         */
+<span class="nc" id="L978">        final String rule = method.getAnnotation(Before.class).value();</span>
+
+        /**
+         * The method cannot throw any checked exceptions.
+         */
+<span class="nc bnc" id="L983" title="All 2 branches missed.">        if (method.getExceptionTypes().length != 0)</span>
+        {
+<span class="nc" id="L985">            final String message = String.format(&quot;Do *not* throw checked exceptions in (%s).&quot;, method.toString());</span>
+<span class="nc" id="L986">            throw new IllegalArgumentException(message);</span>
+        }
+
+        /**
+         * The return-type of the method must be void.
+         */
+<span class="nc bnc" id="L992" title="All 2 branches missed.">        if (method.getReturnType().equals(void.class) == false)</span>
+        {
+<span class="nc" id="L994">            final String message = String.format(&quot;You must return boolean from (%s), not %s.&quot;,</span>
+<span class="nc" id="L995">                                                 method.toString(),</span>
+<span class="nc" id="L996">                                                 method.getReturnType().getName());</span>
+<span class="nc" id="L997">            throw new IllegalArgumentException(message);</span>
+        }
+
+        /**
+         * The method must take exactly one argument,
+         * which must be a symbolic-expression.
+         */
+<span class="nc bnc" id="L1004" title="All 2 branches missed.">        if (method.getParameterCount() != 1)</span>
+        {
+<span class="nc" id="L1006">            final String message = String.format(&quot;Method (%s) must take exactly one parameter.&quot;, method.toString());</span>
+<span class="nc" id="L1007">            throw new IllegalArgumentException(message);</span>
+        }
+<span class="nc bnc" id="L1009" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(Sexpr.class))</span>
+        {
+<span class="nc" id="L1011">            final Function&lt;Sexpr, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc" id="L1012">            final Consumer&lt;Sexpr&gt; action = x -&gt; invocation.apply(x);</span>
+<span class="nc" id="L1013">            defineBeforeAction(pass, rule, action);</span>
+<span class="nc" id="L1014">        }</span>
+<span class="nc bnc" id="L1015" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(SAtom.class))</span>
+        {
+<span class="nc" id="L1017">            final Function&lt;SAtom, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc" id="L1018">            final Consumer&lt;Sexpr&gt; action = x -&gt; invocation.apply(x.toAtom());</span>
+<span class="nc" id="L1019">            defineBeforeAction(pass, rule, action);</span>
+<span class="nc" id="L1020">        }</span>
+<span class="nc bnc" id="L1021" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(SList.class))</span>
+        {
+<span class="nc" id="L1023">            final Function&lt;SList, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc" id="L1024">            final Consumer&lt;Sexpr&gt; action = x -&gt; invocation.apply(x.toList());</span>
+<span class="nc" id="L1025">            defineBeforeAction(pass, rule, action);</span>
+<span class="nc" id="L1026">        }</span>
+        else
+        {
+<span class="nc" id="L1029">            final String message = String.format(&quot;Method (%s) must take a %s|%s|%s as its only parameter.&quot;,</span>
+<span class="nc" id="L1030">                                                 method.toString(),</span>
+<span class="nc" id="L1031">                                                 Sexpr.class.getName(),</span>
+<span class="nc" id="L1032">                                                 SAtom.class.getName(),</span>
+<span class="nc" id="L1033">                                                 SList.class.getName());</span>
+<span class="nc" id="L1034">            throw new IllegalArgumentException(message);</span>
+        }
+<span class="nc" id="L1036">    }</span>
+
+    private void defineAfterActionByReflection (final Optional&lt;String&gt; defaultPass,
+                                                final Object object,
+                                                final Method method)
+    {
+        /**
+         * Obtain the name of the translation pass that this action applies to.
+         */
+<span class="nc" id="L1045">        final String pass = getPass(defaultPass, method);</span>
+
+        /**
+         * Obtain the user-defined name of the rule that this action applies to.
+         */
+<span class="nc" id="L1050">        final String rule = method.getAnnotation(After.class).value();</span>
+
+        /**
+         * The method cannot throw any checked exceptions.
+         */
+<span class="nc bnc" id="L1055" title="All 2 branches missed.">        if (method.getExceptionTypes().length != 0)</span>
+        {
+<span class="nc" id="L1057">            final String message = String.format(&quot;Do *not* throw checked exceptions in (%s).&quot;, method.toString());</span>
+<span class="nc" id="L1058">            throw new IllegalArgumentException(message);</span>
+        }
+
+        /**
+         * The return-type of the method must be void.
+         */
+<span class="nc bnc" id="L1064" title="All 2 branches missed.">        if (method.getReturnType().equals(void.class) == false)</span>
+        {
+<span class="nc" id="L1066">            final String message = String.format(&quot;You must return boolean from (%s), not %s.&quot;,</span>
+<span class="nc" id="L1067">                                                 method.toString(),</span>
+<span class="nc" id="L1068">                                                 method.getReturnType().getName());</span>
+<span class="nc" id="L1069">            throw new IllegalArgumentException(message);</span>
+        }
+
+        /**
+         * The method must take exactly one argument,
+         * which must be a symbolic-expression.
+         */
+<span class="nc bnc" id="L1076" title="All 2 branches missed.">        if (method.getParameterCount() != 1)</span>
+        {
+<span class="nc" id="L1078">            final String message = String.format(&quot;Method (%s) must take exactly one parameter.&quot;, method.toString());</span>
+<span class="nc" id="L1079">            throw new IllegalArgumentException(message);</span>
+        }
+<span class="nc bnc" id="L1081" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(Sexpr.class))</span>
+        {
+<span class="nc" id="L1083">            final Function&lt;Sexpr, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc" id="L1084">            final Consumer&lt;Sexpr&gt; action = x -&gt; invocation.apply(x);</span>
+<span class="nc" id="L1085">            defineBeforeAction(pass, rule, action);</span>
+<span class="nc" id="L1086">        }</span>
+<span class="nc bnc" id="L1087" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(SAtom.class))</span>
+        {
+<span class="nc" id="L1089">            final Function&lt;SAtom, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc" id="L1090">            final Consumer&lt;Sexpr&gt; action = x -&gt; invocation.apply(x.toAtom());</span>
+<span class="nc" id="L1091">            defineBeforeAction(pass, rule, action);</span>
+<span class="nc" id="L1092">        }</span>
+<span class="nc bnc" id="L1093" title="All 2 branches missed.">        else if (method.getParameterTypes()[0].equals(SList.class))</span>
+        {
+<span class="nc" id="L1095">            final Function&lt;SList, Object&gt; invocation = createInvocation(object, method);</span>
+<span class="nc" id="L1096">            final Consumer&lt;Sexpr&gt; action = x -&gt; invocation.apply(x.toList());</span>
+<span class="nc" id="L1097">            defineAfterAction(pass, rule, action);</span>
+<span class="nc" id="L1098">        }</span>
+        else
+        {
+<span class="nc" id="L1101">            final String message = String.format(&quot;Method (%s) must take a %s|%s|%s as its only parameter.&quot;,</span>
+<span class="nc" id="L1102">                                                 method.toString(),</span>
+<span class="nc" id="L1103">                                                 Sexpr.class.getName(),</span>
+<span class="nc" id="L1104">                                                 SAtom.class.getName(),</span>
+<span class="nc" id="L1105">                                                 SList.class.getName());</span>
+<span class="nc" id="L1106">            throw new IllegalArgumentException(message);</span>
+        }
+<span class="nc" id="L1108">    }</span>
+
+    private &lt;T&gt; Function&lt;T, Object&gt; createInvocation (final Object object,
+                                                      final Method method)
+    {
+<span class="nc" id="L1113">        final Function&lt;T, Object&gt; function = x -&gt;</span>
+        {
+            try
+            {
+<span class="nc" id="L1117">                method.setAccessible(true);</span>
+<span class="nc" id="L1118">                return method.invoke(object, x);</span>
+            }
+<span class="nc" id="L1120">            catch (Throwable ex)</span>
+            {
+<span class="nc" id="L1122">                throw new RuntimeException(x.toString(), ex);</span>
+            }
+        };
+
+<span class="nc" id="L1126">        return function;</span>
+    }
+
+    /**
+     * This method performs a match-attempt.
+     *
+     * @param tree is the symbolic-expression that this schema may match.
+     * @return true, iff the match was successful.
+     */
+    public boolean match (final Sexpr tree)
+    {
+<span class="fc" id="L1137">        Objects.requireNonNull(tree, &quot;tree&quot;);</span>
+
+        /**
+         * Verify that this schema is well-defined.
+         */
+<span class="fc" id="L1142">        validate();</span>
+
+        /**
+         * Perform the match attempt.
+         */
+<span class="fc" id="L1147">        final MatchState state = new MatchState();</span>
+<span class="fc" id="L1148">        final Rule rootRule = rules.get(root);</span>
+<span class="fc" id="L1149">        final MatchNode match = rootRule.match(state, tree);</span>
+
+        /**
+         * If the match-attempt failed, then report the failure;
+         * otherwise, execute the user-defined passes and actions.
+         */
+<span class="fc bfc" id="L1155" title="All 2 branches covered.">        if (match == null)</span>
+        {
+<span class="fc" id="L1157">            failureHandler.accept(state.lastSuccess());</span>
+<span class="fc" id="L1158">            return false;</span>
+        }
+        else
+        {
+<span class="fc" id="L1162">            executeActions(match);</span>
+<span class="fc" id="L1163">            return true;</span>
+        }
+    }
+
+    private void validate ()
+    {
+<span class="fc" id="L1169">        requireRoot();</span>
+<span class="fc" id="L1170">        checkForUndefinedRules();</span>
+<span class="fc" id="L1171">    }</span>
+
+    private void requireRoot ()
+    {
+<span class="pc bpc" id="L1175" title="1 of 2 branches missed.">        if (rules.containsKey(root) == false)</span>
+        {
+<span class="nc" id="L1177">            throw new IllegalStateException(&quot;No Root Rule&quot;);</span>
+        }
+<span class="fc" id="L1179">    }</span>
+
+    /**
+     * This method reports any rules that are used, but not defined in the schema.
+     */
+    private void checkForUndefinedRules ()
+    {
+<span class="fc" id="L1186">        final Set&lt;String&gt; definedRules = rules.keySet();</span>
+<span class="fc" id="L1187">        final Set&lt;String&gt; temp = new HashSet&lt;&gt;(usedRules);</span>
+<span class="fc" id="L1188">        temp.removeAll(definedRules);</span>
+<span class="fc" id="L1189">        final List&lt;String&gt; undefinedRules = new ArrayList&lt;&gt;(temp);</span>
+
+<span class="fc bfc" id="L1191" title="All 2 branches covered.">        if (undefinedRules.isEmpty() == false)</span>
+        {
+<span class="fc" id="L1193">            final String names = SList.copyOf(undefinedRules.stream().map(name -&gt; new SAtom(name))).toString();</span>
+<span class="fc" id="L1194">            final String message = &quot;Undefined Rules Detected: &quot; + names;</span>
+<span class="fc" id="L1195">            throw new IllegalStateException(message);</span>
+        }
+<span class="fc" id="L1197">    }</span>
+
+    /**
+     * On successful matches, this method transverses the match-tree
+     * in multiple &quot;translation passes&quot; executing user-defined actions.
+     *
+     * @param tree describes a successful match attempt.
+     */
+    private void executeActions (final MatchNode tree)
+    {
+<span class="pc" id="L1207">        setupActions.forEach(action -&gt; action.accept(tree.node()));</span>
+<span class="pc" id="L1208">        passes.forEach(pass -&gt; executeActions(pass, tree));</span>
+<span class="pc" id="L1209">        closeActions.forEach(action -&gt; action.accept(tree.node()));</span>
+<span class="fc" id="L1210">    }</span>
+
+    private void executeActions (final String pass,
+                                 final MatchNode node)
+    {
+<span class="nc bnc" id="L1215" title="All 4 branches missed.">        if (beforeActions.containsKey(pass) &amp;&amp; beforeActions.get(pass).containsKey(node.rule().name()))</span>
+        {
+<span class="nc" id="L1217">            final List&lt;Consumer&lt;Sexpr&gt;&gt; actions = beforeActions.get(pass).get(node.rule().name());</span>
+<span class="nc" id="L1218">            actions.forEach(action -&gt; action.accept(node.node()));</span>
+        }
+
+<span class="nc" id="L1221">        node.children().forEach(child -&gt; executeActions(pass, child));</span>
+
+<span class="nc bnc" id="L1223" title="All 4 branches missed.">        if (afterActions.containsKey(pass) &amp;&amp; afterActions.get(pass).containsKey(node.rule().name()))</span>
+        {
+<span class="nc" id="L1225">            final List&lt;Consumer&lt;Sexpr&gt;&gt; actions = afterActions.get(pass).get(node.rule().name());</span>
+<span class="nc" id="L1226">            actions.forEach(action -&gt; action.accept(node.node()));</span>
+        }
+<span class="nc" id="L1228">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

@@ -1,5 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Sexpr.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Sexpr&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr</a> &gt; <span class="el_source">Sexpr.java</span></div><h1>Sexpr.java</h1><pre class="source lang-java linenums">package com.mackenziehigh.sexpr;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Sexpr.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Sexpr&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr</a> &gt; <span class="el_source">Sexpr.java</span></div><h1>Sexpr.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -94,6 +110,15 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
     public boolean postorder (final Predicate&lt;Sexpr&gt; condition);
 
     /**
+     * This method performs a transversal of the tree rooted at this node.
+     *
+     * @param before will be invoked upon entering each sub-tree.
+     * @param after will be invoked upon exiting each sub-tree.
+     */
+    public void transverse (Consumer&lt;Sexpr&gt; before,
+                            Consumer&lt;Sexpr&gt; after);
+
+    /**
      * This method determines whether this object is a SAtom.
      *
      * @return true, iff this object is a SAtom.
@@ -106,14 +131,6 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
      * @return true, iff this object is a SAtom.
      */
     public boolean isList ();
-
-    /**
-     * This method obtains a mutator that can be used
-     * to non-destructively modify this node.
-     *
-     * @return the mutator.
-     */
-    public SexprMutator&lt;T&gt; mutator ();
 
     /**
      * This method retrieves an object describing the source
@@ -129,7 +146,7 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
     @Override
     public default int compareTo (final Sexpr other)
     {
-<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        return other == null ? 1 : toString().compareTo(other.toString());</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        return other == null ? 1 : toString().compareTo(other.toString());</span>
     }
 
     /**
@@ -147,7 +164,14 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
      */
     public default SAtom toAtom ()
     {
-<span class="fc" id="L150">        return (SAtom) this;</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (this instanceof SAtom)</span>
+        {
+<span class="fc" id="L169">            return (SAtom) this;</span>
+        }
+        else
+        {
+<span class="fc" id="L173">            throw new ClassCastException(toString());</span>
+        }
     }
 
     /**
@@ -165,7 +189,14 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
      */
     public default SList toList ()
     {
-<span class="fc" id="L168">        return (SList) this;</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (this instanceof SList)</span>
+        {
+<span class="fc" id="L194">            return (SList) this;</span>
+        }
+        else
+        {
+<span class="fc" id="L198">            throw new ClassCastException(toString());</span>
+        }
     }
 
     /**

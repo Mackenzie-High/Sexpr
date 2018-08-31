@@ -15,6 +15,7 @@
  */
 package com.mackenziehigh.sexpr;
 
+import com.mackenziehigh.sexpr.exceptions.ParsingFailedException;
 import com.mackenziehigh.sexpr.internal.Parser;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2158,10 +2159,30 @@ public class SListTest
     {
         System.out.println("Test: 20170625011212166422");
 
+        /**
+         * A comment is equivalent to an empty string, such as this one.
+         */
         assertEquals("()", SList.parse("Venus", "").toString());
-        assertEquals("()", SList.parse("Venus", "(* *)").toString());
-        assertEquals("()", SList.parse("Venus", "(* (* *) *)").toString());
-        assertEquals("()", SList.parse("Venus", "(* (* (* *) *) *)").toString());
+
+        /**
+         * Case: Comment with no body.
+         */
+        assertEquals("()", SList.parse("Venus", "#").toString());
+
+        /**
+         * Case: Comment with body, but no end-of-line.
+         */
+        assertEquals("()", SList.parse("Venus", "# Hello World!").toString());
+
+        /**
+         * Case: Comment with body and end-of-line.
+         */
+        assertEquals("(3)", SList.parse("Venus", "# Three = Two + One \n 3").toString());
+
+        /**
+         * Case: Comment on line after a non-comment.
+         */
+        assertEquals("(4)", SList.parse("Venus", "4 # Four = Two * Two").toString());
     }
 
     /**
@@ -2238,14 +2259,14 @@ public class SListTest
     {
         System.out.println("Test: 20170625011212166514");
 
-        final Parser p = new Parser("test20170625011212166514");
+        final String location = "test20170625011212166514";
 
         try
         {
-            p.parse("(");
+            Parser.parse(location, "(");
             fail();
         }
-        catch (IllegalArgumentException ex)
+        catch (ParsingFailedException ex)
         {
             final String message = ex.getMessage();
             assertTrue(message.matches("Parsing Failed At Line: [0-9]+, Column: [0-9]+, Source: test20170625011212166514"));
