@@ -1,18 +1,25 @@
 package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Sexpr;
 import com.mackenziehigh.sexpr.internal.schema.Schema.Rule;
 import com.mackenziehigh.sexpr.internal.schema.Schema.SequenceElement;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 public final class SchemaDev
 {
-    private final Schema s = new Schema();
+    private final Schema g = new Schema();
+
+    private final Schema b = new Schema();
+
+    private final Stack<Object> stack = new Stack<>();
 
     public SchemaDev ()
     {
-        s.defineRoot("ROOT");
+        g.defineRoot("ROOT");
 
         // (ROOT = (seq (star (ref STATEMENT))))
         seq("ROOT", star(ref("STATEMENT")));
@@ -102,19 +109,38 @@ public final class SchemaDev
 
         // (NAME = (atom '[A-Za-z_][A-Za-z_0-9]*'))
         assign("NAME", atom(".*"));
+
+        /**
+         * Bind Translation Actions.
+         */
+        final String TRANSLATE = "TRANSLATE";
+        g.definePass(TRANSLATE);
+        g.defineAfterAction(TRANSLATE, "ROOT_DECLARATION", this::translateRoot);
+        g.defineAfterAction(TRANSLATE, "ASSIGNMENT", this::translateAssign);
+        g.defineAfterAction(TRANSLATE, "SEQUENCE", this::translateSeq);
+        g.defineAfterAction(TRANSLATE, "OPTION", this::translateOption);
+        g.defineAfterAction(TRANSLATE, "STAR", this::translateStar);
+        g.defineAfterAction(TRANSLATE, "PLUS", this::translatePlus);
+        g.defineAfterAction(TRANSLATE, "REPEAT", this::translateRepeat);
+        g.defineAfterAction(TRANSLATE, "OR", this::translateEither);
+        g.defineAfterAction(TRANSLATE, "AND", this::translateAnd);
+        g.defineAfterAction(TRANSLATE, "NOT", this::translateNot);
+        g.defineAfterAction(TRANSLATE, "ATOM", this::translateAtom);
+        g.defineAfterAction(TRANSLATE, "KEYWORD", this::translateKeyword);
+        g.defineAfterAction(TRANSLATE, "PREDICATE", this::translatePredicate);
     }
 
     private Rule seq (final String name,
                       final SequenceElement... elements)
     {
-        final Rule anonRule = s.defineSequenceRule(Arrays.asList(elements));
-        final Rule namedRule = s.defineNamedRule(name, anonRule.name());
+        final Rule anonRule = g.defineSequenceRule(Arrays.asList(elements));
+        final Rule namedRule = g.defineNamedRule(name, anonRule.name());
         return namedRule;
     }
 
     private Rule seq (final SequenceElement... elements)
     {
-        return s.defineSequenceRule(Arrays.asList(elements));
+        return g.defineSequenceRule(Arrays.asList(elements));
     }
 
     private Rule assign (final String name,
@@ -126,8 +152,8 @@ public final class SchemaDev
     private Rule either (final String name,
                          final Rule... options)
     {
-        final Rule anonRule = s.defineOrRule(Arrays.asList(options).stream().map(x -> x.name()).collect(Collectors.toList()));
-        final Rule namedRule = s.defineNamedRule(name, anonRule.name());
+        final Rule anonRule = g.defineOrRule(Arrays.asList(options).stream().map(x -> x.name()).collect(Collectors.toList()));
+        final Rule namedRule = g.defineNamedRule(name, anonRule.name());
         return namedRule;
     }
 
@@ -176,27 +202,201 @@ public final class SchemaDev
 
     private Rule atom (final String regex)
     {
-        return s.defineRegexRule(regex);
+        return g.defineRegexRule(regex);
     }
 
     private Rule ref (final String name)
     {
-        final Rule anonRule = s.defineReference(name);
-        final Rule namedRule = s.defineNamedRule(name + "_" + anonRule.name(), anonRule.name());
+        final Rule anonRule = g.defineReference(name);
+        final Rule namedRule = g.defineNamedRule(name + "_" + anonRule.name(), anonRule.name());
         return namedRule;
+    }
+
+    private void translateRoot (final Sexpr<?> node)
+    {
+        final String name = node.toList().get(1).toString();
+        b.defineRoot(name);
+    }
+
+    private void translateAssign (final Sexpr<?> node)
+    {
+        final String name = node.toList().get(0).toString();
+        final Rule value = (Rule) stack.pop();
+        b.defineNamedRule(name, value.name());
+    }
+
+    private void translateSeq (final Sexpr<?> node)
+    {
+        final int elementCount = node.toList().size() - 1;
+
+        final LinkedList<SequenceElement> elements = new LinkedList<>();
+
+        for (int i = 0; i < elementCount; i++)
+        {
+            final SequenceElement element = convertToSequenceElement(stack.pop());
+            elements.addFirst(element);
+        }
+
+        final Rule rule = b.defineSequenceRule(elements);
+        stack.push(rule);
+    }
+
+    private SequenceElement convertToSequenceElement (final Object object)
+    {
+        if (object instanceof SequenceElement)
+        {
+            return (SequenceElement) object;
+        }
+
+        final Rule element = (Rule) object;
+
+        return new SequenceElement()
+        {
+            @Override
+            public String element ()
+            {
+                return element.name();
+            }
+
+            @Override
+            public int minimum ()
+            {
+                return 1;
+            }
+
+            @Override
+            public int maximum ()
+            {
+                return 1;
+            }
+        };
+    }
+
+    private void translateOption (final Sexpr<?> node)
+    {
+        final Rule element = (Rule) stack.pop();
+        translateRepeat(element, 0, 1);
+    }
+
+    private void translateStar (final Sexpr<?> node)
+    {
+        final Rule element = (Rule) stack.pop();
+        translateRepeat(element, 0, Integer.MAX_VALUE);
+    }
+
+    private void translatePlus (final Sexpr<?> node)
+    {
+        final Rule element = (Rule) stack.pop();
+        translateRepeat(element, 1, Integer.MAX_VALUE);
+    }
+
+    private void translateRepeat (final Sexpr<?> node)
+    {
+        final Rule element = (Rule) stack.pop();
+        final int minimum = Integer.parseInt(node.toList().get(2).toString());
+        final int maximum = Integer.parseInt(node.toList().get(3).toString());
+        translateRepeat(element, minimum, maximum);
+    }
+
+    private void translateRepeat (final Rule rule,
+                                  final int minimum,
+                                  final int maximum)
+    {
+        final SequenceElement seqelm = new SequenceElement()
+        {
+            @Override
+            public String element ()
+            {
+                return rule.name();
+            }
+
+            @Override
+            public int minimum ()
+            {
+                return minimum;
+            }
+
+            @Override
+            public int maximum ()
+            {
+                return maximum;
+            }
+        };
+
+        stack.push(seqelm);
+    }
+
+    private void translateEither (final Sexpr<?> node)
+    {
+        final int elementCount = node.toList().size() - 1;
+
+        final LinkedList<String> elements = new LinkedList<>();
+
+        for (int i = 0; i < elementCount; i++)
+        {
+            final Rule element = (Rule) stack.pop();
+            elements.addFirst(element.name());
+        }
+
+        final Rule rule = b.defineOrRule(elements);
+        stack.push(rule);
+    }
+
+    private void translateAnd (final Sexpr<?> node)
+    {
+        final int elementCount = node.toList().size() - 1;
+
+        final LinkedList<String> elements = new LinkedList<>();
+
+        for (int i = 0; i < elementCount; i++)
+        {
+            final Rule element = (Rule) stack.pop();
+            elements.addFirst(element.name());
+        }
+
+        final Rule rule = b.defineAndRule(elements);
+        stack.push(rule);
+    }
+
+    private void translateNot (final Sexpr<?> node)
+    {
+        final Rule operand = (Rule) stack.pop();
+        final Rule rule = b.defineNotRule(operand.name());
+        stack.push(rule);
+    }
+
+    private void translateAtom (final Sexpr<?> node)
+    {
+        final String regex = node.toList().size() == 1 ? ".*" : node.toList().get(1).toString();
+        final Rule rule = b.defineRegexRule(regex);
+        stack.push(rule);
+    }
+
+    private void translateKeyword (final Sexpr<?> node)
+    {
+        final String keyword = node.toList().get(1).toString();
+        final Rule rule = b.defineConstantRule(keyword);
+        stack.push(rule);
+    }
+
+    private void translatePredicate (final Sexpr<?> node)
+    {
+        final String name = node.toList().get(1).toString();
+        final Rule rule = b.definePredicateRule(name);
+        stack.push(rule);
     }
 
     public static void main (String[] args)
     {
         final SchemaDev dev = new SchemaDev();
 
-        dev.s.definePass("TRANSLATE");
-        dev.s.defineBeforeAction("TRANSLATE", "ATOM", x -> System.out.println("XX = " + x));
-
-        final SList input = SList.parse("", "(x = (either (atom) (keyword 'X')))");
+        final SList input = SList.parse("", "(root x) (x = (seq (keyword Mars) (star (either (keyword Pluto) (keyword Venus)))))");
 
         System.out.println("IN = " + input);
-        System.out.println(dev.s.match(input));
+        System.out.println(dev.g.match(input));
+
+        final SList data = SList.parse("", "Mars Pluto Pluto Pluto Venus");
+        System.out.println("DATA = " + dev.b.match(data));
 
     }
 
