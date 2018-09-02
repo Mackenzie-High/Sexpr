@@ -200,16 +200,6 @@ public final class Schema
         {
             return defaultName;
         }
-
-        /**
-         * This method determines whether this is an implicitly named rule.
-         *
-         * @return false, iff the user named this rule.
-         */
-        public boolean isAnonymous ()
-        {
-            return true;
-        }
     }
 
     /**
@@ -267,18 +257,6 @@ public final class Schema
      * These are the names of the user-defined translation passes.
      */
     private final List<String> passes = new LinkedList<>();
-
-    /**
-     * These are the actions to perform before the first
-     * translation pass upon a successful match.
-     */
-    private final List<Consumer<Sexpr>> setupActions = new LinkedList<>();
-
-    /**
-     * These are the actions to perform after the last
-     * translation pass upon a successful match.
-     */
-    private final List<Consumer<Sexpr>> closeActions = new LinkedList<>();
 
     /**
      * This map maps the name of a translation pass (P) to a map that maps the name
@@ -400,12 +378,6 @@ public final class Schema
             public String name ()
             {
                 return name;
-            }
-
-            @Override
-            public boolean isAnonymous ()
-            {
-                return false;
             }
 
             @Override
@@ -698,34 +670,6 @@ seq:    for (SequenceElement operand : operands)
     }
 
     /**
-     * Use this method to define a rule that will only successfully
-     * match a symbolic-atom whose numeric representation is
-     * within the proscribed range.
-     *
-     * @param minimum is the lower-bound of the acceptable range.
-     * @param minimumInclusive is true, iff the lower-bound is inclusive.
-     * @param maximum is the upper-bound of the acceptable range.
-     * @param maximumInclusive is true, iff the upper-bound is inclusive.
-     * @return the new rule.
-     */
-    final Rule defineRangeRule (final double minimum,
-                                final boolean minimumInclusive,
-                                final double maximum,
-                                final boolean maximumInclusive)
-    {
-        if (maximum < minimum)
-        {
-            final String message = String.format("Invalid Range: maximum (%f) < minimum (%f)", maximum, minimum);
-            throw new IllegalArgumentException(message);
-        }
-
-        return defineRuleByPredicate(x -> x.isAtom()
-                                          && x.toAtom().asFloat().isPresent()
-                                          && (minimumInclusive ? minimum <= x.toAtom().asFloat().get() : minimum < x.toAtom().asFloat().get())
-                                          && (maximumInclusive ? maximum >= x.toAtom().asFloat().get() : maximum > x.toAtom().asFloat().get()));
-    }
-
-    /**
      * Use this method to define a new rule that will only successfully
      * match a node when a user-defined predicate matches the node.
      *
@@ -780,18 +724,6 @@ seq:    for (SequenceElement operand : operands)
     {
         Objects.requireNonNull(name, "name");
         passes.add(name);
-    }
-
-    public void defineSetupAction (final Consumer<Sexpr> action)
-    {
-        Objects.requireNonNull(action, "action");
-        setupActions.add(action);
-    }
-
-    public void defineCloseAction (final Consumer<Sexpr> action)
-    {
-        Objects.requireNonNull(action, "action");
-        closeActions.add(action);
     }
 
     public void defineBeforeAction (final String pass,
@@ -850,7 +782,7 @@ seq:    for (SequenceElement operand : operands)
         {
             if (method.isAnnotationPresent(Condition.class))
             {
-                defineConditionViaReflection(defaultPass, object, method);
+                defineConditionViaReflection(object, method);
             }
 
             if (method.isAnnotationPresent(Before.class))
@@ -896,8 +828,7 @@ seq:    for (SequenceElement operand : operands)
         }
     }
 
-    private void defineConditionViaReflection (final Optional<String> defaultPass,
-                                               final Object object,
+    private void defineConditionViaReflection (final Object object,
                                                final Method method)
     {
         /**
@@ -1082,13 +1013,13 @@ seq:    for (SequenceElement operand : operands)
         {
             final Function<Sexpr, Object> invocation = createInvocation(object, method);
             final Consumer<Sexpr> action = x -> invocation.apply(x);
-            defineBeforeAction(pass, rule, action);
+            defineAfterAction(pass, rule, action);
         }
         else if (method.getParameterTypes()[0].equals(SAtom.class))
         {
             final Function<SAtom, Object> invocation = createInvocation(object, method);
             final Consumer<Sexpr> action = x -> invocation.apply(x.toAtom());
-            defineBeforeAction(pass, rule, action);
+            defineAfterAction(pass, rule, action);
         }
         else if (method.getParameterTypes()[0].equals(SList.class))
         {
@@ -1164,10 +1095,11 @@ seq:    for (SequenceElement operand : operands)
         }
     }
 
-    private void validate ()
+    public void validate ()
     {
         requireRoot();
         checkForUndefinedRules();
+        checkForUndeclaredPasses();
     }
 
     private void requireRoot ()
@@ -1196,6 +1128,31 @@ seq:    for (SequenceElement operand : operands)
         }
     }
 
+    private void checkForUndeclaredPasses ()
+    {
+        /**
+         * Check for before-actions that are not apart of a declared pass.
+         */
+        for (String pass : beforeActions.keySet())
+        {
+            if (passes.contains(pass) == false)
+            {
+                throw new IllegalStateException(String.format("Undeclared Pass: %s", pass));
+            }
+        }
+
+        /**
+         * Check for after-actions that are not apart of a declared pass.
+         */
+        for (String pass : afterActions.keySet())
+        {
+            if (passes.contains(pass) == false)
+            {
+                throw new IllegalStateException(String.format("Undeclared Pass: %s", pass));
+            }
+        }
+    }
+
     /**
      * On successful matches, this method transverses the match-tree
      * in multiple "translation passes" executing user-defined actions.
@@ -1204,9 +1161,7 @@ seq:    for (SequenceElement operand : operands)
      */
     private void executeActions (final MatchNode tree)
     {
-        setupActions.forEach(action -> action.accept(tree.node()));
         passes.forEach(pass -> executeActions(pass, tree));
-        closeActions.forEach(action -> action.accept(tree.node()));
     }
 
     private void executeActions (final String pass,

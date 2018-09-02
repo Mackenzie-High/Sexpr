@@ -1,9 +1,9 @@
 
 TODO:
++ Fix reporting locations of syntax errors during parsing (both expressions and schemas). 
 + Rename toAtom() and toList() to asAtom() and asList().
 + Check generics everywhere: Sexpr<?> instead of Sexpr.
 + Add a way of quickly and reliably computing the size of a Sexpr in chars and bytes.
-+ Implement and test annotation based action binding.
 + Implement and test Builder stack.
 + Implement and test String Printer.
 + Improve exceptional causes by using custom exception types.
@@ -11,21 +11,12 @@ TODO:
 + Finish testing Sexpr Schema, including:
 + + Exceptions in actions.
 + + Exception is conditions.
-+ + Predicate Rules, generally.
 + + Escape sequences in strings.
-+ + Order of operations.
-+ + Nested rules.
-+ + Anonymous rules.
 + + Schema immutability after calling build().
-+ Finish implementation and testing of GPB serialization.
-+ Finish implementation and testing of JSON serialization.
 + Test parseFile and parseResource.
 + + Normal Cases
 + + File/Resource not found.
-+ Add a JavaFX GUI Visualizer Dialog
 + Consider replacing SAtom constructors with factory methods.
-+ Add factory interface.
-+ Add caching factory.
 
 
 

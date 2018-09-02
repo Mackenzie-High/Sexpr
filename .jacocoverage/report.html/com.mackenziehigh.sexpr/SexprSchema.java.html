@@ -39,7 +39,7 @@ public final class SexprSchema
      * This function can be used as a default failure-handler that will
      * print the approximate location of match failures to standard-output.
      */
-<span class="nc" id="L42">    public static final Consumer&lt;Optional&lt;Sexpr&gt;&gt; PRINT_FAILURE = x -&gt;</span>
+<span class="fc" id="L42">    public static final Consumer&lt;Optional&lt;Sexpr&gt;&gt; PRINT_FAILURE = x -&gt;</span>
     {
 <span class="nc bnc" id="L44" title="All 2 branches missed.">        if (x.isPresent())</span>
         {
@@ -59,9 +59,9 @@ public final class SexprSchema
      * @param schema is the schema that symbolic-expressions must match.
      */
     private SexprSchema (final Schema schema)
-<span class="nc" id="L62">    {</span>
-<span class="nc" id="L63">        this.schema = Objects.requireNonNull(schema, &quot;schema&quot;);</span>
-<span class="nc" id="L64">    }</span>
+<span class="fc" id="L62">    {</span>
+<span class="fc" id="L63">        this.schema = Objects.requireNonNull(schema, &quot;schema&quot;);</span>
+<span class="fc" id="L64">    }</span>
 
     /**
      * This method configures the matcher to use a given schema.
@@ -73,9 +73,8 @@ public final class SexprSchema
     public static Builder fromString (final String source,
                                       final String schema)
     {
-<span class="nc" id="L76">        final SchemaParser parser = new SchemaParser();</span>
-<span class="nc" id="L77">        final Schema pattern = parser.parse(source, schema);</span>
-<span class="nc" id="L78">        return new Builder(pattern);</span>
+<span class="fc" id="L76">        final Schema pattern = SchemaParser.parse(source, schema);</span>
+<span class="fc" id="L77">        return new Builder(pattern);</span>
     }
 
     /**
@@ -88,11 +87,11 @@ public final class SexprSchema
     public static Builder fromFile (final File file)
             throws IOException
     {
-<span class="nc" id="L91">        final String source = file.toString();</span>
-<span class="nc" id="L92">        final StringBuilder content = new StringBuilder();</span>
-<span class="nc" id="L93">        Files.readAllLines(file.toPath(), Charset.forName(&quot;UTF-8&quot;))</span>
-<span class="nc" id="L94">                .forEach(line -&gt; content.append(line).append('\n'));</span>
-<span class="nc" id="L95">        return fromString(source, content.toString());</span>
+<span class="nc" id="L90">        final String source = file.toString();</span>
+<span class="nc" id="L91">        final StringBuilder content = new StringBuilder();</span>
+<span class="nc" id="L92">        Files.readAllLines(file.toPath(), Charset.forName(&quot;UTF-8&quot;))</span>
+<span class="nc" id="L93">                .forEach(line -&gt; content.append(line).append('\n'));</span>
+<span class="nc" id="L94">        return fromString(source, content.toString());</span>
     }
 
     /**
@@ -105,23 +104,23 @@ public final class SexprSchema
     public static Builder fromResource (final String path)
             throws IOException
     {
-<span class="nc" id="L108">        final StringBuilder schema = new StringBuilder();</span>
+<span class="nc" id="L107">        final StringBuilder schema = new StringBuilder();</span>
 
-<span class="nc" id="L110">        try (InputStream in = SexprSchema.class.getResourceAsStream(path);</span>
-<span class="nc" id="L111">             BufferedInputStream bin = new BufferedInputStream(in);</span>
-<span class="nc" id="L112">             Scanner scanner = new Scanner(bin))</span>
+<span class="nc" id="L109">        try (InputStream in = SexprSchema.class.getResourceAsStream(path);</span>
+<span class="nc" id="L110">             BufferedInputStream bin = new BufferedInputStream(in);</span>
+<span class="nc" id="L111">             Scanner scanner = new Scanner(bin))</span>
         {
-<span class="nc bnc" id="L114" title="All 2 branches missed.">            while (scanner.hasNextLine())</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            while (scanner.hasNextLine())</span>
             {
-<span class="nc" id="L116">                schema.append(scanner.nextLine()).append('\n');</span>
+<span class="nc" id="L115">                schema.append(scanner.nextLine()).append('\n');</span>
             }
-<span class="nc bnc" id="L118" title="All 24 branches missed.">        }</span>
-<span class="nc" id="L119">        catch (IOException | RuntimeException ex)</span>
+<span class="nc bnc" id="L117" title="All 24 branches missed.">        }</span>
+<span class="nc" id="L118">        catch (IOException | RuntimeException ex)</span>
         {
-<span class="nc" id="L121">            throw ex;</span>
-<span class="nc" id="L122">        }</span>
+<span class="nc" id="L120">            throw ex;</span>
+<span class="nc" id="L121">        }</span>
 
-<span class="nc" id="L124">        return fromString(path, schema.toString());</span>
+<span class="nc" id="L123">        return fromString(path, schema.toString());</span>
     }
 
     /**
@@ -157,9 +156,9 @@ public final class SexprSchema
      */
     public boolean match (final Sexpr tree)
     {
-<span class="nc" id="L160">        Objects.requireNonNull(tree, &quot;tree&quot;);</span>
-<span class="nc" id="L161">        final boolean match = schema.match(tree);</span>
-<span class="nc" id="L162">        return match;</span>
+<span class="fc" id="L159">        Objects.requireNonNull(tree, &quot;tree&quot;);</span>
+<span class="fc" id="L160">        final boolean match = schema.match(tree);</span>
+<span class="fc" id="L161">        return match;</span>
     }
 
     /**
@@ -178,10 +177,10 @@ public final class SexprSchema
          * @param schema is the schema that the matcher will use.
          */
         private Builder (final Schema schema)
-<span class="nc" id="L181">        {</span>
-<span class="nc" id="L182">            Objects.requireNonNull(schema, &quot;schema&quot;);</span>
-<span class="nc" id="L183">            this.instance = new SexprSchema(schema);</span>
-<span class="nc" id="L184">        }</span>
+<span class="fc" id="L180">        {</span>
+<span class="fc" id="L181">            Objects.requireNonNull(schema, &quot;schema&quot;);</span>
+<span class="fc" id="L182">            this.instance = new SexprSchema(schema);</span>
+<span class="fc" id="L183">        }</span>
 
         /**
          * Use this method to define a predicate that can be used within a schema.
@@ -198,11 +197,11 @@ public final class SexprSchema
         public Builder condition (final String name,
                                   final Predicate&lt;Sexpr&gt; condition)
         {
-<span class="nc" id="L201">            Objects.requireNonNull(name, &quot;name&quot;);</span>
-<span class="nc" id="L202">            Objects.requireNonNull(condition, &quot;condition&quot;);</span>
-<span class="nc" id="L203">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
-<span class="nc" id="L204">            instance.schema.defineCondition(name, condition);</span>
-<span class="nc" id="L205">            return this;</span>
+<span class="nc" id="L200">            Objects.requireNonNull(name, &quot;name&quot;);</span>
+<span class="nc" id="L201">            Objects.requireNonNull(condition, &quot;condition&quot;);</span>
+<span class="nc" id="L202">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
+<span class="nc" id="L203">            instance.schema.defineCondition(name, condition);</span>
+<span class="nc" id="L204">            return this;</span>
         }
 
         /**
@@ -218,9 +217,9 @@ public final class SexprSchema
          */
         public Builder pass (final String name)
         {
-<span class="nc" id="L221">            Objects.requireNonNull(name, &quot;name&quot;);</span>
-<span class="nc" id="L222">            instance.schema.definePass(name);</span>
-<span class="nc" id="L223">            return this;</span>
+<span class="fc" id="L220">            Objects.requireNonNull(name, &quot;name&quot;);</span>
+<span class="fc" id="L221">            instance.schema.definePass(name);</span>
+<span class="fc" id="L222">            return this;</span>
         }
 
         /**
@@ -237,12 +236,12 @@ public final class SexprSchema
                                final String rule,
                                final Consumer&lt;Sexpr&gt; action)
         {
-<span class="nc" id="L240">            Objects.requireNonNull(pass, &quot;pass&quot;);</span>
-<span class="nc" id="L241">            Objects.requireNonNull(rule, &quot;rule&quot;);</span>
-<span class="nc" id="L242">            Objects.requireNonNull(action, &quot;action&quot;);</span>
-<span class="nc" id="L243">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
-<span class="nc" id="L244">            instance.schema.defineBeforeAction(pass, rule, action);</span>
-<span class="nc" id="L245">            return this;</span>
+<span class="nc" id="L239">            Objects.requireNonNull(pass, &quot;pass&quot;);</span>
+<span class="nc" id="L240">            Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="nc" id="L241">            Objects.requireNonNull(action, &quot;action&quot;);</span>
+<span class="nc" id="L242">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
+<span class="nc" id="L243">            instance.schema.defineBeforeAction(pass, rule, action);</span>
+<span class="nc" id="L244">            return this;</span>
         }
 
         /**
@@ -259,12 +258,12 @@ public final class SexprSchema
                               final String rule,
                               final Consumer&lt;Sexpr&gt; action)
         {
-<span class="nc" id="L262">            Objects.requireNonNull(pass, &quot;pass&quot;);</span>
-<span class="nc" id="L263">            Objects.requireNonNull(rule, &quot;rule&quot;);</span>
-<span class="nc" id="L264">            Objects.requireNonNull(action, &quot;action&quot;);</span>
-<span class="nc" id="L265">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
-<span class="nc" id="L266">            instance.schema.defineAfterAction(pass, rule, action);</span>
-<span class="nc" id="L267">            return this;</span>
+<span class="nc" id="L261">            Objects.requireNonNull(pass, &quot;pass&quot;);</span>
+<span class="nc" id="L262">            Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="nc" id="L263">            Objects.requireNonNull(action, &quot;action&quot;);</span>
+<span class="nc" id="L264">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
+<span class="nc" id="L265">            instance.schema.defineAfterAction(pass, rule, action);</span>
+<span class="nc" id="L266">            return this;</span>
         }
 
         /**
@@ -276,10 +275,10 @@ public final class SexprSchema
          */
         public Builder defineViaAnnotations (final Object object)
         {
-<span class="nc" id="L279">            Objects.requireNonNull(object, &quot;object&quot;);</span>
-<span class="nc" id="L280">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
-<span class="nc" id="L281">            instance.schema.defineViaReflection(object);</span>
-<span class="nc" id="L282">            return this;</span>
+<span class="fc" id="L278">            Objects.requireNonNull(object, &quot;object&quot;);</span>
+<span class="fc" id="L279">            Objects.requireNonNull(instance, &quot;build() was already called.&quot;);</span>
+<span class="fc" id="L280">            instance.schema.defineViaReflection(object);</span>
+<span class="fc" id="L281">            return this;</span>
         }
 
         /**
@@ -291,8 +290,8 @@ public final class SexprSchema
          */
         public Builder setFailureHandler (final Consumer&lt;Optional&lt;Sexpr&gt;&gt; handler)
         {
-<span class="nc" id="L294">            instance.schema.setFailureHandler(handler);</span>
-<span class="nc" id="L295">            return this;</span>
+<span class="nc" id="L293">            instance.schema.setFailureHandler(handler);</span>
+<span class="nc" id="L294">            return this;</span>
         }
 
         /**
@@ -302,9 +301,10 @@ public final class SexprSchema
          */
         public SexprSchema build ()
         {
-<span class="nc" id="L305">            final SexprSchema result = instance;</span>
-<span class="nc" id="L306">            instance = null;</span>
-<span class="nc" id="L307">            return result;</span>
+<span class="fc" id="L304">            final SexprSchema result = instance;</span>
+<span class="fc" id="L305">            instance = null;</span>
+<span class="fc" id="L306">            result.schema.validate();</span>
+<span class="fc" id="L307">            return result;</span>
         }
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mackenziehigh.sexpr;
+package com.mackenziehigh.sexpr.internal;
 
 import com.mackenziehigh.sexpr.internal.Escaper;
 import java.util.Arrays;

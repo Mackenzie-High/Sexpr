@@ -17,7 +17,6 @@ package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
 import com.mackenziehigh.sexpr.internal.schema.Schema.Rule;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.Objects;
  * An instance of this interfaces represents
  * the successful match of a single schema rule.
  */
-public final class MatchNode
+final class MatchNode
 {
     private final Rule rule;
 
@@ -47,12 +46,12 @@ public final class MatchNode
     public MatchNode (final Rule rule,
                       final Sexpr node,
                       final List&lt;MatchNode&gt; children)
-<span class="fc" id="L50">    {</span>
-<span class="fc" id="L51">        this.rule = Objects.requireNonNull(rule, &quot;rule&quot;);</span>
-<span class="fc" id="L52">        this.node = Objects.requireNonNull(node, &quot;node&quot;);</span>
-<span class="fc" id="L53">        this.children = Collections.unmodifiableList(new ArrayList(Objects.requireNonNull(children, &quot;children&quot;)));</span>
-<span class="fc" id="L54">        this.treeSize = children.stream().mapToInt(x -&gt; x.treeSize()).sum() + 1;</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L49">    {</span>
+<span class="fc" id="L50">        this.rule = Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="fc" id="L51">        this.node = Objects.requireNonNull(node, &quot;node&quot;);</span>
+<span class="fc" id="L52">        this.children = Collections.unmodifiableList(new ArrayList(Objects.requireNonNull(children, &quot;children&quot;)));</span>
+<span class="fc" id="L53">        this.treeSize = children.stream().mapToInt(x -&gt; x.treeSize()).sum() + 1;</span>
+<span class="fc" id="L54">    }</span>
 
     /**
      * This is the the rule that this result describes.
@@ -61,7 +60,7 @@ public final class MatchNode
      */
     public Rule rule ()
     {
-<span class="nc" id="L64">        return rule;</span>
+<span class="fc" id="L63">        return rule;</span>
     }
 
     /**
@@ -76,7 +75,7 @@ public final class MatchNode
      */
     public Sexpr node ()
     {
-<span class="nc" id="L79">        return node;</span>
+<span class="fc" id="L78">        return node;</span>
     }
 
     /**
@@ -87,7 +86,7 @@ public final class MatchNode
      */
     public List&lt;MatchNode&gt; children ()
     {
-<span class="nc" id="L90">        return children;</span>
+<span class="fc" id="L89">        return children;</span>
     }
 
     /**
@@ -98,34 +97,7 @@ public final class MatchNode
      */
     public int treeSize ()
     {
-<span class="fc" id="L101">        return treeSize;</span>
+<span class="fc" id="L100">        return treeSize;</span>
     }
-
-    /**
-     * This method prints a description of this match to the output.
-     *
-     * @param out is where the description will be printed.
-     */
-    public void print (final PrintStream out)
-    {
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (rule.isAnonymous() == false)</span>
-        {
-<span class="nc" id="L113">            out.println(&quot;BEFORE: &quot; + rule.name());</span>
-        }
-
-<span class="nc bnc" id="L116" title="All 4 branches missed.">        if (treeSize == 1 &amp;&amp; node.isAtom())</span>
-        {
-<span class="nc" id="L118">            out.println(&quot;ATOM: &quot; + node.toString());</span>
-        }
-        else
-        {
-<span class="nc" id="L122">            children().forEach(x -&gt; x.print(out));</span>
-        }
-
-<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (rule.isAnonymous() == false)</span>
-        {
-<span class="nc" id="L127">            out.println(&quot;AFTER: &quot; + rule.name());</span>
-        }
-<span class="nc" id="L129">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

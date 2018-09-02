@@ -73,8 +73,7 @@ public final class SexprSchema
     public static Builder fromString (final String source,
                                       final String schema)
     {
-        final SchemaParser parser = new SchemaParser();
-        final Schema pattern = parser.parse(source, schema);
+        final Schema pattern = SchemaParser.parse(source, schema);
         return new Builder(pattern);
     }
 
@@ -304,6 +303,7 @@ public final class SexprSchema
         {
             final SexprSchema result = instance;
             instance = null;
+            result.schema.validate();
             return result;
         }
     }

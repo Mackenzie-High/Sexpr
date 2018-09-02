@@ -5,19 +5,16 @@
         <group>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/util/BuilderStack.java</file>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/Schema.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/LexerHelpers.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/Escaper.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/exceptions/InvalidSchemaException.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/MatchNode.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/SX.txt</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/test/com/mackenziehigh/sexpr/TreeMutatorTest.java</file>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/test/com/mackenziehigh/sexpr/SexprSchemaTest.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/Parser.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/SList.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/test/com/mackenziehigh/sexpr/SListTest.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/Lexer.java</file>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/Notes.txt</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/Lexer.txt</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/Visitor.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/exceptions/ParsingFailedException.java</file>
             <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/SchemaParser.java</file>
-            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/SchemaDev.java</file>
+            <file>jar:file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/grammars/SexprGrammar.snow!/Grammar.txt</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/SexprSchema.java</file>
+            <file>file:/media/mackenzie/BlackBox2/Code/NetBeansProjects/Sexpr/src/com/mackenziehigh/sexpr/internal/schema/SS.txt</file>
         </group>
     </open-files>
 </project-private>

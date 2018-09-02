@@ -17,7 +17,6 @@ package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
 import com.mackenziehigh.sexpr.internal.schema.Schema.Rule;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.Objects;
  * An instance of this interfaces represents
  * the successful match of a single schema rule.
  */
-public final class MatchNode
+final class MatchNode
 {
     private final Rule rule;
 
@@ -99,32 +98,5 @@ public final class MatchNode
     public int treeSize ()
     {
         return treeSize;
-    }
-
-    /**
-     * This method prints a description of this match to the output.
-     *
-     * @param out is where the description will be printed.
-     */
-    public void print (final PrintStream out)
-    {
-        if (rule.isAnonymous() == false)
-        {
-            out.println("BEFORE: " + rule.name());
-        }
-
-        if (treeSize == 1 && node.isAtom())
-        {
-            out.println("ATOM: " + node.toString());
-        }
-        else
-        {
-            children().forEach(x -> x.print(out));
-        }
-
-        if (rule.isAnonymous() == false)
-        {
-            out.println("AFTER: " + rule.name());
-        }
     }
 }

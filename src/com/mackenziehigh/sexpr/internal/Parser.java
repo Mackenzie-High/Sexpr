@@ -44,12 +44,4 @@ public final class Parser
             throw new RuntimeException(ex);
         }
     }
-
-    public static void main (String[] args)
-            throws ParsingFailedException
-    {
-        final Sexpr s = Parser.parse("", "(");
-
-        System.out.println("Sexpr = " + s);
-    }
 }
