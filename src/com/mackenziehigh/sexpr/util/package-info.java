@@ -1,4 +1,4 @@
 /**
- * Symbolic-Expression and Translation related Utilities.
+ * Utility Classes.
  */
 package com.mackenziehigh.sexpr.util;
