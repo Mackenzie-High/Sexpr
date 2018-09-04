@@ -1,11 +1,11 @@
 
 TODO:
-+ Fix reporting locations of syntax errors during parsing (both expressions and schemas). 
-+ Rename toAtom() and toList() to asAtom() and asList().
-+ Check generics everywhere: Sexpr<?> instead of Sexpr.
 + Add a way of quickly and reliably computing the size of a Sexpr in chars and bytes.
-+ Implement and test Builder stack.
++ Check generics everywhere: Sexpr<?> instead of Sexpr.
+
+
 + Implement and test String Printer.
++ Test reporting of syntax errors in schemas.
 + Improve exceptional causes by using custom exception types.
 + A Schema only needs validated once, not per match attempt.
 + Finish testing Sexpr Schema, including:
@@ -16,7 +16,7 @@ TODO:
 + Test parseFile and parseResource.
 + + Normal Cases
 + + File/Resource not found.
-+ Consider replacing SAtom constructors with factory methods.
+
 
 
 

@@ -24,7 +24,7 @@ import java.util.Objects;
 public final class SourceLocation
 {
 
-    public static SourceLocation DEFAULT = new SourceLocation("N/A", 0, 0);
+    public static SourceLocation DEFAULT = new SourceLocation("null", 0, 0);
 
     private final String source;
 

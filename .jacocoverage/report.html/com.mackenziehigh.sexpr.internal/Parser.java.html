@@ -6,43 +6,60 @@ import com.mackenziehigh.sexpr.exceptions.ParsingFailedException;
 import java.io.IOException;
 import java.io.StringReader;
 
-<span class="nc" id="L9">public final class Parser</span>
+/**
+ * Converts a &lt;code&gt;String&lt;/code&gt; to a &lt;code&gt;SList&lt;/code&gt;.
+ */
+<span class="nc" id="L12">public final class Parser</span>
 {
     public static SList parse (final String source,
                                final String text)
             throws ParsingFailedException
     {
-<span class="fc" id="L15">        final Lexer lexer = new Lexer(new StringReader(text));</span>
+<span class="fc" id="L18">        final Lexer lexer = new Lexer(new StringReader(text));</span>
+<span class="fc" id="L19">        lexer.stack.setSource(source);</span>
 
         try
         {
-<span class="fc" id="L19">            lexer.stack.begin();</span>
-
-<span class="pc bpc" id="L21" title="1 of 2 branches missed.">            while (Lexer.YYEOF != lexer.yylex())</span>
+            /**
+             * Keep invoking the lexer, until it reaches the End-Of-Input.
+             * The lexer has embedded actions that will execute upon token matches.
+             * The actions manipulate an internal stack of tokens.
+             */
+<span class="fc" id="L28">            lexer.stack.parenOpen(0, 0);</span>
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">            while (Lexer.YYEOF != lexer.yylex())</span>
             {
                 // Pass
             }
+<span class="fc" id="L33">            lexer.stack.parenClose();</span>
 
-<span class="fc" id="L26">            lexer.stack.end();</span>
-
-<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (lexer.stack.size() &gt; 1)</span>
+            /**
+             * If the stack is not empty, then the input is missing a closing parenthesis.
+             */
+<span class="fc" id="L38">            final Sexpr&lt;?&gt; top = lexer.stack.top();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (lexer.stack.size() &gt; 1)</span>
             {
-                // TODO: Fix error location reporting with SLists
-<span class="fc" id="L31">                final Sexpr&lt;?&gt; top = lexer.stack.peek();</span>
-<span class="fc" id="L32">                throw new ParsingFailedException(top.location());</span>
+<span class="fc" id="L41">                throw new ParsingFailedException(top.location());</span>
             }
 
-<span class="fc" id="L35">            final SList root = (SList) lexer.stack.pop();</span>
-
-<span class="fc" id="L37">            return root;</span>
+            /**
+             * Parsing was successful.
+             */
+<span class="fc" id="L47">            final SList root = (SList) top;</span>
+<span class="fc" id="L48">            return root;</span>
         }
-<span class="nc" id="L39">        catch (IOException ex)</span>
+<span class="nc" id="L50">        catch (IOException ex)</span>
         {
             /**
              * This should never actually happen.
              */
-<span class="nc" id="L44">            throw new RuntimeException(ex);</span>
+<span class="nc" id="L55">            throw new RuntimeException(ex);</span>
         }
     }
+
+    public static void main (String[] args)
+    {
+<span class="nc" id="L61">        final SList list = SList.parse(&quot;1 (2&quot;);</span>
+<span class="nc" id="L62">        System.out.println(&quot;X = &quot; + list);</span>
+<span class="nc" id="L63">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

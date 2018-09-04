@@ -217,20 +217,20 @@ public final class SchemaParser
 
     private void translateRoot (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L220">        final String name = node.toList().get(1).toString();</span>
+<span class="fc" id="L220">        final String name = node.asList().get(1).toString();</span>
 <span class="fc" id="L221">        b.defineRoot(name);</span>
 <span class="fc" id="L222">    }</span>
 
     private void translateAssign (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L226">        final String name = node.toList().get(0).toString();</span>
+<span class="fc" id="L226">        final String name = node.asList().get(0).toString();</span>
 <span class="fc" id="L227">        final Rule value = (Rule) stack.pop();</span>
 <span class="fc" id="L228">        b.defineNamedRule(name, value.name());</span>
 <span class="fc" id="L229">    }</span>
 
     private void translateSeq (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L233">        final int elementCount = node.toList().size() - 1;</span>
+<span class="fc" id="L233">        final int elementCount = node.asList().size() - 1;</span>
 
 <span class="fc" id="L235">        final LinkedList&lt;SequenceElement&gt; elements = new LinkedList&lt;&gt;();</span>
 
@@ -296,8 +296,8 @@ public final class SchemaParser
     private void translateRepeat (final Sexpr&lt;?&gt; node)
     {
 <span class="fc" id="L298">        final Rule element = (Rule) stack.pop();</span>
-<span class="fc" id="L299">        final int minimum = Integer.parseInt(node.toList().get(2).toString());</span>
-<span class="fc" id="L300">        final int maximum = Integer.parseInt(node.toList().get(3).toString());</span>
+<span class="fc" id="L299">        final int minimum = Integer.parseInt(node.asList().get(2).toString());</span>
+<span class="fc" id="L300">        final int maximum = Integer.parseInt(node.asList().get(3).toString());</span>
 <span class="fc" id="L301">        translateRepeat(element, minimum, maximum);</span>
 <span class="fc" id="L302">    }</span>
 
@@ -331,7 +331,7 @@ public final class SchemaParser
 
     private void translateEither (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L334">        final int elementCount = node.toList().size() - 1;</span>
+<span class="fc" id="L334">        final int elementCount = node.asList().size() - 1;</span>
 
 <span class="fc" id="L336">        final LinkedList&lt;String&gt; elements = new LinkedList&lt;&gt;();</span>
 
@@ -347,7 +347,7 @@ public final class SchemaParser
 
     private void translateAnd (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L350">        final int elementCount = node.toList().size() - 1;</span>
+<span class="fc" id="L350">        final int elementCount = node.asList().size() - 1;</span>
 
 <span class="fc" id="L352">        final LinkedList&lt;String&gt; elements = new LinkedList&lt;&gt;();</span>
 
@@ -370,28 +370,28 @@ public final class SchemaParser
 
     private void translateAtom (final Sexpr&lt;?&gt; node)
     {
-<span class="pc bpc" id="L373" title="1 of 2 branches missed.">        final String regex = node.toList().size() == 1 ? &quot;.*&quot; : node.toList().get(1).toString();</span>
+<span class="pc bpc" id="L373" title="1 of 2 branches missed.">        final String regex = node.asList().size() == 1 ? &quot;.*&quot; : node.asList().get(1).toString();</span>
 <span class="fc" id="L374">        final Rule rule = b.defineRegexRule(regex);</span>
 <span class="fc" id="L375">        stack.push(rule);</span>
 <span class="fc" id="L376">    }</span>
 
     private void translateKeyword (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L380">        final String keyword = node.toList().get(1).toString();</span>
+<span class="fc" id="L380">        final String keyword = node.asList().get(1).toString();</span>
 <span class="fc" id="L381">        final Rule rule = b.defineConstantRule(keyword);</span>
 <span class="fc" id="L382">        stack.push(rule);</span>
 <span class="fc" id="L383">    }</span>
 
     private void translatePredicate (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L387">        final String name = node.toList().get(1).toString();</span>
+<span class="fc" id="L387">        final String name = node.asList().get(1).toString();</span>
 <span class="fc" id="L388">        final Rule rule = b.definePredicateRule(name);</span>
 <span class="fc" id="L389">        stack.push(rule);</span>
 <span class="fc" id="L390">    }</span>
 
     private void translateRef (final Sexpr&lt;?&gt; node)
     {
-<span class="fc" id="L394">        final String name = node.toList().get(1).toString();</span>
+<span class="fc" id="L394">        final String name = node.asList().get(1).toString();</span>
 <span class="fc" id="L395">        final Rule rule = b.defineReference(name);</span>
 <span class="fc" id="L396">        stack.push(rule);</span>
 <span class="fc" id="L397">    }</span>

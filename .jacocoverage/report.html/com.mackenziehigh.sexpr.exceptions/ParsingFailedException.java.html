@@ -12,19 +12,21 @@ public class ParsingFailedException
     private final SourceLocation location;
 
     public ParsingFailedException (final SourceLocation location)
-<span class="fc" id="L15">    {</span>
-<span class="fc" id="L16">        this.location = Objects.requireNonNull(location);</span>
-<span class="fc" id="L17">    }</span>
+    {
+<span class="fc" id="L16">        super(String.format(&quot;Parsing Failed At Line: %d, Column: %d, Source: %s&quot;,</span>
+<span class="fc" id="L17">                            location.line(), location.column(), location.source()));</span>
+<span class="fc" id="L18">        this.location = Objects.requireNonNull(location);</span>
+<span class="fc" id="L19">    }</span>
 
     public SourceLocation location ()
     {
-<span class="nc" id="L21">        return location;</span>
+<span class="nc" id="L23">        return location;</span>
     }
 
     @Override
     public String toString ()
     {
-<span class="nc" id="L27">        return location.toString();</span>
+<span class="nc" id="L29">        return location.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

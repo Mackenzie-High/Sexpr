@@ -542,6 +542,24 @@ public final class SList
     }
 
     /**
+     * This method converts the textual representation of a SList
+     * to an actual corresponding SList object.
+     *
+     * <p>
+     * This method inserts an implicit symbolic-list into the input.
+     * For example, the input "(1 2) (3 4)" will produce a SList equivalent to "((1 2) (3 4))".
+     * </p>
+     *
+     * @param input is the input to parse.
+     * @return the resulting symbolic-list.
+     */
+    public static SList parse (final String input)
+    {
+        final SList root = Parser.parse("null", input);
+        return root;
+    }
+
+    /**
      * This method converts the textual representation of a resource file
      * to an actual corresponding SList object.
      *

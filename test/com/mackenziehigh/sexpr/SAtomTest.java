@@ -49,7 +49,7 @@ public class SAtomTest
         final StringBuilder content = new StringBuilder(70100);
         IntStream.rangeClosed(1, Character.MAX_VALUE).forEach(i -> content.append((char) i));
         final String expected = content.toString();
-        final SAtom atom = new SAtom(expected);
+        final SAtom atom = SAtom.fromString(expected);
         final String actual = atom.content();
         assertEquals(expected, actual);
 
@@ -72,7 +72,7 @@ public class SAtomTest
         System.out.println("Test: 20170617092746028626");
 
         final String expected = "a\\tb";
-        final String actual = new SAtom("a\tb").escaped();
+        final String actual = SAtom.fromString("a\tb").escaped();
         assertEquals(expected, actual);
     }
 
@@ -92,7 +92,7 @@ public class SAtomTest
     {
         System.out.println("Test: 20170617092746028665");
 
-        assertTrue(new SAtom("(x)").isAtom());
+        assertTrue(SAtom.fromString("(x)").isAtom());
     }
 
     /**
@@ -111,7 +111,7 @@ public class SAtomTest
     {
         System.out.println("Test: 20170617092746028682");
 
-        assertFalse(new SAtom("(x)").isList());
+        assertFalse(SAtom.fromString("(x)").isList());
     }
 
     /**
@@ -130,9 +130,9 @@ public class SAtomTest
     {
         System.out.println("Test: 20170617092746028696");
 
-        assertEquals(String.class, new SAtom("java.lang.String").asClass().get());
-        assertFalse(new SAtom("MyString").asClass().isPresent());
-        assertFalse(new SAtom("123").asClass().isPresent());
+        assertEquals(String.class, SAtom.fromString("java.lang.String").asClass().get());
+        assertFalse(SAtom.fromString("MyString").asClass().isPresent());
+        assertFalse(SAtom.fromString("123").asClass().isPresent());
     }
 
     /**
@@ -152,33 +152,33 @@ public class SAtomTest
         System.out.println("Test: 20170617092746028708");
 
         // True, lowercase.
-        assertTrue(new SAtom("true").asBoolean().get());
-        assertTrue(new SAtom("yes").asBoolean().get());
-        assertTrue(new SAtom("on").asBoolean().get());
-        assertTrue(new SAtom("t").asBoolean().get());
-        assertTrue(new SAtom("1").asBoolean().get());
+        assertTrue(SAtom.fromString("true").asBoolean().get());
+        assertTrue(SAtom.fromString("yes").asBoolean().get());
+        assertTrue(SAtom.fromString("on").asBoolean().get());
+        assertTrue(SAtom.fromString("t").asBoolean().get());
+        assertTrue(SAtom.fromString("1").asBoolean().get());
 
         // True, uppercase.
-        assertTrue(new SAtom("TRUE").asBoolean().get());
-        assertTrue(new SAtom("YES").asBoolean().get());
-        assertTrue(new SAtom("ON").asBoolean().get());
-        assertTrue(new SAtom("T").asBoolean().get());
+        assertTrue(SAtom.fromString("TRUE").asBoolean().get());
+        assertTrue(SAtom.fromString("YES").asBoolean().get());
+        assertTrue(SAtom.fromString("ON").asBoolean().get());
+        assertTrue(SAtom.fromString("T").asBoolean().get());
 
         // False, lowercase.
-        assertFalse(new SAtom("false").asBoolean().get());
-        assertFalse(new SAtom("no").asBoolean().get());
-        assertFalse(new SAtom("off").asBoolean().get());
-        assertFalse(new SAtom("f").asBoolean().get());
-        assertFalse(new SAtom("0").asBoolean().get());
+        assertFalse(SAtom.fromString("false").asBoolean().get());
+        assertFalse(SAtom.fromString("no").asBoolean().get());
+        assertFalse(SAtom.fromString("off").asBoolean().get());
+        assertFalse(SAtom.fromString("f").asBoolean().get());
+        assertFalse(SAtom.fromString("0").asBoolean().get());
 
         // False, uppercase.
-        assertFalse(new SAtom("FALSE").asBoolean().get());
-        assertFalse(new SAtom("NO").asBoolean().get());
-        assertFalse(new SAtom("OFF").asBoolean().get());
-        assertFalse(new SAtom("F").asBoolean().get());
+        assertFalse(SAtom.fromString("FALSE").asBoolean().get());
+        assertFalse(SAtom.fromString("NO").asBoolean().get());
+        assertFalse(SAtom.fromString("OFF").asBoolean().get());
+        assertFalse(SAtom.fromString("F").asBoolean().get());
 
         // Neither True not False.
-        assertFalse(new SAtom("X").asBoolean().isPresent());
+        assertFalse(SAtom.fromString("X").asBoolean().isPresent());
     }
 
     /**
@@ -200,24 +200,24 @@ public class SAtomTest
         // All Numeric Values
         for (int i = Character.MIN_VALUE; i <= Character.MAX_VALUE; i++)
         {
-            assertEquals((char) i, (char) new SAtom(Integer.toString((int) i)).asChar().get());
+            assertEquals((char) i, (char) SAtom.fromString(Integer.toString((int) i)).asChar().get());
         }
 
         // Named Values
-        assertEquals(Character.MAX_VALUE, (char) new SAtom("MAXIMUM").asChar().get());
-        assertEquals(Character.MIN_VALUE, (char) new SAtom("MINIMUM").asChar().get());
-        assertEquals(Character.MAX_VALUE, (char) new SAtom("MAX").asChar().get());
-        assertEquals(Character.MIN_VALUE, (char) new SAtom("MIN").asChar().get());
-        assertEquals(Character.MAX_VALUE, (char) new SAtom("max").asChar().get());
-        assertEquals(Character.MIN_VALUE, (char) new SAtom("min").asChar().get());
+        assertEquals(Character.MAX_VALUE, (char) SAtom.fromString("MAXIMUM").asChar().get());
+        assertEquals(Character.MIN_VALUE, (char) SAtom.fromString("MINIMUM").asChar().get());
+        assertEquals(Character.MAX_VALUE, (char) SAtom.fromString("MAX").asChar().get());
+        assertEquals(Character.MIN_VALUE, (char) SAtom.fromString("MIN").asChar().get());
+        assertEquals(Character.MAX_VALUE, (char) SAtom.fromString("max").asChar().get());
+        assertEquals(Character.MIN_VALUE, (char) SAtom.fromString("min").asChar().get());
 
         // Overflow
         // Use Integer MAX_VALUE and MIN_VALUE here, instead of Character MAX_VALUE and MIN_VALUE.
-        assertFalse(new SAtom(Integer.toString(Integer.MAX_VALUE) + "000").asChar().isPresent());
-        assertFalse(new SAtom(Integer.toString(Integer.MIN_VALUE) + "000").asChar().isPresent());
+        assertFalse(SAtom.fromString(Integer.toString(Integer.MAX_VALUE) + "000").asChar().isPresent());
+        assertFalse(SAtom.fromString(Integer.toString(Integer.MIN_VALUE) + "000").asChar().isPresent());
 
         // Non Numeric
-        assertFalse(new SAtom("NaN").asChar().isPresent());
+        assertFalse(SAtom.fromString("NaN").asChar().isPresent());
     }
 
     /**
@@ -239,23 +239,23 @@ public class SAtomTest
         // All Numeric Values
         for (int i = Byte.MIN_VALUE; i <= Byte.MAX_VALUE; i++)
         {
-            assertEquals((byte) i, (byte) new SAtom(Byte.toString((byte) i)).asByte().get());
+            assertEquals((byte) i, (byte) SAtom.fromString(Byte.toString((byte) i)).asByte().get());
         }
 
         // Named Values
-        assertEquals(Byte.MAX_VALUE, (byte) new SAtom("MAXIMUM").asByte().get());
-        assertEquals(Byte.MIN_VALUE, (byte) new SAtom("MINIMUM").asByte().get());
-        assertEquals(Byte.MAX_VALUE, (byte) new SAtom("MAX").asByte().get());
-        assertEquals(Byte.MIN_VALUE, (byte) new SAtom("MIN").asByte().get());
-        assertEquals(Byte.MAX_VALUE, (byte) new SAtom("max").asByte().get());
-        assertEquals(Byte.MIN_VALUE, (byte) new SAtom("min").asByte().get());
+        assertEquals(Byte.MAX_VALUE, (byte) SAtom.fromString("MAXIMUM").asByte().get());
+        assertEquals(Byte.MIN_VALUE, (byte) SAtom.fromString("MINIMUM").asByte().get());
+        assertEquals(Byte.MAX_VALUE, (byte) SAtom.fromString("MAX").asByte().get());
+        assertEquals(Byte.MIN_VALUE, (byte) SAtom.fromString("MIN").asByte().get());
+        assertEquals(Byte.MAX_VALUE, (byte) SAtom.fromString("max").asByte().get());
+        assertEquals(Byte.MIN_VALUE, (byte) SAtom.fromString("min").asByte().get());
 
         // Overflow
-        assertFalse(new SAtom(Byte.toString(Byte.MAX_VALUE) + "000").asByte().isPresent());
-        assertFalse(new SAtom(Byte.toString(Byte.MIN_VALUE) + "000").asByte().isPresent());
+        assertFalse(SAtom.fromString(Byte.toString(Byte.MAX_VALUE) + "000").asByte().isPresent());
+        assertFalse(SAtom.fromString(Byte.toString(Byte.MIN_VALUE) + "000").asByte().isPresent());
 
         // Non Numeric
-        assertFalse(new SAtom("NaN").asByte().isPresent());
+        assertFalse(SAtom.fromString("NaN").asByte().isPresent());
     }
 
     /**
@@ -277,23 +277,23 @@ public class SAtomTest
         // All Numeric Values
         for (int i = Short.MIN_VALUE; i <= Short.MAX_VALUE; i++)
         {
-            assertEquals((short) i, (short) new SAtom(Short.toString((short) i)).asShort().get());
+            assertEquals((short) i, (short) SAtom.fromString(Short.toString((short) i)).asShort().get());
         }
 
         // Named Values
-        assertEquals(Short.MAX_VALUE, (short) new SAtom("MAXIMUM").asShort().get());
-        assertEquals(Short.MIN_VALUE, (short) new SAtom("MINIMUM").asShort().get());
-        assertEquals(Short.MAX_VALUE, (short) new SAtom("MAX").asShort().get());
-        assertEquals(Short.MIN_VALUE, (short) new SAtom("MIN").asShort().get());
-        assertEquals(Short.MAX_VALUE, (short) new SAtom("max").asShort().get());
-        assertEquals(Short.MIN_VALUE, (short) new SAtom("min").asShort().get());
+        assertEquals(Short.MAX_VALUE, (short) SAtom.fromString("MAXIMUM").asShort().get());
+        assertEquals(Short.MIN_VALUE, (short) SAtom.fromString("MINIMUM").asShort().get());
+        assertEquals(Short.MAX_VALUE, (short) SAtom.fromString("MAX").asShort().get());
+        assertEquals(Short.MIN_VALUE, (short) SAtom.fromString("MIN").asShort().get());
+        assertEquals(Short.MAX_VALUE, (short) SAtom.fromString("max").asShort().get());
+        assertEquals(Short.MIN_VALUE, (short) SAtom.fromString("min").asShort().get());
 
         // Overflow
-        assertFalse(new SAtom(Short.toString(Short.MAX_VALUE) + "000").asShort().isPresent());
-        assertFalse(new SAtom(Short.toString(Short.MIN_VALUE) + "000").asShort().isPresent());
+        assertFalse(SAtom.fromString(Short.toString(Short.MAX_VALUE) + "000").asShort().isPresent());
+        assertFalse(SAtom.fromString(Short.toString(Short.MIN_VALUE) + "000").asShort().isPresent());
 
         // Non Numeric
-        assertFalse(new SAtom("NaN").asShort().isPresent());
+        assertFalse(SAtom.fromString("NaN").asShort().isPresent());
     }
 
     /**
@@ -313,23 +313,23 @@ public class SAtomTest
         System.out.println("Test: 20170624035717716359");
 
         // Numeric Values
-        assertEquals(Integer.MAX_VALUE, (int) new SAtom(Integer.toString(Integer.MAX_VALUE)).asInt().get());
-        assertEquals(Integer.MIN_VALUE, (int) new SAtom(Integer.toString(Integer.MIN_VALUE)).asInt().get());
+        assertEquals(Integer.MAX_VALUE, (int) SAtom.fromString(Integer.toString(Integer.MAX_VALUE)).asInt().get());
+        assertEquals(Integer.MIN_VALUE, (int) SAtom.fromString(Integer.toString(Integer.MIN_VALUE)).asInt().get());
 
         // Named Values
-        assertEquals(Integer.MAX_VALUE, (int) new SAtom("MAXIMUM").asInt().get());
-        assertEquals(Integer.MIN_VALUE, (int) new SAtom("MINIMUM").asInt().get());
-        assertEquals(Integer.MAX_VALUE, (int) new SAtom("MAX").asInt().get());
-        assertEquals(Integer.MIN_VALUE, (int) new SAtom("MIN").asInt().get());
-        assertEquals(Integer.MAX_VALUE, (int) new SAtom("max").asInt().get());
-        assertEquals(Integer.MIN_VALUE, (int) new SAtom("min").asInt().get());
+        assertEquals(Integer.MAX_VALUE, (int) SAtom.fromString("MAXIMUM").asInt().get());
+        assertEquals(Integer.MIN_VALUE, (int) SAtom.fromString("MINIMUM").asInt().get());
+        assertEquals(Integer.MAX_VALUE, (int) SAtom.fromString("MAX").asInt().get());
+        assertEquals(Integer.MIN_VALUE, (int) SAtom.fromString("MIN").asInt().get());
+        assertEquals(Integer.MAX_VALUE, (int) SAtom.fromString("max").asInt().get());
+        assertEquals(Integer.MIN_VALUE, (int) SAtom.fromString("min").asInt().get());
 
         // Overflow
-        assertFalse(new SAtom(Integer.toString(Integer.MAX_VALUE) + "000").asInt().isPresent());
-        assertFalse(new SAtom(Integer.toString(Integer.MIN_VALUE) + "000").asInt().isPresent());
+        assertFalse(SAtom.fromString(Integer.toString(Integer.MAX_VALUE) + "000").asInt().isPresent());
+        assertFalse(SAtom.fromString(Integer.toString(Integer.MIN_VALUE) + "000").asInt().isPresent());
 
         // Non Numeric
-        assertFalse(new SAtom("NaN").asInt().isPresent());
+        assertFalse(SAtom.fromString("NaN").asInt().isPresent());
     }
 
     /**
@@ -349,23 +349,23 @@ public class SAtomTest
         System.out.println("Test: 20170617092746028723");
 
         // Numeric Values
-        assertEquals(Long.MAX_VALUE, (long) new SAtom(Long.toString(Long.MAX_VALUE)).asLong().get());
-        assertEquals(Long.MIN_VALUE, (long) new SAtom(Long.toString(Long.MIN_VALUE)).asLong().get());
+        assertEquals(Long.MAX_VALUE, (long) SAtom.fromString(Long.toString(Long.MAX_VALUE)).asLong().get());
+        assertEquals(Long.MIN_VALUE, (long) SAtom.fromString(Long.toString(Long.MIN_VALUE)).asLong().get());
 
         // Named Values
-        assertEquals(Long.MAX_VALUE, (long) new SAtom("MAXIMUM").asLong().get());
-        assertEquals(Long.MIN_VALUE, (long) new SAtom("MINIMUM").asLong().get());
-        assertEquals(Long.MAX_VALUE, (long) new SAtom("MAX").asLong().get());
-        assertEquals(Long.MIN_VALUE, (long) new SAtom("MIN").asLong().get());
-        assertEquals(Long.MAX_VALUE, (long) new SAtom("max").asLong().get());
-        assertEquals(Long.MIN_VALUE, (long) new SAtom("min").asLong().get());
+        assertEquals(Long.MAX_VALUE, (long) SAtom.fromString("MAXIMUM").asLong().get());
+        assertEquals(Long.MIN_VALUE, (long) SAtom.fromString("MINIMUM").asLong().get());
+        assertEquals(Long.MAX_VALUE, (long) SAtom.fromString("MAX").asLong().get());
+        assertEquals(Long.MIN_VALUE, (long) SAtom.fromString("MIN").asLong().get());
+        assertEquals(Long.MAX_VALUE, (long) SAtom.fromString("max").asLong().get());
+        assertEquals(Long.MIN_VALUE, (long) SAtom.fromString("min").asLong().get());
 
         // Overflow
-        assertFalse(new SAtom(Long.toString(Long.MAX_VALUE) + "000").asLong().isPresent());
-        assertFalse(new SAtom(Long.toString(Long.MIN_VALUE) + "000").asLong().isPresent());
+        assertFalse(SAtom.fromString(Long.toString(Long.MAX_VALUE) + "000").asLong().isPresent());
+        assertFalse(SAtom.fromString(Long.toString(Long.MIN_VALUE) + "000").asLong().isPresent());
 
         // Non Numeric
-        assertFalse(new SAtom("NaN").asLong().isPresent());
+        assertFalse(SAtom.fromString("NaN").asLong().isPresent());
     }
 
     /**
@@ -385,41 +385,41 @@ public class SAtomTest
         System.out.println("Test: 20170624061055956220");
 
         // Constant Numeric Values
-        assertEquals(Float.MAX_VALUE, new SAtom(Float.toString(Float.MAX_VALUE)).asFloat().get(), 0.1);
-        assertEquals(Float.MIN_VALUE, new SAtom(Float.toString(Float.MIN_VALUE)).asFloat().get(), 0.1);
-        assertEquals(Float.NaN, new SAtom(Float.toString(Float.NaN)).asFloat().get(), 0.1);
-        assertEquals(Float.POSITIVE_INFINITY, new SAtom(Float.toString(Float.POSITIVE_INFINITY)).asFloat().get(), 0.1);
-        assertEquals(Float.NEGATIVE_INFINITY, new SAtom(Float.toString(Float.NEGATIVE_INFINITY)).asFloat().get(), 0.1);
+        assertEquals(Float.MAX_VALUE, SAtom.fromString(Float.toString(Float.MAX_VALUE)).asFloat().get(), 0.1);
+        assertEquals(Float.MIN_VALUE, SAtom.fromString(Float.toString(Float.MIN_VALUE)).asFloat().get(), 0.1);
+        assertEquals(Float.NaN, SAtom.fromString(Float.toString(Float.NaN)).asFloat().get(), 0.1);
+        assertEquals(Float.POSITIVE_INFINITY, SAtom.fromString(Float.toString(Float.POSITIVE_INFINITY)).asFloat().get(), 0.1);
+        assertEquals(Float.NEGATIVE_INFINITY, SAtom.fromString(Float.toString(Float.NEGATIVE_INFINITY)).asFloat().get(), 0.1);
 
         // Random Numeric Values
         final Random random = new Random(System.currentTimeMillis());
         for (int i = 0; i < 10000; i++)
         {
             final float expected = random.nextFloat();
-            final float actual = new SAtom(Float.toString(expected)).asFloat().get();
+            final float actual = SAtom.fromString(Float.toString(expected)).asFloat().get();
             assertEquals(expected, actual, 0.001);
         }
 
         // Overflow
-        assertEquals(Double.POSITIVE_INFINITY, new SAtom(Float.toString(Float.MAX_VALUE) + "000").asFloat().get(), 0.1);
+        assertEquals(Double.POSITIVE_INFINITY, SAtom.fromString(Float.toString(Float.MAX_VALUE) + "000").asFloat().get(), 0.1);
 
         // Non Numeric
-        assertFalse(new SAtom("XYZ").asFloat().isPresent());
+        assertFalse(SAtom.fromString("XYZ").asFloat().isPresent());
 
         // Case Insensitive Special Vaues
-        assertEquals(Float.NaN, new SAtom("NAN").asFloat().get(), 0.1);
-        assertEquals(Float.NaN, new SAtom("-NAN").asFloat().get(), 0.1);
-        assertEquals(Float.POSITIVE_INFINITY, new SAtom("INFINITY").asFloat().get(), 0.1);
-        assertEquals(Float.NEGATIVE_INFINITY, new SAtom("-INFINITY").asFloat().get(), 0.1);
-        assertEquals(Float.POSITIVE_INFINITY, new SAtom("INF").asFloat().get(), 0.1);
-        assertEquals(Float.NEGATIVE_INFINITY, new SAtom("-INF").asFloat().get(), 0.1);
+        assertEquals(Float.NaN, SAtom.fromString("NAN").asFloat().get(), 0.1);
+        assertEquals(Float.NaN, SAtom.fromString("-NAN").asFloat().get(), 0.1);
+        assertEquals(Float.POSITIVE_INFINITY, SAtom.fromString("INFINITY").asFloat().get(), 0.1);
+        assertEquals(Float.NEGATIVE_INFINITY, SAtom.fromString("-INFINITY").asFloat().get(), 0.1);
+        assertEquals(Float.POSITIVE_INFINITY, SAtom.fromString("INF").asFloat().get(), 0.1);
+        assertEquals(Float.NEGATIVE_INFINITY, SAtom.fromString("-INF").asFloat().get(), 0.1);
 
-        assertEquals(Float.NaN, new SAtom("nan").asFloat().get(), 0.1);
-        assertEquals(Float.NaN, new SAtom("-nan").asFloat().get(), 0.1);
-        assertEquals(Float.POSITIVE_INFINITY, new SAtom("infinity").asFloat().get(), 0.1);
-        assertEquals(Float.NEGATIVE_INFINITY, new SAtom("-infinity").asFloat().get(), 0.1);
-        assertEquals(Float.POSITIVE_INFINITY, new SAtom("inf").asFloat().get(), 0.1);
-        assertEquals(Float.NEGATIVE_INFINITY, new SAtom("-inf").asFloat().get(), 0.1);
+        assertEquals(Float.NaN, SAtom.fromString("nan").asFloat().get(), 0.1);
+        assertEquals(Float.NaN, SAtom.fromString("-nan").asFloat().get(), 0.1);
+        assertEquals(Float.POSITIVE_INFINITY, SAtom.fromString("infinity").asFloat().get(), 0.1);
+        assertEquals(Float.NEGATIVE_INFINITY, SAtom.fromString("-infinity").asFloat().get(), 0.1);
+        assertEquals(Float.POSITIVE_INFINITY, SAtom.fromString("inf").asFloat().get(), 0.1);
+        assertEquals(Float.NEGATIVE_INFINITY, SAtom.fromString("-inf").asFloat().get(), 0.1);
     }
 
     /**
@@ -439,41 +439,41 @@ public class SAtomTest
         System.out.println("Test: 20170617092746028737");
 
         // Constant Numeric Values
-        assertEquals(Double.MAX_VALUE, new SAtom(Double.toString(Double.MAX_VALUE)).asDouble().get(), 0.1);
-        assertEquals(Double.MIN_VALUE, new SAtom(Double.toString(Double.MIN_VALUE)).asDouble().get(), 0.1);
-        assertEquals(Double.NaN, new SAtom(Double.toString(Double.NaN)).asFloat().get(), 0.1);
-        assertEquals(Double.POSITIVE_INFINITY, new SAtom(Double.toString(Double.POSITIVE_INFINITY)).asDouble().get(), 0.1);
-        assertEquals(Double.NEGATIVE_INFINITY, new SAtom(Double.toString(Double.NEGATIVE_INFINITY)).asDouble().get(), 0.1);
+        assertEquals(Double.MAX_VALUE, SAtom.fromString(Double.toString(Double.MAX_VALUE)).asDouble().get(), 0.1);
+        assertEquals(Double.MIN_VALUE, SAtom.fromString(Double.toString(Double.MIN_VALUE)).asDouble().get(), 0.1);
+        assertEquals(Double.NaN, SAtom.fromString(Double.toString(Double.NaN)).asFloat().get(), 0.1);
+        assertEquals(Double.POSITIVE_INFINITY, SAtom.fromString(Double.toString(Double.POSITIVE_INFINITY)).asDouble().get(), 0.1);
+        assertEquals(Double.NEGATIVE_INFINITY, SAtom.fromString(Double.toString(Double.NEGATIVE_INFINITY)).asDouble().get(), 0.1);
 
         // Random Numeric Values
         final Random random = new Random(System.currentTimeMillis());
         for (int i = 0; i < 10000; i++)
         {
             final double expected = random.nextDouble();
-            final double actual = new SAtom(Double.toString(expected)).asDouble().get();
+            final double actual = SAtom.fromString(Double.toString(expected)).asDouble().get();
             assertEquals(expected, actual, 0.00001);
         }
 
         // Overflow
-        assertEquals(Double.POSITIVE_INFINITY, new SAtom(Double.toString(Double.MAX_VALUE) + "000").asDouble().get(), 0.1);
+        assertEquals(Double.POSITIVE_INFINITY, SAtom.fromString(Double.toString(Double.MAX_VALUE) + "000").asDouble().get(), 0.1);
 
         // Non Numeric
-        assertFalse(new SAtom("XYZ").asDouble().isPresent());
+        assertFalse(SAtom.fromString("XYZ").asDouble().isPresent());
 
         // Case Insensitive Special Vaues
-        assertEquals(Double.NaN, new SAtom("NAN").asDouble().get(), 0.1);
-        assertEquals(Double.NaN, new SAtom("-NAN").asDouble().get(), 0.1);
-        assertEquals(Double.POSITIVE_INFINITY, new SAtom("INFINITY").asDouble().get(), 0.1);
-        assertEquals(Double.NEGATIVE_INFINITY, new SAtom("-INFINITY").asDouble().get(), 0.1);
-        assertEquals(Double.POSITIVE_INFINITY, new SAtom("INF").asDouble().get(), 0.1);
-        assertEquals(Double.NEGATIVE_INFINITY, new SAtom("-INF").asDouble().get(), 0.1);
+        assertEquals(Double.NaN, SAtom.fromString("NAN").asDouble().get(), 0.1);
+        assertEquals(Double.NaN, SAtom.fromString("-NAN").asDouble().get(), 0.1);
+        assertEquals(Double.POSITIVE_INFINITY, SAtom.fromString("INFINITY").asDouble().get(), 0.1);
+        assertEquals(Double.NEGATIVE_INFINITY, SAtom.fromString("-INFINITY").asDouble().get(), 0.1);
+        assertEquals(Double.POSITIVE_INFINITY, SAtom.fromString("INF").asDouble().get(), 0.1);
+        assertEquals(Double.NEGATIVE_INFINITY, SAtom.fromString("-INF").asDouble().get(), 0.1);
 
-        assertEquals(Double.NaN, new SAtom("nan").asDouble().get(), 0.1);
-        assertEquals(Double.NaN, new SAtom("-nan").asDouble().get(), 0.1);
-        assertEquals(Double.POSITIVE_INFINITY, new SAtom("infinity").asDouble().get(), 0.1);
-        assertEquals(Double.NEGATIVE_INFINITY, new SAtom("-infinity").asDouble().get(), 0.1);
-        assertEquals(Double.POSITIVE_INFINITY, new SAtom("inf").asDouble().get(), 0.1);
-        assertEquals(Double.NEGATIVE_INFINITY, new SAtom("-inf").asDouble().get(), 0.1);
+        assertEquals(Double.NaN, SAtom.fromString("nan").asDouble().get(), 0.1);
+        assertEquals(Double.NaN, SAtom.fromString("-nan").asDouble().get(), 0.1);
+        assertEquals(Double.POSITIVE_INFINITY, SAtom.fromString("infinity").asDouble().get(), 0.1);
+        assertEquals(Double.NEGATIVE_INFINITY, SAtom.fromString("-infinity").asDouble().get(), 0.1);
+        assertEquals(Double.POSITIVE_INFINITY, SAtom.fromString("inf").asDouble().get(), 0.1);
+        assertEquals(Double.NEGATIVE_INFINITY, SAtom.fromString("-inf").asDouble().get(), 0.1);
     }
 
     /**
@@ -490,7 +490,7 @@ public class SAtomTest
     @Test
     public void test20170624053921963551 ()
     {
-        new SAtom("0a").asByteArray().get();
+        SAtom.fromString("0a").asByteArray().get();
 
         System.out.println("Test: 20170624053921963551");
 
@@ -502,7 +502,7 @@ public class SAtomTest
             for (int low = 0; low < 16; low++)
             {
                 final String hex = Integer.toHexString(high) + Integer.toHexString(low);
-                final SAtom atom = new SAtom(hex);
+                final SAtom atom = SAtom.fromString(hex);
                 final byte[] bytes = atom.asByteArray().get();
                 assertEquals(1, bytes.length);
                 assertEquals(Byte.toUnsignedInt((byte) (high * 16 + low)), Byte.toUnsignedInt(bytes[0]));
@@ -512,9 +512,9 @@ public class SAtomTest
         /**
          * Case: Invalid Values
          */
-        assertFalse(new SAtom("000").asByteArray().isPresent()); // odd number of chars
-        assertFalse(new SAtom("0G").asByteArray().isPresent()); // non hex chars
-        assertFalse(new SAtom("").asByteArray().isPresent()); // empty
+        assertFalse(SAtom.fromString("000").asByteArray().isPresent()); // odd number of chars
+        assertFalse(SAtom.fromString("0G").asByteArray().isPresent()); // non hex chars
+        assertFalse(SAtom.fromString("").asByteArray().isPresent()); // empty
     }
 
     /**
@@ -534,16 +534,16 @@ public class SAtomTest
         System.out.println("Test: 20170617092746028751");
 
         // No Special Characters => No Quotes
-        assertEquals("vulcan", new SAtom("vulcan").toString());
+        assertEquals("vulcan", SAtom.fromString("vulcan").toString());
 
         // Whitespace => Quote It!
-        assertEquals("'europa ganymede'", new SAtom("europa ganymede").toString());
+        assertEquals("'europa ganymede'", SAtom.fromString("europa ganymede").toString());
 
         // Whitespace => Quote It!
-        assertEquals("'alien@example.com'", new SAtom("alien@example.com").toString());
+        assertEquals("'alien@example.com'", SAtom.fromString("alien@example.com").toString());
 
         // Escape Sequence Characters => Quote It!
-        assertEquals("'\\b\\t\\n\\f\\r\\\'\\\"\\\\'", new SAtom("\b\t\n\f\r\'\"\\").toString());
+        assertEquals("'\\b\\t\\n\\f\\r\\\'\\\"\\\\'", SAtom.fromString("\b\t\n\f\r\'\"\\").toString());
     }
 
     /**
@@ -552,6 +552,8 @@ public class SAtomTest
      * <p>
      * Case: convenience constructors
      * </p>
+     *
+     * @throws java.io.UnsupportedEncodingException
      */
     @Test
     public void test20170617092746028764 ()
@@ -562,7 +564,7 @@ public class SAtomTest
         SAtom atom;
 
         // boolean
-        atom = new SAtom(true);
+        atom = SAtom.fromBoolean(true);
         assertEquals("true", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asBoolean().isPresent());
@@ -570,7 +572,7 @@ public class SAtomTest
         assertTrue(atom.asBoolean() == atom.asBoolean()); // identity
 
         // char
-        atom = new SAtom('M');
+        atom = SAtom.fromChar('M');
         assertEquals("77", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asChar().isPresent());
@@ -578,7 +580,7 @@ public class SAtomTest
         assertTrue(atom.asChar() == atom.asChar()); // identity
 
         // byte
-        atom = new SAtom((byte) 13);
+        atom = SAtom.fromByte((byte) 13);
         assertEquals("13", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asByte().isPresent());
@@ -586,7 +588,7 @@ public class SAtomTest
         assertTrue(atom.asByte() == atom.asByte()); // identity
 
         // short
-        atom = new SAtom((short) 17);
+        atom = SAtom.fromShort((short) 17);
         assertEquals("17", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asShort().isPresent());
@@ -594,7 +596,7 @@ public class SAtomTest
         assertTrue(atom.asShort() == atom.asShort()); // identity
 
         // int
-        atom = new SAtom((int) 19);
+        atom = SAtom.fromInt((int) 19);
         assertEquals("19", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asInt().isPresent());
@@ -602,7 +604,7 @@ public class SAtomTest
         assertTrue(atom.asInt() == atom.asInt()); // identity
 
         // long
-        atom = new SAtom((long) 23);
+        atom = SAtom.fromLong((long) 23);
         assertEquals("23", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asLong().isPresent());
@@ -610,7 +612,7 @@ public class SAtomTest
         assertTrue(atom.asLong() == atom.asLong()); // identity
 
         // float
-        atom = new SAtom((float) 27);
+        atom = SAtom.fromFloat((float) 27);
         assertEquals("27.0", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asFloat().isPresent());
@@ -618,7 +620,7 @@ public class SAtomTest
         assertTrue(atom.asFloat() == atom.asFloat()); // identity
 
         // double
-        atom = new SAtom((double) 29);
+        atom = SAtom.fromDouble((double) 29);
         assertEquals("29.0", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asDouble().isPresent());
@@ -626,13 +628,13 @@ public class SAtomTest
         assertTrue(atom.asDouble() == atom.asDouble()); // identity
 
         // String
-        atom = new SAtom("Vulcan");
+        atom = SAtom.fromString("Vulcan");
         assertEquals("Vulcan", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue((Object) atom.content() == (Object) atom.content()); // identity
 
         // Class
-        atom = new SAtom(String.class);
+        atom = SAtom.fromClass(String.class);
         assertEquals("java.lang.String", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asClass().isPresent());
@@ -640,7 +642,7 @@ public class SAtomTest
         assertTrue(atom.asClass() == atom.asClass()); // identity
 
         // byte[]
-        atom = new SAtom("Earth".getBytes("UTF-8"));
+        atom = SAtom.fromByteArray("Earth".getBytes("UTF-8"));
         assertEquals("4561727468", atom.content());
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue(atom.asByteArray().isPresent());
@@ -650,7 +652,7 @@ public class SAtomTest
         final SourceLocation moon = new SourceLocation("Europa", 1, 2);
 
         // boolean
-        atom = new SAtom(moon, true);
+        atom = SAtom.fromBoolean(moon, true);
         assertEquals("true", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asBoolean().isPresent());
@@ -658,7 +660,7 @@ public class SAtomTest
         assertTrue(atom.asBoolean() == atom.asBoolean()); // identity
 
         // char
-        atom = new SAtom(moon, 'M');
+        atom = SAtom.fromChar(moon, 'M');
         assertEquals("77", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asChar().isPresent());
@@ -666,7 +668,7 @@ public class SAtomTest
         assertTrue(atom.asChar() == atom.asChar()); // identity
 
         // byte
-        atom = new SAtom(moon, (byte) 13);
+        atom = SAtom.fromByte(moon, (byte) 13);
         assertEquals("13", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asByte().isPresent());
@@ -674,7 +676,7 @@ public class SAtomTest
         assertTrue(atom.asByte() == atom.asByte()); // identity
 
         // short
-        atom = new SAtom(moon, (short) 17);
+        atom = SAtom.fromShort(moon, (short) 17);
         assertEquals("17", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asShort().isPresent());
@@ -682,7 +684,7 @@ public class SAtomTest
         assertTrue(atom.asShort() == atom.asShort()); // identity
 
         // int
-        atom = new SAtom(moon, (int) 19);
+        atom = SAtom.fromInt(moon, (int) 19);
         assertEquals("19", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asInt().isPresent());
@@ -690,7 +692,7 @@ public class SAtomTest
         assertTrue(atom.asInt() == atom.asInt()); // identity
 
         // long
-        atom = new SAtom(moon, (long) 23);
+        atom = SAtom.fromLong(moon, (long) 23);
         assertEquals("23", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asLong().isPresent());
@@ -698,7 +700,7 @@ public class SAtomTest
         assertTrue(atom.asLong() == atom.asLong()); // identity
 
         // float
-        atom = new SAtom(moon, (float) 27);
+        atom = SAtom.fromFloat(moon, (float) 27);
         assertEquals("27.0", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asFloat().isPresent());
@@ -706,7 +708,7 @@ public class SAtomTest
         assertTrue(atom.asFloat() == atom.asFloat()); // identity
 
         // double
-        atom = new SAtom(moon, (double) 29);
+        atom = SAtom.fromDouble(moon, (double) 29);
         assertEquals("29.0", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asDouble().isPresent());
@@ -714,13 +716,13 @@ public class SAtomTest
         assertTrue(atom.asDouble() == atom.asDouble()); // identity
 
         // String
-        atom = new SAtom(moon, "Vulcan");
+        atom = SAtom.fromString(moon, "Vulcan");
         assertEquals("Vulcan", atom.content());
         assertEquals(moon, atom.location());
         assertTrue((Object) atom.content() == (Object) atom.content()); // identity
 
         // Class
-        atom = new SAtom(moon, String.class);
+        atom = SAtom.fromClass(moon, String.class);
         assertEquals("java.lang.String", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asClass().isPresent());
@@ -728,7 +730,7 @@ public class SAtomTest
         assertTrue(atom.asClass() == atom.asClass()); // identity
 
         // byte[]
-        atom = new SAtom(moon, "Earth".getBytes("UTF-8"));
+        atom = SAtom.fromByteArray(moon, "Earth".getBytes("UTF-8"));
         assertEquals("4561727468", atom.content());
         assertEquals(moon, atom.location());
         assertTrue(atom.asByteArray().isPresent());
@@ -756,32 +758,32 @@ public class SAtomTest
         SAtom atom2;
 
         // Case: less
-        atom1 = new SAtom("A");
-        atom2 = new SAtom("B");
+        atom1 = SAtom.fromString("A");
+        atom2 = SAtom.fromString("B");
         assertTrue(atom1.compareTo(atom2) < 0);
 
         // Case: greater
-        atom1 = new SAtom("B");
-        atom2 = new SAtom("A");
+        atom1 = SAtom.fromString("B");
+        atom2 = SAtom.fromString("A");
         assertTrue(atom1.compareTo(atom2) > 0);
 
         // Case: equal
-        atom1 = new SAtom("X");
-        atom2 = new SAtom("X");
+        atom1 = SAtom.fromString("X");
+        atom2 = SAtom.fromString("X");
         assertTrue(atom1.compareTo(atom2) == 0);
 
         // Case: different case
-        atom1 = new SAtom("A");
-        atom2 = new SAtom("a");
+        atom1 = SAtom.fromString("A");
+        atom2 = SAtom.fromString("a");
         assertTrue(atom1.compareTo(atom2) < 0);
 
         // Case: different case
-        atom1 = new SAtom("a");
-        atom2 = new SAtom("A");
+        atom1 = SAtom.fromString("a");
+        atom2 = SAtom.fromString("A");
         assertTrue(atom1.compareTo(atom2) > 0);
 
         // Case: null
-        atom1 = new SAtom("A");
+        atom1 = SAtom.fromString("A");
         atom2 = null;
         assertTrue(atom1.compareTo(atom2) > 0);
     }
@@ -806,33 +808,33 @@ public class SAtomTest
         SAtom atom2;
 
         // Case: null
-        atom1 = new SAtom("X");
+        atom1 = SAtom.fromString("X");
         atom2 = null;
         assertFalse(atom1.equals(atom2));
 
         // Case: same object
-        atom1 = new SAtom("X");
+        atom1 = SAtom.fromString("X");
         atom2 = atom1;
         assertTrue(atom1.equals(atom2));
 
         // Case: different type
-        atom1 = new SAtom("X");
+        atom1 = SAtom.fromString("X");
         assertFalse(atom1.equals("X"));
 
         // Case: different case
         // Case: null
-        atom1 = new SAtom("X");
-        atom2 = new SAtom("x");
+        atom1 = SAtom.fromString("X");
+        atom2 = SAtom.fromString("x");
         assertFalse(atom1.equals(atom2));
 
         // Case: different object, returns false
-        atom1 = new SAtom("X");
-        atom2 = new SAtom("Y");
+        atom1 = SAtom.fromString("X");
+        atom2 = SAtom.fromString("Y");
         assertFalse(atom1.equals(atom2));
 
         // Case: different object, returns true
-        atom1 = new SAtom("X");
-        atom2 = new SAtom("X");
+        atom1 = SAtom.fromString("X");
+        atom2 = SAtom.fromString("X");
         assertTrue(atom1.equals(atom2));
     }
 
@@ -852,8 +854,8 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624061414160303");
 
-        final SAtom atom1 = new SAtom("X");
-        final SAtom atom2 = new SAtom("X");
+        final SAtom atom1 = SAtom.fromString("X");
+        final SAtom atom2 = SAtom.fromString("X");
         assertTrue(atom1.hashCode() == atom2.hashCode());
     }
 
@@ -873,7 +875,7 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624063213060668");
 
-        assertEquals(1, new SAtom("XYZ").treeSize());
+        assertEquals(1, SAtom.fromString("XYZ").treeSize());
     }
 
     /**
@@ -892,7 +894,7 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624063213060752");
 
-        assertEquals(1, new SAtom("XYZ").treeHeight());
+        assertEquals(1, SAtom.fromString("XYZ").treeHeight());
     }
 
     /**
@@ -911,7 +913,7 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624063213060779");
 
-        assertEquals(1, new SAtom("XYZ").treeLeafCount());
+        assertEquals(1, SAtom.fromString("XYZ").treeLeafCount());
     }
 
     /**
@@ -930,8 +932,8 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624063213060801");
 
-        assertTrue(new SAtom("XYZ").preorder(x -> x.toString().equals("XYZ")));
-        assertFalse(new SAtom("XYZ").preorder(x -> x.toString().equals("ABC")));
+        assertTrue(SAtom.fromString("XYZ").preorder(x -> x.toString().equals("XYZ")));
+        assertFalse(SAtom.fromString("XYZ").preorder(x -> x.toString().equals("ABC")));
     }
 
     /**
@@ -950,8 +952,8 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624063213060821");
 
-        assertTrue(new SAtom("XYZ").postorder(x -> x.toString().equals("XYZ")));
-        assertFalse(new SAtom("XYZ").postorder(x -> x.toString().equals("ABC")));
+        assertTrue(SAtom.fromString("XYZ").postorder(x -> x.toString().equals("XYZ")));
+        assertFalse(SAtom.fromString("XYZ").postorder(x -> x.toString().equals("ABC")));
     }
 
     /**
@@ -970,8 +972,8 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624063213060840");
 
-        assertTrue(new SAtom("XYZ").dfs(x -> x.toString().equals("XYZ")));
-        assertFalse(new SAtom("XYZ").dfs(x -> x.toString().equals("ABC")));
+        assertTrue(SAtom.fromString("XYZ").dfs(x -> x.toString().equals("XYZ")));
+        assertFalse(SAtom.fromString("XYZ").dfs(x -> x.toString().equals("ABC")));
     }
 
     /**
@@ -990,8 +992,8 @@ public class SAtomTest
     {
         System.out.println("Test: 20170624063213060863");
 
-        assertTrue(new SAtom("XYZ").bfs(x -> x.toString().equals("XYZ")));
-        assertFalse(new SAtom("XYZ").bfs(x -> x.toString().equals("ABC")));
+        assertTrue(SAtom.fromString("XYZ").bfs(x -> x.toString().equals("XYZ")));
+        assertFalse(SAtom.fromString("XYZ").bfs(x -> x.toString().equals("ABC")));
     }
 
     /**
@@ -1026,7 +1028,7 @@ public class SAtomTest
             record.add(x);
         };
 
-        final SAtom atom = new SAtom(17);
+        final SAtom atom = SAtom.fromInt(17);
 
         // Method Under Test
         atom.transverse(before, after);
@@ -1050,7 +1052,7 @@ public class SAtomTest
     {
         System.out.println("Test: 20170625013811754162");
 
-        new SAtom(1).toList();
+        SAtom.fromInt(1).asList();
     }
 
     /**
@@ -1069,8 +1071,8 @@ public class SAtomTest
     {
         System.out.println("Test: 20170625013811754272");
 
-        final SAtom original = new SAtom(1);
-        final SAtom result = original.toAtom();
+        final SAtom original = SAtom.fromInt(1);
+        final SAtom result = original.asAtom();
         assertTrue(original == result); // identity
     }
 }

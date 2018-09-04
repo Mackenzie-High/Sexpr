@@ -74,7 +74,7 @@ public final class TreeMutator
     {
 <span class="fc bfc" id="L75" title="All 2 branches covered.">        if (node.isList())</span>
         {
-<span class="fc" id="L77">            final LinkedList&lt;Sexpr&gt; elements = new LinkedList&lt;&gt;(node.toList());</span>
+<span class="fc" id="L77">            final LinkedList&lt;Sexpr&gt; elements = new LinkedList&lt;&gt;(node.asList());</span>
 <span class="fc" id="L78">            elements.addLast(Objects.requireNonNull(value));</span>
 <span class="fc" id="L79">            final SList modified = SList.copyOf(elements);</span>
 <span class="fc" id="L80">            return set(modified);</span>
@@ -97,7 +97,7 @@ public final class TreeMutator
     {
 <span class="fc bfc" id="L98" title="All 2 branches covered.">        if (node.isList())</span>
         {
-<span class="fc" id="L100">            final LinkedList&lt;Sexpr&gt; elements = new LinkedList&lt;&gt;(node.toList());</span>
+<span class="fc" id="L100">            final LinkedList&lt;Sexpr&gt; elements = new LinkedList&lt;&gt;(node.asList());</span>
 <span class="fc" id="L101">            elements.addFirst(Objects.requireNonNull(value));</span>
 <span class="fc" id="L102">            final SList modified = SList.copyOf(elements);</span>
 <span class="fc" id="L103">            return set(modified);</span>
@@ -150,7 +150,7 @@ public final class TreeMutator
     {
 <span class="fc bfc" id="L151" title="All 2 branches covered.">        if (node.isList())</span>
         {
-<span class="fc" id="L153">            return get(node.toList().size() - 1);</span>
+<span class="fc" id="L153">            return get(node.asList().size() - 1);</span>
         }
         else
         {
@@ -170,7 +170,7 @@ public final class TreeMutator
     {
 <span class="fc bfc" id="L171" title="All 2 branches covered.">        if (node.isList())</span>
         {
-<span class="fc" id="L173">            final Sexpr element = node.toList().get(index);</span>
+<span class="fc" id="L173">            final Sexpr element = node.asList().get(index);</span>
 <span class="fc" id="L174">            final TreeMutator step = new TreeMutator(this, element, index);</span>
 <span class="fc" id="L175">            return step;</span>
         }
@@ -213,7 +213,7 @@ public final class TreeMutator
          * Replace the element at the given position with the new value.
          * Since the list is immutable, we create a modified copy.
          */
-<span class="fc" id="L216">        final List&lt;Sexpr&gt; elements = new ArrayList&lt;&gt;(node.toList());</span>
+<span class="fc" id="L216">        final List&lt;Sexpr&gt; elements = new ArrayList&lt;&gt;(node.asList());</span>
 <span class="fc" id="L217">        elements.set(position, value);</span>
 <span class="fc" id="L218">        final SList modified = SList.copyOf(elements);</span>
 

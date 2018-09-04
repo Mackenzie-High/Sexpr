@@ -217,20 +217,20 @@ public final class SchemaParser
 
     private void translateRoot (final Sexpr<?> node)
     {
-        final String name = node.toList().get(1).toString();
+        final String name = node.asList().get(1).toString();
         b.defineRoot(name);
     }
 
     private void translateAssign (final Sexpr<?> node)
     {
-        final String name = node.toList().get(0).toString();
+        final String name = node.asList().get(0).toString();
         final Rule value = (Rule) stack.pop();
         b.defineNamedRule(name, value.name());
     }
 
     private void translateSeq (final Sexpr<?> node)
     {
-        final int elementCount = node.toList().size() - 1;
+        final int elementCount = node.asList().size() - 1;
 
         final LinkedList<SequenceElement> elements = new LinkedList<>();
 
@@ -296,8 +296,8 @@ public final class SchemaParser
     private void translateRepeat (final Sexpr<?> node)
     {
         final Rule element = (Rule) stack.pop();
-        final int minimum = Integer.parseInt(node.toList().get(2).toString());
-        final int maximum = Integer.parseInt(node.toList().get(3).toString());
+        final int minimum = Integer.parseInt(node.asList().get(2).toString());
+        final int maximum = Integer.parseInt(node.asList().get(3).toString());
         translateRepeat(element, minimum, maximum);
     }
 
@@ -331,7 +331,7 @@ public final class SchemaParser
 
     private void translateEither (final Sexpr<?> node)
     {
-        final int elementCount = node.toList().size() - 1;
+        final int elementCount = node.asList().size() - 1;
 
         final LinkedList<String> elements = new LinkedList<>();
 
@@ -347,7 +347,7 @@ public final class SchemaParser
 
     private void translateAnd (final Sexpr<?> node)
     {
-        final int elementCount = node.toList().size() - 1;
+        final int elementCount = node.asList().size() - 1;
 
         final LinkedList<String> elements = new LinkedList<>();
 
@@ -370,28 +370,28 @@ public final class SchemaParser
 
     private void translateAtom (final Sexpr<?> node)
     {
-        final String regex = node.toList().size() == 1 ? ".*" : node.toList().get(1).toString();
+        final String regex = node.asList().size() == 1 ? ".*" : node.asList().get(1).toString();
         final Rule rule = b.defineRegexRule(regex);
         stack.push(rule);
     }
 
     private void translateKeyword (final Sexpr<?> node)
     {
-        final String keyword = node.toList().get(1).toString();
+        final String keyword = node.asList().get(1).toString();
         final Rule rule = b.defineConstantRule(keyword);
         stack.push(rule);
     }
 
     private void translatePredicate (final Sexpr<?> node)
     {
-        final String name = node.toList().get(1).toString();
+        final String name = node.asList().get(1).toString();
         final Rule rule = b.definePredicateRule(name);
         stack.push(rule);
     }
 
     private void translateRef (final Sexpr<?> node)
     {
-        final String name = node.toList().get(1).toString();
+        final String name = node.asList().get(1).toString();
         final Rule rule = b.defineReference(name);
         stack.push(rule);
     }

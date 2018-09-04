@@ -13,6 +13,8 @@ public class ParsingFailedException
 
     public ParsingFailedException (final SourceLocation location)
     {
+        super(String.format("Parsing Failed At Line: %d, Column: %d, Source: %s",
+                            location.line(), location.column(), location.source()));
         this.location = Objects.requireNonNull(location);
     }
 

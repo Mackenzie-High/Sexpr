@@ -380,7 +380,7 @@ public final class SList
     @Override
     public boolean preorder (final Predicate&lt;Sexpr&gt; condition)
     {
-<span class="fc bfc" id="L383" title="All 4 branches covered.">        return condition.test(this) || stream().anyMatch(x -&gt; x.dfs(condition));</span>
+<span class="pc bpc" id="L383" title="1 of 4 branches missed.">        return condition.test(this) || stream().anyMatch(x -&gt; x.dfs(condition));</span>
     }
 
     /**
@@ -542,6 +542,24 @@ public final class SList
     }
 
     /**
+     * This method converts the textual representation of a SList
+     * to an actual corresponding SList object.
+     *
+     * &lt;p&gt;
+     * This method inserts an implicit symbolic-list into the input.
+     * For example, the input &quot;(1 2) (3 4)&quot; will produce a SList equivalent to &quot;((1 2) (3 4))&quot;.
+     * &lt;/p&gt;
+     *
+     * @param input is the input to parse.
+     * @return the resulting symbolic-list.
+     */
+    public static SList parse (final String input)
+    {
+<span class="nc" id="L558">        final SList root = Parser.parse(&quot;null&quot;, input);</span>
+<span class="nc" id="L559">        return root;</span>
+    }
+
+    /**
      * This method converts the textual representation of a resource file
      * to an actual corresponding SList object.
      *
@@ -556,23 +574,23 @@ public final class SList
     public static SList parseResource (final String path)
             throws IOException
     {
-<span class="nc" id="L559">        final StringBuilder text = new StringBuilder();</span>
+<span class="nc" id="L577">        final StringBuilder text = new StringBuilder();</span>
 
-<span class="nc" id="L561">        try (InputStream in = SList.class.getResourceAsStream(path);</span>
-<span class="nc" id="L562">             BufferedInputStream bin = new BufferedInputStream(in);</span>
-<span class="nc" id="L563">             Scanner scanner = new Scanner(bin))</span>
+<span class="nc" id="L579">        try (InputStream in = SList.class.getResourceAsStream(path);</span>
+<span class="nc" id="L580">             BufferedInputStream bin = new BufferedInputStream(in);</span>
+<span class="nc" id="L581">             Scanner scanner = new Scanner(bin))</span>
         {
-<span class="nc bnc" id="L565" title="All 2 branches missed.">            while (scanner.hasNextLine())</span>
+<span class="nc bnc" id="L583" title="All 2 branches missed.">            while (scanner.hasNextLine())</span>
             {
-<span class="nc" id="L567">                text.append(scanner.nextLine()).append('\n');</span>
+<span class="nc" id="L585">                text.append(scanner.nextLine()).append('\n');</span>
             }
-<span class="nc bnc" id="L569" title="All 24 branches missed.">        }</span>
-<span class="nc" id="L570">        catch (IOException | RuntimeException ex)</span>
+<span class="nc bnc" id="L587" title="All 24 branches missed.">        }</span>
+<span class="nc" id="L588">        catch (IOException | RuntimeException ex)</span>
         {
-<span class="nc" id="L572">            throw ex;</span>
-<span class="nc" id="L573">        }</span>
+<span class="nc" id="L590">            throw ex;</span>
+<span class="nc" id="L591">        }</span>
 
-<span class="nc" id="L575">        return parse(path, text.toString());</span>
+<span class="nc" id="L593">        return parse(path, text.toString());</span>
     }
 
     /**
@@ -590,11 +608,11 @@ public final class SList
     public static SList parseFile (final File file)
             throws IOException
     {
-<span class="nc" id="L593">        final String source = file.toString();</span>
-<span class="nc" id="L594">        final StringBuilder content = new StringBuilder();</span>
-<span class="nc" id="L595">        Files.readAllLines(file.toPath(), Charset.forName(&quot;UTF-8&quot;))</span>
-<span class="nc" id="L596">                .forEach(line -&gt; content.append(line).append('\n'));</span>
-<span class="nc" id="L597">        return parse(source, content.toString());</span>
+<span class="nc" id="L611">        final String source = file.toString();</span>
+<span class="nc" id="L612">        final StringBuilder content = new StringBuilder();</span>
+<span class="nc" id="L613">        Files.readAllLines(file.toPath(), Charset.forName(&quot;UTF-8&quot;))</span>
+<span class="nc" id="L614">                .forEach(line -&gt; content.append(line).append('\n'));</span>
+<span class="nc" id="L615">        return parse(source, content.toString());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

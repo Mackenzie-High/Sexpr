@@ -288,15 +288,15 @@ public final class Schema
          * Define the predefined rules, whose names always start with a '$' by convention.
          */
         rules.put("$ANY", defineRuleByPredicate(x -> true));
-        rules.put("$BOOLEAN", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asBoolean().isPresent()));
-        rules.put("$CHAR", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asChar().isPresent()));
-        rules.put("$BYTE", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asByte().isPresent()));
-        rules.put("$SHORT", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asShort().isPresent()));
-        rules.put("$INT", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asInt().isPresent()));
-        rules.put("$LONG", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asLong().isPresent()));
-        rules.put("$FLOAT", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asFloat().isPresent()));
-        rules.put("$DOUBLE", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asDouble().isPresent()));
-        rules.put("$CLASS", defineRuleByPredicate(x -> x.isAtom() && x.toAtom().asClass().isPresent()));
+        rules.put("$BOOLEAN", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asBoolean().isPresent()));
+        rules.put("$CHAR", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asChar().isPresent()));
+        rules.put("$BYTE", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asByte().isPresent()));
+        rules.put("$SHORT", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asShort().isPresent()));
+        rules.put("$INT", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asInt().isPresent()));
+        rules.put("$LONG", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asLong().isPresent()));
+        rules.put("$FLOAT", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asFloat().isPresent()));
+        rules.put("$DOUBLE", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asDouble().isPresent()));
+        rules.put("$CLASS", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asClass().isPresent()));
         rules.put("$ATOM", defineRuleByPredicate(x -> x.isAtom()));
         rules.put("$LIST", defineRuleByPredicate(x -> x.isList()));
     }
@@ -565,7 +565,7 @@ public final class Schema
             return state.exitOnFailure(node);
         }
 
-        final Deque<Sexpr> nodes = new ArrayDeque<>(node.toList());
+        final Deque<Sexpr> nodes = new ArrayDeque<>(node.asList());
 
 seq:    for (SequenceElement operand : operands)
         {
@@ -652,7 +652,7 @@ seq:    for (SequenceElement operand : operands)
     {
         Objects.requireNonNull(pattern, "pattern");
 
-        return defineRuleByPredicate(x -> x.isAtom() && x.toAtom().content().matches(pattern));
+        return defineRuleByPredicate(x -> x.isAtom() && x.asAtom().content().matches(pattern));
     }
 
     /**
@@ -666,7 +666,7 @@ seq:    for (SequenceElement operand : operands)
     {
         Objects.requireNonNull(value, "value");
 
-        return defineRuleByPredicate(x -> x.isAtom() && x.toAtom().content().equals(value));
+        return defineRuleByPredicate(x -> x.isAtom() && x.asAtom().content().equals(value));
     }
 
     /**
@@ -874,13 +874,13 @@ seq:    for (SequenceElement operand : operands)
         else if (method.getParameterTypes()[0].equals(SAtom.class))
         {
             final Function<SAtom, Object> invocation = createInvocation(object, method);
-            final Predicate<Sexpr> condition = x -> x.isAtom() ? (Boolean) invocation.apply(x.toAtom()) : false;
+            final Predicate<Sexpr> condition = x -> x.isAtom() ? (Boolean) invocation.apply(x.asAtom()) : false;
             defineCondition(name, condition);
         }
         else if (method.getParameterTypes()[0].equals(SList.class))
         {
             final Function<SList, Object> invocation = createInvocation(object, method);
-            final Predicate<Sexpr> condition = x -> x.isList() ? (Boolean) invocation.apply(x.toList()) : false;
+            final Predicate<Sexpr> condition = x -> x.isList() ? (Boolean) invocation.apply(x.asList()) : false;
             defineCondition(name, condition);
         }
         else
@@ -946,13 +946,13 @@ seq:    for (SequenceElement operand : operands)
         else if (method.getParameterTypes()[0].equals(SAtom.class))
         {
             final Function<SAtom, Object> invocation = createInvocation(object, method);
-            final Consumer<Sexpr> action = x -> invocation.apply(x.toAtom());
+            final Consumer<Sexpr> action = x -> invocation.apply(x.asAtom());
             defineBeforeAction(pass, rule, action);
         }
         else if (method.getParameterTypes()[0].equals(SList.class))
         {
             final Function<SList, Object> invocation = createInvocation(object, method);
-            final Consumer<Sexpr> action = x -> invocation.apply(x.toList());
+            final Consumer<Sexpr> action = x -> invocation.apply(x.asList());
             defineBeforeAction(pass, rule, action);
         }
         else
@@ -1018,13 +1018,13 @@ seq:    for (SequenceElement operand : operands)
         else if (method.getParameterTypes()[0].equals(SAtom.class))
         {
             final Function<SAtom, Object> invocation = createInvocation(object, method);
-            final Consumer<Sexpr> action = x -> invocation.apply(x.toAtom());
+            final Consumer<Sexpr> action = x -> invocation.apply(x.asAtom());
             defineAfterAction(pass, rule, action);
         }
         else if (method.getParameterTypes()[0].equals(SList.class))
         {
             final Function<SList, Object> invocation = createInvocation(object, method);
-            final Consumer<Sexpr> action = x -> invocation.apply(x.toList());
+            final Consumer<Sexpr> action = x -> invocation.apply(x.asList());
             defineAfterAction(pass, rule, action);
         }
         else
@@ -1122,7 +1122,7 @@ seq:    for (SequenceElement operand : operands)
 
         if (undefinedRules.isEmpty() == false)
         {
-            final String names = SList.copyOf(undefinedRules.stream().map(name -> new SAtom(name))).toString();
+            final String names = SList.copyOf(undefinedRules.stream().map(name -> SAtom.fromString(name))).toString();
             final String message = "Undefined Rules Detected: " + names;
             throw new IllegalStateException(message);
         }

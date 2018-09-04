@@ -74,7 +74,7 @@ public final class TreeMutator
     {
         if (node.isList())
         {
-            final LinkedList<Sexpr> elements = new LinkedList<>(node.toList());
+            final LinkedList<Sexpr> elements = new LinkedList<>(node.asList());
             elements.addLast(Objects.requireNonNull(value));
             final SList modified = SList.copyOf(elements);
             return set(modified);
@@ -97,7 +97,7 @@ public final class TreeMutator
     {
         if (node.isList())
         {
-            final LinkedList<Sexpr> elements = new LinkedList<>(node.toList());
+            final LinkedList<Sexpr> elements = new LinkedList<>(node.asList());
             elements.addFirst(Objects.requireNonNull(value));
             final SList modified = SList.copyOf(elements);
             return set(modified);
@@ -150,7 +150,7 @@ public final class TreeMutator
     {
         if (node.isList())
         {
-            return get(node.toList().size() - 1);
+            return get(node.asList().size() - 1);
         }
         else
         {
@@ -170,7 +170,7 @@ public final class TreeMutator
     {
         if (node.isList())
         {
-            final Sexpr element = node.toList().get(index);
+            final Sexpr element = node.asList().get(index);
             final TreeMutator step = new TreeMutator(this, element, index);
             return step;
         }
@@ -213,7 +213,7 @@ public final class TreeMutator
          * Replace the element at the given position with the new value.
          * Since the list is immutable, we create a modified copy.
          */
-        final List<Sexpr> elements = new ArrayList<>(node.toList());
+        final List<Sexpr> elements = new ArrayList<>(node.asList());
         elements.set(position, value);
         final SList modified = SList.copyOf(elements);
 

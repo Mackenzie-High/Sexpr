@@ -162,7 +162,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * @return this.
      * @throws ClassCastException if isAtom() is false.
      */
-    public default SAtom toAtom ()
+    public default SAtom asAtom ()
     {
         if (this instanceof SAtom)
         {
@@ -187,7 +187,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * @return this.
      * @throws ClassCastException if isList() is false.
      */
-    public default SList toList ()
+    public default SList asList ()
     {
         if (this instanceof SList)
         {

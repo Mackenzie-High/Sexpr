@@ -42,7 +42,7 @@ public class TreeMutatorTest
         final SList tree = SList.parse("test", "(1 2) (3 4) (5 6)");
         assertEquals("((1 2) (3 4) (5 6))", tree.toString());
 
-        final SList actual = tree.mutator().get(1).append(new SAtom("X"));
+        final SList actual = tree.mutator().get(1).append(SAtom.fromString("X"));
         assertEquals("((1 2) (3 4 X) (5 6))", actual.toString());
     }
 
@@ -65,7 +65,7 @@ public class TreeMutatorTest
         final SList tree = SList.parse("test", "(1 2) (3 4) (5 6)");
         assertEquals("((1 2) (3 4) (5 6))", tree.toString());
 
-        final SList actual = tree.mutator().get(1).prepend(new SAtom("X"));
+        final SList actual = tree.mutator().get(1).prepend(SAtom.fromString("X"));
         assertEquals("((1 2) (X 3 4) (5 6))", actual.toString());
     }
 
@@ -88,10 +88,10 @@ public class TreeMutatorTest
         final SList tree = SList.parse("test", "(1 2) (3 4) (5 6)");
         assertEquals("((1 2) (3 4) (5 6))", tree.toString());
 
-        final SList actual1 = tree.mutator().get(1).set(new SAtom("X"));
+        final SList actual1 = tree.mutator().get(1).set(SAtom.fromString("X"));
         assertEquals("((1 2) X (5 6))", actual1.toString());
 
-        final SList actual2 = tree.mutator().get(2).get(0).set(new SAtom("X"));
+        final SList actual2 = tree.mutator().get(2).get(0).set(SAtom.fromString("X"));
         assertEquals("((1 2) (3 4) (X 6))", actual2.toString());
     }
 
@@ -238,7 +238,7 @@ public class TreeMutatorTest
         final SList tree = SList.parse("test", "5");
         assertEquals("(5)", tree.toString());
 
-        tree.mutator().get(0).append(new SAtom(0));
+        tree.mutator().get(0).append(SAtom.fromInt(0));
     }
 
     /**
@@ -260,7 +260,7 @@ public class TreeMutatorTest
         final SList tree = SList.parse("test", "5");
         assertEquals("(5)", tree.toString());
 
-        tree.mutator().get(0).prepend(new SAtom(0));
+        tree.mutator().get(0).prepend(SAtom.fromInt(0));
     }
 
     /**
@@ -282,7 +282,7 @@ public class TreeMutatorTest
         final SList tree = SList.parse("test", "5");
         assertEquals("(5)", tree.toString());
 
-        tree.mutator().set(new SAtom(0));
+        tree.mutator().set(SAtom.fromInt(0));
     }
 
     /**

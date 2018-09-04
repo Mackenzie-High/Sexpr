@@ -6,6 +6,9 @@ import com.mackenziehigh.sexpr.exceptions.ParsingFailedException;
 import java.io.IOException;
 import java.io.StringReader;
 
+/**
+ * Converts a <code>String</code> to a <code>SList</code>.
+ */
 public final class Parser
 {
     public static SList parse (final String source,
@@ -13,27 +16,35 @@ public final class Parser
             throws ParsingFailedException
     {
         final Lexer lexer = new Lexer(new StringReader(text));
+        lexer.stack.setSource(source);
 
         try
         {
-            lexer.stack.begin();
-
+            /**
+             * Keep invoking the lexer, until it reaches the End-Of-Input.
+             * The lexer has embedded actions that will execute upon token matches.
+             * The actions manipulate an internal stack of tokens.
+             */
+            lexer.stack.parenOpen(0, 0);
             while (Lexer.YYEOF != lexer.yylex())
             {
                 // Pass
             }
+            lexer.stack.parenClose();
 
-            lexer.stack.end();
-
+            /**
+             * If the stack is not empty, then the input is missing a closing parenthesis.
+             */
+            final Sexpr<?> top = lexer.stack.top();
             if (lexer.stack.size() > 1)
             {
-                // TODO: Fix error location reporting with SLists
-                final Sexpr<?> top = lexer.stack.peek();
                 throw new ParsingFailedException(top.location());
             }
 
-            final SList root = (SList) lexer.stack.pop();
-
+            /**
+             * Parsing was successful.
+             */
+            final SList root = (SList) top;
             return root;
         }
         catch (IOException ex)
@@ -43,5 +54,11 @@ public final class Parser
              */
             throw new RuntimeException(ex);
         }
+    }
+
+    public static void main (String[] args)
+    {
+        final SList list = SList.parse("1 (2");
+        System.out.println("X = " + list);
     }
 }

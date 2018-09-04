@@ -50,9 +50,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549525");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list = SList.of(e1, e2, e3);
 
         assertEquals(e1, list.get(0));
@@ -76,9 +76,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549582");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list = SList.of(e1, e2, e3);
 
         list.get(3);
@@ -100,9 +100,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549603");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list = SList.of(e1, e2, e3);
 
         list.get(-1);
@@ -124,9 +124,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549621");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list = SList.of(e1, e2, e3);
 
         assertEquals(3, list.size());
@@ -148,9 +148,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549637");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list0 = SList.of();
         final SList list1 = SList.of(e1);
         final SList list2 = SList.of(e1, e2);
@@ -178,9 +178,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549653");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list0 = SList.of();
         final SList list1 = SList.of(e1);
         final SList list2 = SList.of(e1, e2);
@@ -207,9 +207,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549670");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list0 = SList.of();
         final SList list1 = SList.of(e1);
         final SList list2 = SList.of(e1, e2);
@@ -236,9 +236,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549687");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list0 = SList.of();
         final SList list1 = SList.of(e1);
         final SList list2 = SList.of(e1, e2);
@@ -275,9 +275,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549703");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list = SList.of(e1, e2, e3);
 
         assertFalse(list.isAtom());
@@ -299,9 +299,9 @@ public class SListTest
     {
         System.out.println("Test: 20170617093030549718");
 
-        final SAtom e1 = new SAtom("100");
-        final SAtom e2 = new SAtom("200");
-        final SAtom e3 = new SAtom("300");
+        final SAtom e1 = SAtom.fromString("100");
+        final SAtom e2 = SAtom.fromString("200");
+        final SAtom e3 = SAtom.fromString("300");
         final SList list = SList.of(e1, e2, e3);
 
         assertTrue(list.isList());
@@ -327,13 +327,13 @@ public class SListTest
          * Create a tree based on an image from Wikipedia.
          */
         // https://commons.wikimedia.org/wiki/File:Depth-first-tree.svg
-        final SAtom N04 = new SAtom("4");
-        final SAtom N05 = new SAtom("5");
-        final SAtom N06 = new SAtom("6");
-        final SAtom N07 = new SAtom("7");
-        final SAtom N10 = new SAtom("10");
-        final SAtom N11 = new SAtom("11");
-        final SAtom N12 = new SAtom("12");
+        final SAtom N04 = SAtom.fromString("4");
+        final SAtom N05 = SAtom.fromString("5");
+        final SAtom N06 = SAtom.fromString("6");
+        final SAtom N07 = SAtom.fromString("7");
+        final SAtom N10 = SAtom.fromString("10");
+        final SAtom N11 = SAtom.fromString("11");
+        final SAtom N12 = SAtom.fromString("12");
         final SList N03 = SList.of(N04, N05);
         final SList N02 = SList.of(N03, N06);
         final SList N09 = SList.of(N10, N11);
@@ -413,13 +413,13 @@ public class SListTest
          * Create a tree based on an image from Wikipedia.
          */
         // https://en.wikipedia.org/wiki/Breadth-first_search#/media/File:Breadth-first-tree.svg
-        final SAtom N09 = new SAtom("9");
-        final SAtom N10 = new SAtom("10");
-        final SAtom N06 = new SAtom("6");
-        final SAtom N03 = new SAtom("3");
-        final SAtom N11 = new SAtom("11");
-        final SAtom N12 = new SAtom("12");
-        final SAtom N08 = new SAtom("8");
+        final SAtom N09 = SAtom.fromString("9");
+        final SAtom N10 = SAtom.fromString("10");
+        final SAtom N06 = SAtom.fromString("6");
+        final SAtom N03 = SAtom.fromString("3");
+        final SAtom N11 = SAtom.fromString("11");
+        final SAtom N12 = SAtom.fromString("12");
+        final SAtom N08 = SAtom.fromString("8");
         final SList N05 = SList.of(N09, N10);
         final SList N02 = SList.of(N05, N06);
         final SList N07 = SList.of(N11, N12);
@@ -500,13 +500,13 @@ public class SListTest
          * preorder is equivalent to DFS.
          */
         // https://commons.wikimedia.org/wiki/File:Depth-first-tree.svg
-        final SAtom N04 = new SAtom("4");
-        final SAtom N05 = new SAtom("5");
-        final SAtom N06 = new SAtom("6");
-        final SAtom N07 = new SAtom("7");
-        final SAtom N10 = new SAtom("10");
-        final SAtom N11 = new SAtom("11");
-        final SAtom N12 = new SAtom("12");
+        final SAtom N04 = SAtom.fromString("4");
+        final SAtom N05 = SAtom.fromString("5");
+        final SAtom N06 = SAtom.fromString("6");
+        final SAtom N07 = SAtom.fromString("7");
+        final SAtom N10 = SAtom.fromString("10");
+        final SAtom N11 = SAtom.fromString("11");
+        final SAtom N12 = SAtom.fromString("12");
         final SList N03 = SList.of(N04, N05);
         final SList N02 = SList.of(N03, N06);
         final SList N09 = SList.of(N10, N11);
@@ -587,10 +587,10 @@ public class SListTest
          * preorder is equivalent to DFS.
          */
         // https://en.wikipedia.org/wiki/Tree_traversal#/media/File:Sorted_binary_tree_postorder.svg
-        final SAtom A = new SAtom("A");
-        final SAtom C = new SAtom("C");
-        final SAtom E = new SAtom("E");
-        final SAtom H = new SAtom("H");
+        final SAtom A = SAtom.fromString("A");
+        final SAtom C = SAtom.fromString("C");
+        final SAtom E = SAtom.fromString("E");
+        final SAtom H = SAtom.fromString("H");
         final SList D = SList.of(C, E);
         final SList B = SList.of(A, D);
         final SList I = SList.of(H);
@@ -666,13 +666,13 @@ public class SListTest
          * preorder is equivalent to DFS.
          */
         // https://commons.wikimedia.org/wiki/File:Depth-first-tree.svg
-        final SAtom N04 = new SAtom("4");
-        final SAtom N05 = new SAtom("5");
-        final SAtom N06 = new SAtom("6");
-        final SAtom N07 = new SAtom("7");
-        final SAtom N10 = new SAtom("10");
-        final SAtom N11 = new SAtom("11");
-        final SAtom N12 = new SAtom("12");
+        final SAtom N04 = SAtom.fromString("4");
+        final SAtom N05 = SAtom.fromString("5");
+        final SAtom N06 = SAtom.fromString("6");
+        final SAtom N07 = SAtom.fromString("7");
+        final SAtom N10 = SAtom.fromString("10");
+        final SAtom N11 = SAtom.fromString("11");
+        final SAtom N12 = SAtom.fromString("12");
         final SList N03 = SList.of(N04, N05);
         final SList N02 = SList.of(N03, N06);
         final SList N09 = SList.of(N10, N11);
@@ -707,9 +707,9 @@ public class SListTest
     {
         System.out.println("Test: 20170624212934872671");
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         SList list1;
         Object list2;
@@ -778,9 +778,9 @@ public class SListTest
     {
         System.out.println("Test: 20170624214936561260");
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         /**
          * This is the expected hash-code,
@@ -809,9 +809,9 @@ public class SListTest
     {
         System.out.println("Test: 20170624220535323107");
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         assertEquals("()", SList.of().toString());
         assertEquals("(X)", SList.of(X).toString());
@@ -906,9 +906,9 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -968,9 +968,9 @@ public class SListTest
 
         final SourceLocation location = new SourceLocation("Pluto", 7, 9);
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -1030,9 +1030,9 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -1092,9 +1092,9 @@ public class SListTest
 
         final SourceLocation location = new SourceLocation("Pluto", 7, 9);
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -1154,9 +1154,9 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -1216,9 +1216,9 @@ public class SListTest
 
         final SourceLocation location = new SourceLocation("Pluto", 7, 9);
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -1278,9 +1278,9 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -1340,9 +1340,9 @@ public class SListTest
 
         final SourceLocation location = new SourceLocation("Pluto", 7, 9);
 
-        final SAtom X = new SAtom("X");
-        final SAtom Y = new SAtom("Y");
-        final SAtom Z = new SAtom("Z");
+        final SAtom X = SAtom.fromString("X");
+        final SAtom Y = SAtom.fromString("Y");
+        final SAtom Z = SAtom.fromString("Z");
 
         List<Sexpr> expected;
         SList actual;
@@ -1787,9 +1787,9 @@ public class SListTest
         final SourceLocation location = new SourceLocation("Europe", 3, 5);
 
         final Map<Sexpr, Sexpr> map = new LinkedHashMap<>();
-        map.put(new SAtom("Alicia"), new SAtom("Vikander"));
-        map.put(new SAtom("Emma"), new SAtom("Watson"));
-        map.put(new SAtom("Kate"), new SAtom("Beckinsale"));
+        map.put(SAtom.fromString("Alicia"), SAtom.fromString("Vikander"));
+        map.put(SAtom.fromString("Emma"), SAtom.fromString("Watson"));
+        map.put(SAtom.fromString("Kate"), SAtom.fromString("Beckinsale"));
 
         final String expected = "((Alicia Vikander) (Emma Watson) (Kate Beckinsale))";
 
@@ -1824,13 +1824,13 @@ public class SListTest
         final SourceLocation location = new SourceLocation("Europe", 3, 5);
 
         final Map<Sexpr, Sexpr> map = new LinkedHashMap<>();
-        map.put(new SAtom("Alicia"), new SAtom("Vikander"));
-        map.put(new SAtom("Emma"), new SAtom("Watson"));
-        map.put(new SAtom("Kate"), new SAtom("Beckinsale"));
+        map.put(SAtom.fromString("Alicia"), SAtom.fromString("Vikander"));
+        map.put(SAtom.fromString("Emma"), SAtom.fromString("Watson"));
+        map.put(SAtom.fromString("Kate"), SAtom.fromString("Beckinsale"));
 
         final String expected = "((Alicia => Vikander) (Emma => Watson) (Kate => Beckinsale))";
 
-        final SList actual = SList.fromMap(location, map, new SAtom("=>"));
+        final SList actual = SList.fromMap(location, map, SAtom.fromString("=>"));
 
         assertEquals(expected, actual.toString());
 
@@ -1873,35 +1873,35 @@ public class SListTest
         // Case: two part entry (i.e. key-value pair)
         input = SList.parse("N/A", "(100 200)");
         expected.clear();
-        expected.put(new SAtom("100"), new SAtom("200"));
+        expected.put(SAtom.fromString("100"), SAtom.fromString("200"));
         assertEquals(expected, input.asMap().get());
 
         // Case: three part entry (i.e. key-separator-value pair)
         input = SList.parse("N/A", "(300 => 400)");
         expected.clear();
-        expected.put(new SAtom("300"), new SAtom("400"));
+        expected.put(SAtom.fromString("300"), SAtom.fromString("400"));
         assertEquals(expected, input.asMap().get());
 
         // Case: multiple part entry (i.e. key-junk-value pair)
         input = SList.parse("N/A", "(500 X Y Z 600)");
         expected.clear();
-        expected.put(new SAtom("500"), new SAtom("600"));
+        expected.put(SAtom.fromString("500"), SAtom.fromString("600"));
         assertEquals(expected, input.asMap().get());
 
         // Case: mutliple entries
         input = SList.parse("N/A", "(100 200) (300 400) (500 600)");
         expected.clear();
-        expected.put(new SAtom("100"), new SAtom("200"));
-        expected.put(new SAtom("300"), new SAtom("400"));
-        expected.put(new SAtom("500"), new SAtom("600"));
+        expected.put(SAtom.fromString("100"), SAtom.fromString("200"));
+        expected.put(SAtom.fromString("300"), SAtom.fromString("400"));
+        expected.put(SAtom.fromString("500"), SAtom.fromString("600"));
         assertEquals(expected, input.asMap().get());
 
         // Case: duplicate keys
         input = SList.parse("N/A", "(100 200) (300 400) (500 600) (100 700)");
         expected.clear();
-        expected.put(new SAtom("100"), new SAtom("700"));
-        expected.put(new SAtom("300"), new SAtom("400"));
-        expected.put(new SAtom("500"), new SAtom("600"));
+        expected.put(SAtom.fromString("100"), SAtom.fromString("700"));
+        expected.put(SAtom.fromString("300"), SAtom.fromString("400"));
+        expected.put(SAtom.fromString("500"), SAtom.fromString("600"));
         assertEquals(expected, input.asMap().get());
 
         // Case: non sub-list entry (i.e. 300 is not a valid entry)
@@ -1967,7 +1967,7 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
         final Map<Sexpr, Sexpr> map = new HashMap<>();
-        map.put(null, new SAtom(2));
+        map.put(null, SAtom.fromInt(2));
         SList.fromMap(location, map);
     }
 
@@ -1989,7 +1989,7 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
         final Map<Sexpr, Sexpr> map = new HashMap<>();
-        map.put(new SAtom(1), null);
+        map.put(SAtom.fromInt(1), null);
         SList.fromMap(location, map);
     }
 
@@ -2011,8 +2011,8 @@ public class SListTest
 
         final SourceLocation location = null;
         final Map<Sexpr, Sexpr> map = new HashMap<>();
-        map.put(new SAtom(1), new SAtom(2));
-        SList.fromMap(location, map, new SAtom("="));
+        map.put(SAtom.fromInt(1), SAtom.fromInt(2));
+        SList.fromMap(location, map, SAtom.fromString("="));
     }
 
     /**
@@ -2033,7 +2033,7 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
         final Map<Sexpr, Sexpr> map = null;;
-        SList.fromMap(location, map, new SAtom("="));
+        SList.fromMap(location, map, SAtom.fromString("="));
     }
 
     /**
@@ -2054,8 +2054,8 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
         final Map<Sexpr, Sexpr> map = new HashMap<>();
-        map.put(null, new SAtom(2));
-        SList.fromMap(location, map, new SAtom("="));
+        map.put(null, SAtom.fromInt(2));
+        SList.fromMap(location, map, SAtom.fromString("="));
     }
 
     /**
@@ -2076,8 +2076,8 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
         final Map<Sexpr, Sexpr> map = new HashMap<>();
-        map.put(new SAtom(1), null);
-        SList.fromMap(location, map, new SAtom("="));
+        map.put(SAtom.fromInt(1), null);
+        SList.fromMap(location, map, SAtom.fromString("="));
     }
 
     /**
@@ -2098,7 +2098,7 @@ public class SListTest
 
         final SourceLocation location = SourceLocation.DEFAULT;
         final Map<Sexpr, Sexpr> map = new HashMap<>();
-        map.put(new SAtom(1), new SAtom(2));
+        map.put(SAtom.fromInt(1), SAtom.fromInt(2));
         SList.fromMap(location, map, null);
     }
 
@@ -2219,28 +2219,28 @@ public class SListTest
         /**
          * Escape Sequences in Single Quote Strings
          */
-        assertEquals("\u1234", SList.parse("Venus", "'\\u1234'").get(0).toAtom().content());
-        assertEquals("\b", SList.parse("Venus", "'\\b'").get(0).toAtom().content());
-        assertEquals("\t", SList.parse("Venus", "'\\t'").get(0).toAtom().content());
-        assertEquals("\n", SList.parse("Venus", "'\\n'").get(0).toAtom().content());
-        assertEquals("\f", SList.parse("Venus", "'\\f'").get(0).toAtom().content());
-        assertEquals("\r", SList.parse("Venus", "'\\r'").get(0).toAtom().content());
-        assertEquals("\\", SList.parse("Venus", "'\\\\'").get(0).toAtom().content());
-        assertEquals("\'", SList.parse("Venus", "'\\\''").get(0).toAtom().content());
-        assertEquals("\"", SList.parse("Venus", "'\\\"'").get(0).toAtom().content());
+        assertEquals("\u1234", SList.parse("Venus", "'\\u1234'").get(0).asAtom().content());
+        assertEquals("\b", SList.parse("Venus", "'\\b'").get(0).asAtom().content());
+        assertEquals("\t", SList.parse("Venus", "'\\t'").get(0).asAtom().content());
+        assertEquals("\n", SList.parse("Venus", "'\\n'").get(0).asAtom().content());
+        assertEquals("\f", SList.parse("Venus", "'\\f'").get(0).asAtom().content());
+        assertEquals("\r", SList.parse("Venus", "'\\r'").get(0).asAtom().content());
+        assertEquals("\\", SList.parse("Venus", "'\\\\'").get(0).asAtom().content());
+        assertEquals("\'", SList.parse("Venus", "'\\\''").get(0).asAtom().content());
+        assertEquals("\"", SList.parse("Venus", "'\\\"'").get(0).asAtom().content());
 
         /**
          * Escape Sequences in Double Quote Strings
          */
-        assertEquals("\u1234", SList.parse("Venus", "\"\\u1234\"").get(0).toAtom().content());
-        assertEquals("\b", SList.parse("Venus", "\"\\b\"").get(0).toAtom().content());
-        assertEquals("\t", SList.parse("Venus", "\"\\t\"").get(0).toAtom().content());
-        assertEquals("\n", SList.parse("Venus", "\"\\n\"").get(0).toAtom().content());
-        assertEquals("\f", SList.parse("Venus", "\"\\f\"").get(0).toAtom().content());
-        assertEquals("\r", SList.parse("Venus", "\"\\r\"").get(0).toAtom().content());
-        assertEquals("\\", SList.parse("Venus", "\"\\\\\"").get(0).toAtom().content());
-        assertEquals("\'", SList.parse("Venus", "\"\\\'\"").get(0).toAtom().content());
-        assertEquals("\"", SList.parse("Venus", "\"\\\"\"").get(0).toAtom().content());
+        assertEquals("\u1234", SList.parse("Venus", "\"\\u1234\"").get(0).asAtom().content());
+        assertEquals("\b", SList.parse("Venus", "\"\\b\"").get(0).asAtom().content());
+        assertEquals("\t", SList.parse("Venus", "\"\\t\"").get(0).asAtom().content());
+        assertEquals("\n", SList.parse("Venus", "\"\\n\"").get(0).asAtom().content());
+        assertEquals("\f", SList.parse("Venus", "\"\\f\"").get(0).asAtom().content());
+        assertEquals("\r", SList.parse("Venus", "\"\\r\"").get(0).asAtom().content());
+        assertEquals("\\", SList.parse("Venus", "\"\\\\\"").get(0).asAtom().content());
+        assertEquals("\'", SList.parse("Venus", "\"\\\'\"").get(0).asAtom().content());
+        assertEquals("\"", SList.parse("Venus", "\"\\\"\"").get(0).asAtom().content());
     }
 
     /**
@@ -2290,7 +2290,7 @@ public class SListTest
         System.out.println("Test: 20170625013405187918");
 
         final SList original = SList.of();
-        final SList result = original.toList();
+        final SList result = original.asList();
         assertTrue(original == result); // identity
     }
 
@@ -2310,7 +2310,7 @@ public class SListTest
     {
         System.out.println("Test: 20170625013405187994");
 
-        SList.of().toAtom();
+        SList.of().asAtom();
     }
 
     /**

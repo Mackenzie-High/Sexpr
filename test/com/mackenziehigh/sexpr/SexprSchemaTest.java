@@ -39,7 +39,7 @@ public final class SexprSchemaTest
          * Remember, parse(*) adds an implicit pair of parentheses.
          * Remove the extra parentheses for the sake of simplicity.
          */
-        final Sexpr tree = SList.parse(SexprSchemaTest.class.getName(), expression).toList().get(0);
+        final Sexpr tree = SList.parse(SexprSchemaTest.class.getName(), expression).asList().get(0);
 
         /**
          * Parse the schema.
@@ -444,7 +444,7 @@ public final class SexprSchemaTest
             @Condition ("TEST1")
             public boolean test (final Sexpr arg)
             {
-                return arg.isAtom() && arg.toAtom().toString().equals("X");
+                return arg.isAtom() && arg.asAtom().toString().equals("X");
             }
         };
 
@@ -481,7 +481,7 @@ public final class SexprSchemaTest
             @Condition ("TEST1")
             public boolean test (final SAtom arg)
             {
-                return arg.toAtom().toString().equals("X");
+                return arg.asAtom().toString().equals("X");
             }
         };
 
@@ -520,7 +520,7 @@ public final class SexprSchemaTest
             @Condition ("TEST1")
             public boolean test (final SList arg)
             {
-                return arg.toList().toString().equals("(X)");
+                return arg.asList().toString().equals("(X)");
             }
         };
 
@@ -1592,41 +1592,5 @@ public final class SexprSchemaTest
         assertEquals("P2AC", list.get(9));
         assertEquals("P2AB", list.get(10));
         assertEquals("P2AA", list.get(11));
-    }
-
-    /**
-     * Test: 20180902012950783422
-     *
-     * <p>
-     * Method: <code>defineViaAnnotations</code>
-     * </p>
-     *
-     * <p>
-     * Case:
-     * </p>
-     */
-    @Test
-    public void test20180902012950783422 ()
-    {
-        System.out.println("Test: 20180902012950783422");
-        fail();
-    }
-
-    /**
-     * Test: 20180902012950783453
-     *
-     * <p>
-     * Method: <code></code>
-     * </p>
-     *
-     * <p>
-     * Case:
-     * </p>
-     */
-    @Test
-    public void test20180902012950783453 ()
-    {
-        System.out.println("Test: 20180902012950783453");
-        fail();
     }
 }

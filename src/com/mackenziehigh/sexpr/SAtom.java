@@ -24,7 +24,6 @@ import java.util.function.Predicate;
 /**
  * Symbolic Atom.
  *
- *
  * <p>
  * All instances of this interface are immutable.
  * </p>
@@ -102,245 +101,279 @@ public final class SAtom
      * Constructor.
      *
      * @param value will be the content() of this atom.
-     */
-    public SAtom (final boolean value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final char value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final byte value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final short value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final int value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final long value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final float value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final double value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final Class value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final String value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     */
-    public SAtom (final byte[] value)
-    {
-        this(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
      * @param location will be the location() of this atom.
      */
-    public SAtom (final SourceLocation location,
-                  final boolean value)
-    {
-        this(location, Boolean.toString(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final char value)
-    {
-        this(location, (int) value);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final byte value)
-    {
-        this(location, Byte.toString(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final short value)
-    {
-        this(location, Short.toString(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final int value)
-    {
-        this(location, Integer.toString(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final long value)
-    {
-        this(location, Long.toString(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final float value)
-    {
-        this(location, Float.toString(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final double value)
-    {
-        this(location, Double.toString(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final Class value)
-    {
-        this(location, value.getName());
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final byte[] value)
-    {
-        this(location, convertToHex(value));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value will be the content() of this atom.
-     * @param location will be the location() of this atom.
-     */
-    public SAtom (final SourceLocation location,
-                  final String value)
+    private SAtom (final SourceLocation location,
+                   final String value)
     {
         this.content = Objects.requireNonNull(value);
         this.location = Objects.requireNonNull(location);
-        this.hash = 71 * value.hashCode() + 3;
+        this.hash = value.hashCode();
         this.parsableContent = createParsableContent();
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromBoolean (final boolean value)
+    {
+        return fromBoolean(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromChar (final char value)
+    {
+        return fromChar(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromByte (final byte value)
+    {
+        return fromByte(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromShort (final short value)
+    {
+        return fromShort(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromInt (final int value)
+    {
+        return fromInt(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromLong (final long value)
+    {
+        return fromLong(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromFloat (final float value)
+    {
+        return fromFloat(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromDouble (final double value)
+    {
+        return fromDouble(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromClass (final Class value)
+    {
+        return fromClass(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromString (final String value)
+    {
+        return fromString(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromByteArray (final byte[] value)
+    {
+        return fromByteArray(SourceLocation.DEFAULT, value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromBoolean (final SourceLocation location,
+                                     final boolean value)
+    {
+        return new SAtom(location, Boolean.toString(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromChar (final SourceLocation location,
+                                  final char value)
+    {
+        return fromInt(location, (int) value);
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromByte (final SourceLocation location,
+                                  final byte value)
+    {
+        return new SAtom(location, Byte.toString(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromShort (final SourceLocation location,
+                                   final short value)
+    {
+        return new SAtom(location, Short.toString(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromInt (final SourceLocation location,
+                                 final int value)
+    {
+        return new SAtom(location, Integer.toString(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromLong (final SourceLocation location,
+                                  final long value)
+    {
+        return new SAtom(location, Long.toString(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromFloat (final SourceLocation location,
+                                   final float value)
+    {
+        return new SAtom(location, Float.toString(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromDouble (final SourceLocation location,
+                                    final double value)
+    {
+        return new SAtom(location, Double.toString(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromClass (final SourceLocation location,
+                                   final Class value)
+    {
+        return new SAtom(location, value.getName());
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromByteArray (final SourceLocation location,
+                                       final byte[] value)
+    {
+        return new SAtom(location, convertToHex(value));
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the <code>location()</code> of the new atom.
+     * @param value will be the <code>content()</code> of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromString (final SourceLocation location,
+                                    final String value)
+    {
+        return new SAtom(location, value);
     }
 
     private static String convertToHex (final byte[] value)
@@ -367,7 +400,7 @@ public final class SAtom
          * then escape and quote the string; otherwise,
          * return the content() itself.
          */
-        if (content.matches("[^\\s()@'\"]+"))
+        if (content.matches("[^\\s\\t\\r\\n()@'\"]+"))
         {
             return content();
         }

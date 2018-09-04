@@ -162,7 +162,7 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
      * @return this.
      * @throws ClassCastException if isAtom() is false.
      */
-    public default SAtom toAtom ()
+    public default SAtom asAtom ()
     {
 <span class="fc bfc" id="L167" title="All 2 branches covered.">        if (this instanceof SAtom)</span>
         {
@@ -187,7 +187,7 @@ public interface Sexpr&lt;T extends Sexpr&lt;T&gt;&gt;
      * @return this.
      * @throws ClassCastException if isList() is false.
      */
-    public default SList toList ()
+    public default SList asList ()
     {
 <span class="fc bfc" id="L192" title="All 2 branches covered.">        if (this instanceof SList)</span>
         {

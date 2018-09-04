@@ -24,7 +24,7 @@ import java.util.Objects;
 public final class SourceLocation
 {
 
-<span class="fc" id="L27">    public static SourceLocation DEFAULT = new SourceLocation(&quot;N/A&quot;, 0, 0);</span>
+<span class="fc" id="L27">    public static SourceLocation DEFAULT = new SourceLocation(&quot;null&quot;, 0, 0);</span>
 
     private final String source;
 
@@ -67,7 +67,7 @@ public final class SourceLocation
      */
     public int line ()
     {
-<span class="nc" id="L70">        return line;</span>
+<span class="fc" id="L70">        return line;</span>
     }
 
     /**
@@ -78,7 +78,7 @@ public final class SourceLocation
      */
     public int column ()
     {
-<span class="nc" id="L81">        return column;</span>
+<span class="fc" id="L81">        return column;</span>
     }
 
     /**
