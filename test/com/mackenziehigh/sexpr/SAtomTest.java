@@ -1031,7 +1031,7 @@ public class SAtomTest
         final SAtom atom = SAtom.fromInt(17);
 
         // Method Under Test
-        atom.transverse(before, after);
+        atom.traverse(before, after);
 
         assertEquals(Arrays.asList(BEFORE, atom, AFTER, atom), record);
     }

@@ -416,8 +416,9 @@ public final class SchemaParser
     {
         final Consumer<Optional<Sexpr>> onError = last ->
         {
-            System.out.println("LAST = " + last);
-            throw new InvalidSchemaException();
+            // TODO: Improve location reporting
+            final String message = String.format("Last Successful Match = %s", last);
+            throw new InvalidSchemaException(message);
         };
 
         final SchemaParser parser = new SchemaParser();

@@ -32,7 +32,7 @@ import java.util.function.Predicate;
  *
  * <p>
  * Two symbolic expressions (X) and (Y) are equal,
- * iff X.toString() equals Y.toString().
+ * iff <code>X.toString()</code> equals <code>Y.toString()</code>.
  * </p>
  *
  * <p>
@@ -110,13 +110,13 @@ public interface Sexpr<T extends Sexpr<T>>
     public boolean postorder (final Predicate<Sexpr> condition);
 
     /**
-     * This method performs a transversal of the tree rooted at this node.
+     * This method performs a traversal of the tree rooted at this node.
      *
      * @param before will be invoked upon entering each sub-tree.
      * @param after will be invoked upon exiting each sub-tree.
      */
-    public void transverse (Consumer<Sexpr> before,
-                            Consumer<Sexpr> after);
+    public void traverse (Consumer<Sexpr> before,
+                          Consumer<Sexpr> after);
 
     /**
      * This method determines whether this object is a SAtom.

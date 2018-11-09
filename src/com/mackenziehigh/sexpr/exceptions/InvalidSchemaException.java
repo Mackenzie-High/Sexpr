@@ -21,5 +21,8 @@ package com.mackenziehigh.sexpr.exceptions;
 public class InvalidSchemaException
         extends RuntimeException
 {
-
+    public InvalidSchemaException (final String message)
+    {
+        super(message);
+    }
 }

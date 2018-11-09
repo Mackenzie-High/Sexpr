@@ -396,11 +396,11 @@ public final class SList
      * {@inheritDoc}
      */
     @Override
-    public void transverse (final Consumer<Sexpr> before,
+    public void traverse (final Consumer<Sexpr> before,
                             final Consumer<Sexpr> after)
     {
         before.accept(this);
-        stream().forEach(x -> x.transverse(before, after));
+        stream().forEach(x -> x.traverse(before, after));
         after.accept(this);
     }
 

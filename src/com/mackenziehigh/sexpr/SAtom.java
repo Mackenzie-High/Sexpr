@@ -490,7 +490,7 @@ public final class SAtom
      * {@inheritDoc}
      */
     @Override
-    public void transverse (final Consumer<Sexpr> before,
+    public void traverse (final Consumer<Sexpr> before,
                             final Consumer<Sexpr> after)
     {
         before.accept(this);
@@ -931,7 +931,7 @@ public final class SAtom
     @Override
     public int hashCode ()
     {
-        return 391 * content.hashCode();
+        return hash;
     }
 
     /**

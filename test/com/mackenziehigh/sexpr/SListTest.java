@@ -685,7 +685,7 @@ public class SListTest
          */
         final List<Sexpr> before = new ArrayList<>();
         final List<Sexpr> after = new ArrayList<>();
-        tree.transverse(x -> before.add(x), x -> after.add(x));
+        tree.traverse(x -> before.add(x), x -> after.add(x));
 
         assertEquals(Arrays.asList(N01, N02, N03, N04, N05, N06, N07, N08, N09, N10, N11, N12), before);
         assertEquals(Arrays.asList(N04, N05, N03, N06, N02, N07, N10, N11, N09, N12, N08, N01), after);
