@@ -35,7 +35,7 @@ public final class TreeMutator
     /**
      * This is the node in the tree that this mutator relates to.
      */
-    private final Sexpr node;
+    private final Sexpr<?> node;
 
     /**
      * This is the index of the node() in the immediately enclosing list.
@@ -54,7 +54,7 @@ public final class TreeMutator
     }
 
     private TreeMutator (final TreeMutator below,
-                         final Sexpr node,
+                         final Sexpr<?> node,
                          final int index)
     {
         this.below = below;
@@ -70,11 +70,11 @@ public final class TreeMutator
      * @return a modified copy of the symbolic-expression.
      * @throws IllegalStateException if node().isList() is false.
      */
-    public SList append (final Sexpr value)
+    public SList append (final Sexpr<?> value)
     {
         if (node.isList())
         {
-            final LinkedList<Sexpr> elements = new LinkedList<>(node.asList());
+            final LinkedList<Sexpr<?>> elements = new LinkedList<>(node.asList());
             elements.addLast(Objects.requireNonNull(value));
             final SList modified = SList.copyOf(elements);
             return set(modified);
@@ -93,11 +93,11 @@ public final class TreeMutator
      * @return a modified copy of the symbolic-expression.
      * @throws IllegalStateException if node().isList() is false.
      */
-    public SList prepend (final Sexpr value)
+    public SList prepend (final Sexpr<?> value)
     {
         if (node.isList())
         {
-            final LinkedList<Sexpr> elements = new LinkedList<>(node.asList());
+            final LinkedList<Sexpr<?>> elements = new LinkedList<>(node.asList());
             elements.addFirst(Objects.requireNonNull(value));
             final SList modified = SList.copyOf(elements);
             return set(modified);
@@ -115,7 +115,7 @@ public final class TreeMutator
      * @return a modified copy of the symbolic-expression.
      * @throws IllegalStateException if the selected node is the root of the tree.
      */
-    public SList set (final Sexpr value)
+    public SList set (final Sexpr<?> value)
     {
         if (below == null)
         {
@@ -206,14 +206,14 @@ public final class TreeMutator
      * @param position is the position of the element to replace().
      * @return the root of the modified tree.
      */
-    private SList rebuild (final Sexpr value,
+    private SList rebuild (final Sexpr<?> value,
                            final int position)
     {
         /**
          * Replace the element at the given position with the new value.
          * Since the list is immutable, we create a modified copy.
          */
-        final List<Sexpr> elements = new ArrayList<>(node.asList());
+        final List<Sexpr<?>> elements = new ArrayList<>(node.asList());
         elements.set(position, value);
         final SList modified = SList.copyOf(elements);
 

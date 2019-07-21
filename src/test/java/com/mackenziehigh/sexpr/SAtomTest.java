@@ -115,27 +115,6 @@ public class SAtomTest
     }
 
     /**
-     * Test: 20170617092746028696
-     *
-     * <p>
-     * Method: <code>asClass()</code>
-     * </p>
-     *
-     * <p>
-     * Case: all cases
-     * </p>
-     */
-    @Test
-    public void test20170617092746028696 ()
-    {
-        System.out.println("Test: 20170617092746028696");
-
-        assertEquals(String.class, SAtom.fromString("java.lang.String").asClass().get());
-        assertFalse(SAtom.fromString("MyString").asClass().isPresent());
-        assertFalse(SAtom.fromString("123").asClass().isPresent());
-    }
-
-    /**
      * Test: 20170617092746028708
      *
      * <p>
@@ -477,47 +456,6 @@ public class SAtomTest
     }
 
     /**
-     * Test: 20170624053921963551
-     *
-     * <p>
-     * Method: <code>asByteArray()</code>
-     * </p>
-     *
-     * <p>
-     * Case: all cases
-     * </p>
-     */
-    @Test
-    public void test20170624053921963551 ()
-    {
-        SAtom.fromString("0a").asByteArray().get();
-
-        System.out.println("Test: 20170624053921963551");
-
-        /**
-         * Case: Valid Values
-         */
-        for (int high = 0; high < 16; high++)
-        {
-            for (int low = 0; low < 16; low++)
-            {
-                final String hex = Integer.toHexString(high) + Integer.toHexString(low);
-                final SAtom atom = SAtom.fromString(hex);
-                final byte[] bytes = atom.asByteArray().get();
-                assertEquals(1, bytes.length);
-                assertEquals(Byte.toUnsignedInt((byte) (high * 16 + low)), Byte.toUnsignedInt(bytes[0]));
-            }
-        }
-
-        /**
-         * Case: Invalid Values
-         */
-        assertFalse(SAtom.fromString("000").asByteArray().isPresent()); // odd number of chars
-        assertFalse(SAtom.fromString("0G").asByteArray().isPresent()); // non hex chars
-        assertFalse(SAtom.fromString("").asByteArray().isPresent()); // empty
-    }
-
-    /**
      * Test: 20170617092746028751
      *
      * <p>
@@ -633,22 +571,6 @@ public class SAtomTest
         assertEquals(SourceLocation.DEFAULT, atom.location());
         assertTrue((Object) atom.content() == (Object) atom.content()); // identity
 
-        // Class
-        atom = SAtom.fromClass(String.class);
-        assertEquals("java.lang.String", atom.content());
-        assertEquals(SourceLocation.DEFAULT, atom.location());
-        assertTrue(atom.asClass().isPresent());
-        assertEquals(String.class, atom.asClass().get());
-        assertTrue(atom.asClass() == atom.asClass()); // identity
-
-        // byte[]
-        atom = SAtom.fromByteArray("Earth".getBytes("UTF-8"));
-        assertEquals("4561727468", atom.content());
-        assertEquals(SourceLocation.DEFAULT, atom.location());
-        assertTrue(atom.asByteArray().isPresent());
-        assertArrayEquals("Earth".getBytes("UTF-8"), atom.asByteArray().get());
-        assertTrue(atom.asByteArray() != atom.asByteArray()); // identity inequality
-
         final SourceLocation moon = new SourceLocation("Europa", 1, 2);
 
         // boolean
@@ -720,22 +642,6 @@ public class SAtomTest
         assertEquals("Vulcan", atom.content());
         assertEquals(moon, atom.location());
         assertTrue((Object) atom.content() == (Object) atom.content()); // identity
-
-        // Class
-        atom = SAtom.fromClass(moon, String.class);
-        assertEquals("java.lang.String", atom.content());
-        assertEquals(moon, atom.location());
-        assertTrue(atom.asClass().isPresent());
-        assertEquals(String.class, atom.asClass().get());
-        assertTrue(atom.asClass() == atom.asClass()); // identity
-
-        // byte[]
-        atom = SAtom.fromByteArray(moon, "Earth".getBytes("UTF-8"));
-        assertEquals("4561727468", atom.content());
-        assertEquals(moon, atom.location());
-        assertTrue(atom.asByteArray().isPresent());
-        assertArrayEquals("Earth".getBytes("UTF-8"), atom.asByteArray().get());
-        assertTrue(atom.asByteArray() != atom.asByteArray()); // identity inequality
     }
 
     /**
@@ -1016,13 +922,13 @@ public class SAtomTest
         final Object AFTER = new Object();
         final List<Object> record = new LinkedList<>();
 
-        final Consumer<Sexpr> before = x ->
+        final Consumer<Sexpr<?>> before = x ->
         {
             record.add(BEFORE);
             record.add(x);
         };
 
-        final Consumer<Sexpr> after = x ->
+        final Consumer<Sexpr<?>> after = x ->
         {
             record.add(AFTER);
             record.add(x);

@@ -88,11 +88,6 @@ public final class SAtom
     private Optional<Double> valueAsDouble = Optional.empty();
 
     /**
-     * Cached Value.
-     */
-    private Optional<Class<?>> valueAsClass = Optional.empty();
-
-    /**
      * Cached Hash Code.
      */
     private final int hash;
@@ -206,31 +201,9 @@ public final class SAtom
      * @param value will be the <code>content()</code> of the new atom.
      * @return the new atom.
      */
-    public static SAtom fromClass (final Class value)
-    {
-        return fromClass(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Factory Method.
-     *
-     * @param value will be the <code>content()</code> of the new atom.
-     * @return the new atom.
-     */
     public static SAtom fromString (final String value)
     {
         return fromString(SourceLocation.DEFAULT, value);
-    }
-
-    /**
-     * Factory Method.
-     *
-     * @param value will be the <code>content()</code> of the new atom.
-     * @return the new atom.
-     */
-    public static SAtom fromByteArray (final byte[] value)
-    {
-        return fromByteArray(SourceLocation.DEFAULT, value);
     }
 
     /**
@@ -344,52 +317,10 @@ public final class SAtom
      * @param value will be the <code>content()</code> of the new atom.
      * @return the new atom.
      */
-    public static SAtom fromClass (final SourceLocation location,
-                                   final Class value)
-    {
-        return new SAtom(location, value.getName());
-    }
-
-    /**
-     * Factory Method.
-     *
-     * @param location will be the <code>location()</code> of the new atom.
-     * @param value will be the <code>content()</code> of the new atom.
-     * @return the new atom.
-     */
-    public static SAtom fromByteArray (final SourceLocation location,
-                                       final byte[] value)
-    {
-        return new SAtom(location, convertToHex(value));
-    }
-
-    /**
-     * Factory Method.
-     *
-     * @param location will be the <code>location()</code> of the new atom.
-     * @param value will be the <code>content()</code> of the new atom.
-     * @return the new atom.
-     */
     public static SAtom fromString (final SourceLocation location,
                                     final String value)
     {
         return new SAtom(location, value);
-    }
-
-    private static String convertToHex (final byte[] value)
-    {
-        final StringBuilder str = new StringBuilder(value.length * 2);
-
-        final String HEX = "0123456789ABCDEF";
-
-        for (int i = 0; i < value.length; i++)
-        {
-            final char high = HEX.charAt(Byte.toUnsignedInt(value[i]) >> 4);
-            final char low = HEX.charAt(Byte.toUnsignedInt(value[i]) & 0b1111);
-            str.append(high).append(low);
-        }
-
-        return str.toString();
     }
 
     private String createParsableContent ()
@@ -454,7 +385,7 @@ public final class SAtom
      * {@inheritDoc}
      */
     @Override
-    public boolean bfs (final Predicate<Sexpr> condition)
+    public boolean bfs (final Predicate<Sexpr<?>> condition)
     {
         return condition.test(this);
     }
@@ -463,7 +394,7 @@ public final class SAtom
      * {@inheritDoc}
      */
     @Override
-    public boolean dfs (final Predicate<Sexpr> condition)
+    public boolean dfs (final Predicate<Sexpr<?>> condition)
     {
         return condition.test(this);
     }
@@ -472,7 +403,7 @@ public final class SAtom
      * {@inheritDoc}
      */
     @Override
-    public boolean preorder (final Predicate<Sexpr> condition)
+    public boolean preorder (final Predicate<Sexpr<?>> condition)
     {
         return condition.test(this);
     }
@@ -481,7 +412,7 @@ public final class SAtom
      * {@inheritDoc}
      */
     @Override
-    public boolean postorder (final Predicate<Sexpr> condition)
+    public boolean postorder (final Predicate<Sexpr<?>> condition)
     {
         return condition.test(this);
     }
@@ -490,91 +421,11 @@ public final class SAtom
      * {@inheritDoc}
      */
     @Override
-    public void traverse (final Consumer<Sexpr> before,
-                            final Consumer<Sexpr> after)
+    public void traverse (final Consumer<Sexpr<?>> before,
+                          final Consumer<Sexpr<?>> after)
     {
         before.accept(this);
         after.accept(this);
-    }
-
-    /**
-     * This method retrieves the class identified by this value.
-     *
-     * <p>
-     * This method uses the ClassLoader that loaded this
-     * interface in order to search for the class.
-     * </p>
-     *
-     * @return the class, if it is found.
-     */
-    public Optional<Class<?>> asClass ()
-    {
-        return asClass(SAtom.class.getClassLoader());
-    }
-
-    /**
-     * This method retrieves the class identified by this value.
-     *
-     * @param loader will be used to search for the class.
-     * @return the class, if it is found.
-     */
-    public Optional<Class<?>> asClass (final ClassLoader loader)
-    {
-        if (valueAsClass.isPresent())
-        {
-            return valueAsClass;
-        }
-
-        try
-        {
-            valueAsClass = Optional.of(Class.forName(content, true, loader));
-            return valueAsClass;
-        }
-        catch (RuntimeException | ClassNotFoundException ex)
-        {
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * This method retrieves this value as a byte-array.
-     *
-     * <p>
-     * The content() must be a hexadecimal encoded string.
-     * In other words, the content() is a series of character-pairs,
-     * where each pair are two hexadecimal digits (case-insensitive).
-     * The string is encoded using big-endian.
-     * </p>
-     *
-     * @return this value as a byte-array.
-     */
-    public Optional<byte[]> asByteArray ()
-    {
-        if (content.length() % 2 != 0)
-        {
-            return Optional.empty();
-        }
-        else if (content.matches("[0-9A-Fa-f]+") == false)
-        {
-            return Optional.empty();
-        }
-
-        final byte[] bytes = new byte[content.length() / 2];
-
-        for (int i = 0; i < content.length(); i = i + 2)
-        {
-            int high = Character.toUpperCase(content.charAt(i + 0));
-            high = 48 <= high && high <= 57 ? high - 48 : high;
-            high = 65 <= high && high <= 70 ? high - 55 : high;
-
-            int low = Character.toUpperCase(content.charAt(i + 1));
-            low = 48 <= low && low <= 57 ? low - 48 : low;
-            low = 65 <= low && low <= 70 ? low - 55 : low;
-
-            bytes[i / 2] = (byte) (high * 16 + low);
-        }
-
-        return Optional.of(bytes);
     }
 
     /**

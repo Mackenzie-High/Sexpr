@@ -42,7 +42,7 @@ import java.util.function.Predicate;
  * @param <T>
  */
 public interface Sexpr<T extends Sexpr<T>>
-        extends Comparable<Sexpr>
+        extends Comparable<Sexpr<?>>
 {
     /**
      * This method counts the leaf nodes in the tree rooted at this node.
@@ -83,7 +83,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * @param condition will return true, when the sought after node is found.
      * @return true, if the node was found.
      */
-    public boolean bfs (final Predicate<Sexpr> condition);
+    public boolean bfs (final Predicate<Sexpr<?>> condition);
 
     /**
      * This method performs a depth-first-search of the tree rooted at this node.
@@ -91,7 +91,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * @param condition will return true, when the sought after node is found.
      * @return true, if the node was found.
      */
-    public boolean dfs (final Predicate<Sexpr> condition);
+    public boolean dfs (final Predicate<Sexpr<?>> condition);
 
     /**
      * This method performs a pre-order-search of the tree rooted at this node.
@@ -99,7 +99,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * @param condition will return true, when the sought after node is found.
      * @return true, if the node was found.
      */
-    public boolean preorder (final Predicate<Sexpr> condition);
+    public boolean preorder (final Predicate<Sexpr<?>> condition);
 
     /**
      * This method performs a post-order-search of the tree rooted at this node.
@@ -107,7 +107,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * @param condition will return true, when the sought after node is found.
      * @return true, if the node was found.
      */
-    public boolean postorder (final Predicate<Sexpr> condition);
+    public boolean postorder (final Predicate<Sexpr<?>> condition);
 
     /**
      * This method performs a traversal of the tree rooted at this node.
@@ -115,8 +115,8 @@ public interface Sexpr<T extends Sexpr<T>>
      * @param before will be invoked upon entering each sub-tree.
      * @param after will be invoked upon exiting each sub-tree.
      */
-    public void traverse (Consumer<Sexpr> before,
-                          Consumer<Sexpr> after);
+    public void traverse (Consumer<Sexpr<?>> before,
+                          Consumer<Sexpr<?>> after);
 
     /**
      * This method determines whether this object is a SAtom.
@@ -144,7 +144,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * {@inheritDoc}
      */
     @Override
-    public default int compareTo (final Sexpr other)
+    public default int compareTo (final Sexpr<?> other)
     {
         return other == null ? 1 : toString().compareTo(other.toString());
     }

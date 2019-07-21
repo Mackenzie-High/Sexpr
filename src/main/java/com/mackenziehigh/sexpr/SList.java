@@ -54,7 +54,7 @@ import java.util.stream.Stream;
  * </p>
  */
 public final class SList
-        extends AbstractList<Sexpr>
+        extends AbstractList<Sexpr<?>>
         implements Sexpr<SList>
 {
 
@@ -80,7 +80,7 @@ public final class SList
      * @param elements will be the elements in this list.
      */
     private SList (final SourceLocation location,
-                   final Iterator<? extends Sexpr> elements)
+                   final Iterator<? extends Sexpr<?>> elements)
     {
         this.location = Objects.requireNonNull(location);
         this.elements = new ArrayList<>();
@@ -98,7 +98,7 @@ public final class SList
      * @param elements will be the elements in this list.
      * @return the new symbolic-list.
      */
-    public static SList of (final Sexpr... elements)
+    public static SList of (final Sexpr<?>... elements)
     {
         return new SList(SourceLocation.DEFAULT, Arrays.asList(elements).iterator());
     }
@@ -111,7 +111,7 @@ public final class SList
      * @return the new symbolic-list.
      */
     public static SList of (final SourceLocation location,
-                            final Sexpr... elements)
+                            final Sexpr<?>... elements)
     {
         return new SList(location, Arrays.asList(elements).iterator());
     }
@@ -122,7 +122,7 @@ public final class SList
      * @param list contains the elements for the new list.
      * @return the new symbolic-list.
      */
-    public static SList copyOf (final Iterable<? extends Sexpr> list)
+    public static SList copyOf (final Iterable<? extends Sexpr<?>> list)
     {
         return new SList(SourceLocation.DEFAULT, list.iterator());
     }
@@ -135,7 +135,7 @@ public final class SList
      * @return the new symbolic-list.
      */
     public static SList copyOf (final SourceLocation location,
-                                final Iterable<? extends Sexpr> list)
+                                final Iterable<? extends Sexpr<?>> list)
     {
         return new SList(location, list.iterator());
     }
@@ -146,7 +146,7 @@ public final class SList
      * @param stream contains the elements for the new list.
      * @return the new symbolic-list.
      */
-    public static SList copyOf (final Stream<? extends Sexpr> stream)
+    public static SList copyOf (final Stream<? extends Sexpr<?>> stream)
     {
         return new SList(SourceLocation.DEFAULT, stream.iterator());
     }
@@ -159,7 +159,7 @@ public final class SList
      * @return the new symbolic-list.
      */
     public static SList copyOf (final SourceLocation location,
-                                final Stream<? extends Sexpr> stream)
+                                final Stream<? extends Sexpr<?>> stream)
     {
         return new SList(location, stream.iterator());
     }
@@ -170,7 +170,7 @@ public final class SList
      * @param stream contains the elements for the new list.
      * @return the new symbolic-list.
      */
-    public static SList copyOf (final Iterator<? extends Sexpr> stream)
+    public static SList copyOf (final Iterator<? extends Sexpr<?>> stream)
     {
         return new SList(SourceLocation.DEFAULT, stream);
     }
@@ -183,7 +183,7 @@ public final class SList
      * @return the new symbolic-list.
      */
     public static SList copyOf (final SourceLocation location,
-                                final Iterator<? extends Sexpr> stream)
+                                final Iterator<? extends Sexpr<?>> stream)
     {
         return new SList(location, stream);
     }
@@ -204,7 +204,7 @@ public final class SList
      * @return the new symbolic-list.
      */
     public static SList fromMap (final SourceLocation location,
-                                 final Map<? extends Sexpr, ? extends Sexpr> map)
+                                 final Map<? extends Sexpr<?>, ? extends Sexpr<?>> map)
     {
         return copyOf(location, createMap(location, map));
     }
@@ -227,25 +227,25 @@ public final class SList
      * @return the new symbolic-list.
      */
     public static SList fromMap (final SourceLocation location,
-                                 final Map<? extends Sexpr, ? extends Sexpr> map,
-                                 final Sexpr separator)
+                                 final Map<? extends Sexpr<?>, ? extends Sexpr<?>> map,
+                                 final Sexpr<?> separator)
     {
         return copyOf(location, createMap(location, map, separator));
     }
 
-    private static List<Sexpr> createMap (final SourceLocation location,
-                                          final Map<? extends Sexpr, ? extends Sexpr> map)
+    private static List<Sexpr<?>> createMap (final SourceLocation location,
+                                             final Map<? extends Sexpr<?>, ? extends Sexpr<?>> map)
     {
-        final List<Sexpr> outer = new LinkedList<>();
+        final List<Sexpr<?>> outer = new LinkedList<>();
         map.forEach((x, y) -> outer.add(SList.of(location, x, y)));
         return outer;
     }
 
-    private static List<Sexpr> createMap (final SourceLocation location,
-                                          final Map<? extends Sexpr, ? extends Sexpr> map,
-                                          final Sexpr separator)
+    private static List<Sexpr<?>> createMap (final SourceLocation location,
+                                             final Map<? extends Sexpr<?>, ? extends Sexpr<?>> map,
+                                             final Sexpr<?> separator)
     {
-        final List<Sexpr> outer = new LinkedList<>();
+        final List<Sexpr<?>> outer = new LinkedList<>();
         map.forEach((x, y) -> outer.add(SList.of(location, x, separator, y)));
         return outer;
     }
@@ -342,7 +342,7 @@ public final class SList
      * {@inheritDoc}
      */
     @Override
-    public boolean bfs (final Predicate<Sexpr> condition)
+    public boolean bfs (final Predicate<Sexpr<?>> condition)
     {
         final Queue<Sexpr> queue = new LinkedList<>();
 
@@ -369,7 +369,7 @@ public final class SList
      * {@inheritDoc}
      */
     @Override
-    public boolean dfs (final Predicate<Sexpr> condition)
+    public boolean dfs (final Predicate<Sexpr<?>> condition)
     {
         return preorder(condition);
     }
@@ -378,7 +378,7 @@ public final class SList
      * {@inheritDoc}
      */
     @Override
-    public boolean preorder (final Predicate<Sexpr> condition)
+    public boolean preorder (final Predicate<Sexpr<?>> condition)
     {
         return condition.test(this) || stream().anyMatch(x -> x.dfs(condition));
     }
@@ -387,7 +387,7 @@ public final class SList
      * {@inheritDoc}
      */
     @Override
-    public boolean postorder (final Predicate<Sexpr> condition)
+    public boolean postorder (final Predicate<Sexpr<?>> condition)
     {
         return stream().anyMatch(x -> x.postorder(condition)) || condition.test(this);
     }
@@ -396,8 +396,8 @@ public final class SList
      * {@inheritDoc}
      */
     @Override
-    public void traverse (final Consumer<Sexpr> before,
-                            final Consumer<Sexpr> after)
+    public void traverse (final Consumer<Sexpr<?>> before,
+                          final Consumer<Sexpr<?>> after)
     {
         before.accept(this);
         stream().forEach(x -> x.traverse(before, after));
@@ -417,11 +417,11 @@ public final class SList
      *
      * @return the immutable value, if possible.
      */
-    public Optional<Map<Sexpr, Sexpr>> asMap ()
+    public Optional<Map<Sexpr<?>, Sexpr<?>>> asMap ()
     {
-        final Map<Sexpr, Sexpr> map = new TreeMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new TreeMap<>();
 
-        for (Sexpr element : this)
+        for (Sexpr<?> element : this)
         {
             if (element.isList() == false)
             {

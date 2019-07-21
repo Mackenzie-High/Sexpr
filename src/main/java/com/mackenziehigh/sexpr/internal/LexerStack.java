@@ -50,7 +50,7 @@ final class LexerStack
 
     public void parenClose ()
     {
-        final LinkedList<Sexpr> elements = new LinkedList<>();
+        final LinkedList<Sexpr<?>> elements = new LinkedList<>();
 
         while (stack.size() > 0 && stack.peek() != MARKER) // identity equality
         {

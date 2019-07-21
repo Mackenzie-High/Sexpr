@@ -344,8 +344,8 @@ public class SListTest
         /**
          * Perform a full tree transversal and record the visitation order.
          */
-        final List<Sexpr> nodes = new ArrayList<>();
-        final Predicate<Sexpr> visitor1 = x ->
+        final List<Sexpr<?>> nodes = new ArrayList<>();
+        final Predicate<Sexpr<?>> visitor1 = x ->
         {
             nodes.add(x);
             return false;
@@ -373,7 +373,7 @@ public class SListTest
          * Perform a partial tree transversal and record the visitation order.
          */
         nodes.clear();
-        final Predicate<Sexpr> visitor2 = x ->
+        final Predicate<Sexpr<?>> visitor2 = x ->
         {
             nodes.add(x);
             return x.equals(N07);
@@ -430,8 +430,8 @@ public class SListTest
         /**
          * Perform a full tree transversal and record the visitation order.
          */
-        final List<Sexpr> nodes = new ArrayList<>();
-        final Predicate<Sexpr> visitor1 = x ->
+        final List<Sexpr<?>> nodes = new ArrayList<>();
+        final Predicate<Sexpr<?>> visitor1 = x ->
         {
             nodes.add(x);
             return false;
@@ -459,7 +459,7 @@ public class SListTest
          * Perform a partial tree transversal and record the visitation order.
          */
         nodes.clear();
-        final Predicate<Sexpr> visitor2 = x ->
+        final Predicate<Sexpr<?>> visitor2 = x ->
         {
             nodes.add(x);
             return x.equals(N07);
@@ -517,8 +517,8 @@ public class SListTest
         /**
          * Perform a full tree transversal and record the visitation order.
          */
-        final List<Sexpr> nodes = new ArrayList<>();
-        final Predicate<Sexpr> visitor1 = x ->
+        final List<Sexpr<?>> nodes = new ArrayList<>();
+        final Predicate<Sexpr<?>> visitor1 = x ->
         {
             nodes.add(x);
             return false;
@@ -546,7 +546,7 @@ public class SListTest
          * Perform a partial tree transversal and record the visitation order.
          */
         nodes.clear();
-        final Predicate<Sexpr> visitor2 = x ->
+        final Predicate<Sexpr<?>> visitor2 = x ->
         {
             nodes.add(x);
             return x.equals(N07);
@@ -601,8 +601,8 @@ public class SListTest
         /**
          * Perform a full tree transversal and record the visitation order.
          */
-        final List<Sexpr> nodes = new ArrayList<>();
-        final Predicate<Sexpr> visitor1 = x ->
+        final List<Sexpr<?>> nodes = new ArrayList<>();
+        final Predicate<Sexpr<?>> visitor1 = x ->
         {
             nodes.add(x);
             return false;
@@ -627,7 +627,7 @@ public class SListTest
          * Perform a partial tree transversal and record the visitation order.
          */
         nodes.clear();
-        final Predicate<Sexpr> visitor2 = x ->
+        final Predicate<Sexpr<?>> visitor2 = x ->
         {
             nodes.add(x);
             return x.equals(B);
@@ -683,8 +683,8 @@ public class SListTest
         /**
          * Perform a full tree transversal and record the visitation order.
          */
-        final List<Sexpr> before = new ArrayList<>();
-        final List<Sexpr> after = new ArrayList<>();
+        final List<Sexpr<?>> before = new ArrayList<>();
+        final List<Sexpr<?>> after = new ArrayList<>();
         tree.traverse(x -> before.add(x), x -> after.add(x));
 
         assertEquals(Arrays.asList(N01, N02, N03, N04, N05, N06, N07, N08, N09, N10, N11, N12), before);
@@ -1034,7 +1034,7 @@ public class SListTest
         final SAtom Y = SAtom.fromString("Y");
         final SAtom Z = SAtom.fromString("Z");
 
-        List<Sexpr> expected;
+        List<Sexpr<?>> expected;
         SList actual;
 
         // Size = 0
@@ -1096,7 +1096,7 @@ public class SListTest
         final SAtom Y = SAtom.fromString("Y");
         final SAtom Z = SAtom.fromString("Z");
 
-        List<Sexpr> expected;
+        List<Sexpr<?>> expected;
         SList actual;
 
         // Size = 0
@@ -1158,7 +1158,7 @@ public class SListTest
         final SAtom Y = SAtom.fromString("Y");
         final SAtom Z = SAtom.fromString("Z");
 
-        List<Sexpr> expected;
+        List<Sexpr<?>> expected;
         SList actual;
 
         // Size = 0
@@ -1220,7 +1220,7 @@ public class SListTest
         final SAtom Y = SAtom.fromString("Y");
         final SAtom Z = SAtom.fromString("Z");
 
-        List<Sexpr> expected;
+        List<Sexpr<?>> expected;
         SList actual;
 
         // Size = 0
@@ -1282,7 +1282,7 @@ public class SListTest
         final SAtom Y = SAtom.fromString("Y");
         final SAtom Z = SAtom.fromString("Z");
 
-        List<Sexpr> expected;
+        List<Sexpr<?>> expected;
         SList actual;
 
         // Size = 0
@@ -1344,7 +1344,7 @@ public class SListTest
         final SAtom Y = SAtom.fromString("Y");
         final SAtom Z = SAtom.fromString("Z");
 
-        List<Sexpr> expected;
+        List<Sexpr<?>> expected;
         SList actual;
 
         // Size = 0
@@ -1611,7 +1611,8 @@ public class SListTest
     {
         System.out.println("Test: 20170624230706506091");
 
-        SList.copyOf(Arrays.asList((Sexpr) null).stream());
+        final Sexpr<?> nil = null;
+        SList.copyOf(Arrays.asList(nil).stream());
     }
 
     /**
@@ -1669,7 +1670,8 @@ public class SListTest
     {
         System.out.println("Test: 20170624230706506159");
 
-        SList.copyOf(SourceLocation.DEFAULT, Arrays.asList((Sexpr) null).stream());
+        final Sexpr<?> nil = null;
+        SList.copyOf(SourceLocation.DEFAULT, Arrays.asList(nil).stream());
     }
 
     /**
@@ -1707,7 +1709,8 @@ public class SListTest
     {
         System.out.println("Test: 20170624230706506204");
 
-        SList.copyOf(Arrays.asList((Sexpr) null).iterator());
+        final Sexpr<?> nil = null;
+        SList.copyOf(Arrays.asList(nil).iterator());
     }
 
     /**
@@ -1786,7 +1789,7 @@ public class SListTest
 
         final SourceLocation location = new SourceLocation("Europe", 3, 5);
 
-        final Map<Sexpr, Sexpr> map = new LinkedHashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new LinkedHashMap<>();
         map.put(SAtom.fromString("Alicia"), SAtom.fromString("Vikander"));
         map.put(SAtom.fromString("Emma"), SAtom.fromString("Watson"));
         map.put(SAtom.fromString("Kate"), SAtom.fromString("Beckinsale"));
@@ -1823,7 +1826,7 @@ public class SListTest
 
         final SourceLocation location = new SourceLocation("Europe", 3, 5);
 
-        final Map<Sexpr, Sexpr> map = new LinkedHashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new LinkedHashMap<>();
         map.put(SAtom.fromString("Alicia"), SAtom.fromString("Vikander"));
         map.put(SAtom.fromString("Emma"), SAtom.fromString("Watson"));
         map.put(SAtom.fromString("Kate"), SAtom.fromString("Beckinsale"));
@@ -1858,7 +1861,7 @@ public class SListTest
     {
         System.out.println("Test: 20170624235918686632");
 
-        final Map<Sexpr, Sexpr> expected = new HashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> expected = new HashMap<>();
         SList input;
 
         // Case: empty entry (i.e. too short)
@@ -1966,7 +1969,7 @@ public class SListTest
         System.out.println("Test: 20170625003321085752");
 
         final SourceLocation location = SourceLocation.DEFAULT;
-        final Map<Sexpr, Sexpr> map = new HashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new HashMap<>();
         map.put(null, SAtom.fromInt(2));
         SList.fromMap(location, map);
     }
@@ -1988,7 +1991,7 @@ public class SListTest
         System.out.println("Test: 20170625003321085782");
 
         final SourceLocation location = SourceLocation.DEFAULT;
-        final Map<Sexpr, Sexpr> map = new HashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new HashMap<>();
         map.put(SAtom.fromInt(1), null);
         SList.fromMap(location, map);
     }
@@ -2010,7 +2013,7 @@ public class SListTest
         System.out.println("Test: 20170625003321085813");
 
         final SourceLocation location = null;
-        final Map<Sexpr, Sexpr> map = new HashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new HashMap<>();
         map.put(SAtom.fromInt(1), SAtom.fromInt(2));
         SList.fromMap(location, map, SAtom.fromString("="));
     }
@@ -2032,7 +2035,7 @@ public class SListTest
         System.out.println("Test: 20170625003321085838");
 
         final SourceLocation location = SourceLocation.DEFAULT;
-        final Map<Sexpr, Sexpr> map = null;;
+        final Map<Sexpr<?>, Sexpr<?>> map = null;;
         SList.fromMap(location, map, SAtom.fromString("="));
     }
 
@@ -2053,7 +2056,7 @@ public class SListTest
         System.out.println("Test: 20170625003321085863");
 
         final SourceLocation location = SourceLocation.DEFAULT;
-        final Map<Sexpr, Sexpr> map = new HashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new HashMap<>();
         map.put(null, SAtom.fromInt(2));
         SList.fromMap(location, map, SAtom.fromString("="));
     }
@@ -2075,7 +2078,7 @@ public class SListTest
         System.out.println("Test: 20170625003321085886");
 
         final SourceLocation location = SourceLocation.DEFAULT;
-        final Map<Sexpr, Sexpr> map = new HashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new HashMap<>();
         map.put(SAtom.fromInt(1), null);
         SList.fromMap(location, map, SAtom.fromString("="));
     }
@@ -2097,7 +2100,7 @@ public class SListTest
         System.out.println("Test: 20170625003321085909");
 
         final SourceLocation location = SourceLocation.DEFAULT;
-        final Map<Sexpr, Sexpr> map = new HashMap<>();
+        final Map<Sexpr<?>, Sexpr<?>> map = new HashMap<>();
         map.put(SAtom.fromInt(1), SAtom.fromInt(2));
         SList.fromMap(location, map, null);
     }

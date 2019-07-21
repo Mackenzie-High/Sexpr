@@ -296,7 +296,6 @@ public final class Schema
         rules.put("$LONG", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asLong().isPresent()));
         rules.put("$FLOAT", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asFloat().isPresent()));
         rules.put("$DOUBLE", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asDouble().isPresent()));
-        rules.put("$CLASS", defineRuleByPredicate(x -> x.isAtom() && x.asAtom().asClass().isPresent()));
         rules.put("$ATOM", defineRuleByPredicate(x -> x.isAtom()));
         rules.put("$LIST", defineRuleByPredicate(x -> x.isList()));
     }
