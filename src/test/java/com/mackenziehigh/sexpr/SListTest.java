@@ -15,6 +15,7 @@
  */
 package com.mackenziehigh.sexpr;
 
+import com.mackenziehigh.sexpr.SList.Mutator;
 import com.mackenziehigh.sexpr.exceptions.ParsingFailedException;
 import com.mackenziehigh.sexpr.internal.Parser;
 import java.util.ArrayList;
@@ -2332,6 +2333,6 @@ public class SListTest
     {
         System.out.println("Test: 20170625032925499124");
 
-        assertTrue(SList.of().mutator() instanceof TreeMutator);
+        assertTrue(SList.of().mutator() instanceof Mutator);
     }
 }

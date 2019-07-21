@@ -44,6 +44,7 @@ import java.util.function.Predicate;
 public interface Sexpr<T extends Sexpr<T>>
         extends Comparable<Sexpr<?>>
 {
+
     /**
      * This method counts the leaf nodes in the tree rooted at this node.
      *
