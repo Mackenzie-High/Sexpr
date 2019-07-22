@@ -16,7 +16,7 @@
 package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.Sexpr;
-import com.mackenziehigh.sexpr.internal.schema.Schema.Rule;
+import com.mackenziehigh.sexpr.internal.schema.InternalSchema.Rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +30,7 @@ final class MatchNode
 {
     private final Rule rule;
 
-    private final Sexpr node;
+    private final Sexpr<?> node;
 
     private final List<MatchNode> children;
 
@@ -44,7 +44,7 @@ final class MatchNode
      * @param children will be the children().
      */
     public MatchNode (final Rule rule,
-                      final Sexpr node,
+                      final Sexpr<?> node,
                       final List<MatchNode> children)
     {
         this.rule = Objects.requireNonNull(rule, "rule");
@@ -73,7 +73,7 @@ final class MatchNode
      *
      * @return the matched value.
      */
-    public Sexpr node ()
+    public Sexpr<?> node ()
     {
         return node;
     }

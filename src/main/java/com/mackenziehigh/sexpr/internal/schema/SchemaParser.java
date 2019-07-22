@@ -16,27 +16,28 @@
 package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Schema.MatchResult;
 import com.mackenziehigh.sexpr.Sexpr;
-import com.mackenziehigh.sexpr.exceptions.InvalidSchemaException;
-import com.mackenziehigh.sexpr.internal.schema.Schema.Rule;
-import com.mackenziehigh.sexpr.internal.schema.Schema.SequenceElement;
+import com.mackenziehigh.sexpr.SourceLocation;
+import com.mackenziehigh.sexpr.internal.schema.InternalSchema.Rule;
+import com.mackenziehigh.sexpr.internal.schema.InternalSchema.SequenceElement;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Optional;
 import java.util.Stack;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class SchemaParser
 {
-    private final Schema g = new Schema();
+    private final InternalSchema g;
 
-    private final Schema b = new Schema();
+    private final InternalSchema b = new InternalSchema();
 
     private final Stack<Object> stack = new Stack<>();
 
-    public SchemaParser ()
+    public SchemaParser (final InternalSchema schemaBeingBuilt)
     {
+        this.g = schemaBeingBuilt;
+
         g.defineRoot("ROOT");
 
         // (ROOT = (seq (star (ref STATEMENT))))
@@ -411,24 +412,25 @@ public final class SchemaParser
         stack.push(rule);
     }
 
-    public static Schema parse (final String location,
-                                final String schema)
+    public static InternalSchema parse (final InternalSchema schemaBeingBuilt,
+                                        final String location,
+                                        final String schema)
     {
-        final Consumer<Optional<Sexpr>> onError = last ->
-        {
-            // TODO: Improve location reporting
-            final String message = String.format("Last Successful Match = %s", last);
-            throw new InvalidSchemaException(message);
-        };
 
-        final SchemaParser parser = new SchemaParser();
-        parser.g.setFailureHandler(onError);
+        final SchemaParser parser = new SchemaParser(schemaBeingBuilt);
 
         final SList objectSchema = SList.parse(location, schema);
 
-        parser.g.match(objectSchema);
+        final MatchResult match = parser.g.match(objectSchema);
 
-        final Schema result = parser.b;
+        if (match.isFailure())
+        {
+            final int errorLineNumber = match.lastSuccess().isPresent() ? match.lastSuccess().get().location().line() : 0;
+            final int errorColumnNumber = match.lastSuccess().isPresent() ? match.lastSuccess().get().location().column() : 0;
+            final SourceLocation errorLocation = new SourceLocation(location, errorLineNumber, errorColumnNumber);
+        }
+
+        final InternalSchema result = parser.b;
         return result;
     }
 }
