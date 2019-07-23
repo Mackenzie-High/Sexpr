@@ -30,6 +30,8 @@ A Schema is a pattern that describes a Symbolic Expression tree data-structure. 
 
 ### Hello World Schema
 
+**Code:**
+
 ```java
 package examples;
 
