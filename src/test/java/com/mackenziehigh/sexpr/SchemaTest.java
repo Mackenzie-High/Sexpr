@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Unit Test.
  */
-public final class SexprSchemaTest
+public final class SchemaTest
 {
 
     private boolean parse (final String schema,
@@ -39,18 +39,19 @@ public final class SexprSchemaTest
          * Remember, parse(*) adds an implicit pair of parentheses.
          * Remove the extra parentheses for the sake of simplicity.
          */
-        final Sexpr tree = SList.parse(SexprSchemaTest.class.getName(), expression).asList().get(0);
+        final Sexpr<?> tree = SList.parse(SchemaTest.class.getName(), expression).asList().get(0);
 
         /**
          * Parse the schema.
          */
         final InternalSchema grammar = new InternalSchema();
-        SchemaParser.parse(grammar, SexprSchemaTest.class.getName(), schema);
+        SchemaParser.parse(grammar, SchemaTest.class.getName(), schema);
 
         /**
          * Attempt to match the symbolic-expression using the schema.
          */
-        final boolean result = grammar.match(tree).isSuccess();
+        final Schema.MatchResult match = grammar.match(tree);
+        final boolean result = match.isSuccess();
 
         return result;
     }
@@ -450,7 +451,7 @@ public final class SexprSchemaTest
         };
 
         final Schema schema = Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
+                .include("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
                 .defineViaAnnotations(object)
                 .build();
 
@@ -487,7 +488,7 @@ public final class SexprSchemaTest
         };
 
         final Schema schema = Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
+                .include("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
                 .defineViaAnnotations(object)
                 .build();
 
@@ -526,7 +527,7 @@ public final class SexprSchemaTest
         };
 
         final Schema schema = Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
+                .include("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
                 .defineViaAnnotations(object)
                 .build();
 
@@ -569,7 +570,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
+                .include("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
                 .defineViaAnnotations(object)
                 .build();
     }
@@ -600,7 +601,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
+                .include("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
                 .defineViaAnnotations(object)
                 .build();
     }
@@ -631,7 +632,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
+                .include("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
                 .defineViaAnnotations(object)
                 .build();
     }
@@ -663,7 +664,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
+                .include("N/A", "(root = (seq (atom A) (predicate TEST1) (atom Z)))")
                 .defineViaAnnotations(object)
                 .build();
     }
@@ -705,7 +706,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -717,8 +718,8 @@ public final class SexprSchemaTest
         final SList input4 = SList.parse("N/A", "A Z Z");
 
         assertFalse(schema.match(input1).isSuccess());
-        assertTrue(schema.match(input2).isSuccess());
-        assertTrue(schema.match(input3).isSuccess());
+        assertTrue(schema.match(input2).execute().isSuccess());
+        assertTrue(schema.match(input3).execute().isSuccess());
         assertFalse(schema.match(input4).isSuccess());
 
         assertEquals(4, list.size());
@@ -765,7 +766,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -777,8 +778,8 @@ public final class SexprSchemaTest
         final SList input4 = SList.parse("N/A", "A Z Z");
 
         assertFalse(schema.match(input1).isSuccess());
-        assertTrue(schema.match(input2).isSuccess());
-        assertTrue(schema.match(input3).isSuccess());
+        assertTrue(schema.match(input2).execute().isSuccess());
+        assertTrue(schema.match(input3).execute().isSuccess());
         assertFalse(schema.match(input4).isSuccess());
 
         assertEquals(4, list.size());
@@ -825,7 +826,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -837,8 +838,8 @@ public final class SexprSchemaTest
         final SList input4 = SList.parse("N/A", "A (Z) Z");
 
         assertFalse(schema.match(input1).isSuccess());
-        assertTrue(schema.match(input2).isSuccess());
-        assertTrue(schema.match(input3).isSuccess());
+        assertTrue(schema.match(input2).execute().isSuccess());
+        assertTrue(schema.match(input3).execute().isSuccess());
         assertFalse(schema.match(input4).isSuccess());
 
         assertEquals(4, list.size());
@@ -875,7 +876,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .build();
@@ -908,7 +909,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .build();
@@ -941,7 +942,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .build();
@@ -975,7 +976,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .build();
@@ -1018,7 +1019,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1030,8 +1031,8 @@ public final class SexprSchemaTest
         final SList input4 = SList.parse("N/A", "A Z Z");
 
         assertFalse(schema.match(input1).isSuccess());
-        assertTrue(schema.match(input2).isSuccess());
-        assertTrue(schema.match(input3).isSuccess());
+        assertTrue(schema.match(input2).execute().isSuccess());
+        assertTrue(schema.match(input3).execute().isSuccess());
         assertFalse(schema.match(input4).isSuccess());
 
         assertEquals(4, list.size());
@@ -1078,7 +1079,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (either (atom X) (atom Y)))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1090,8 +1091,8 @@ public final class SexprSchemaTest
         final SList input4 = SList.parse("N/A", "A Z Z");
 
         assertFalse(schema.match(input1).isSuccess());
-        assertTrue(schema.match(input2).isSuccess());
-        assertTrue(schema.match(input3).isSuccess());
+        assertTrue(schema.match(input2).execute().isSuccess());
+        assertTrue(schema.match(input3).execute().isSuccess());
         assertFalse(schema.match(input4).isSuccess());
 
         assertEquals(4, list.size());
@@ -1138,7 +1139,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1150,8 +1151,8 @@ public final class SexprSchemaTest
         final SList input4 = SList.parse("N/A", "A (Z) Z");
 
         assertFalse(schema.match(input1).isSuccess());
-        assertTrue(schema.match(input2).isSuccess());
-        assertTrue(schema.match(input3).isSuccess());
+        assertTrue(schema.match(input2).execute().isSuccess());
+        assertTrue(schema.match(input3).execute().isSuccess());
         assertFalse(schema.match(input4).isSuccess());
 
         assertEquals(4, list.size());
@@ -1188,7 +1189,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1222,7 +1223,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1256,7 +1257,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1291,7 +1292,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1325,7 +1326,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .build();
     }
@@ -1357,7 +1358,7 @@ public final class SexprSchemaTest
         };
 
         Schema.newBuilder()
-                .fromString("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
+                .include("N/A", "(root = (seq (atom A) (ref M) (atom Z))) (M = (seq (either (atom X) (atom Y))))")
                 .defineViaAnnotations(object)
                 .build();
     }
@@ -1408,7 +1409,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom X) (ref A) (ref B) (ref C) (atom X))) (A = (atom 13)) (B = (atom 17)) (C = (atom 19))")
+                .include("N/A", "(root = (seq (atom X) (ref A) (ref B) (ref C) (atom X))) (A = (atom 13)) (B = (atom 17)) (C = (atom 19))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1417,7 +1418,7 @@ public final class SexprSchemaTest
 
         final SList input1 = SList.parse("N/A", "X 13 17 19 X");
 
-        assertTrue(schema.match(input1).isSuccess());
+        assertTrue(schema.match(input1).execute().isSuccess());
 
         assertEquals(3, object.calls.size());
         assertEquals("C = 19", object.calls.get(0));
@@ -1471,7 +1472,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root = (seq (atom X) (ref A) (ref B) (ref C) (atom X))) (A = (atom 13)) (B = (atom 17)) (C = (atom 19))")
+                .include("N/A", "(root = (seq (atom X) (ref A) (ref B) (ref C) (atom X))) (A = (atom 13)) (B = (atom 17)) (C = (atom 19))")
                 .defineViaAnnotations(object)
                 .pass("PASS1")
                 .pass("PASS2")
@@ -1480,7 +1481,7 @@ public final class SexprSchemaTest
 
         final SList input1 = SList.parse("N/A", "X 13 17 19 X");
 
-        assertTrue(schema.match(input1).isSuccess());
+        assertTrue(schema.match(input1).execute().isSuccess());
 
         assertEquals(3, object.calls.size());
         assertEquals("C = 19", object.calls.get(0));
@@ -1591,7 +1592,7 @@ public final class SexprSchemaTest
 
         final Schema schema = Schema
                 .newBuilder()
-                .fromString("N/A", "(root A) (A = (seq (atom X) (ref B) (atom X))) (B = (seq (atom Y) (ref C) (atom Y))) (C = (atom Z))")
+                .include("N/A", "(root A) (A = (seq (atom X) (ref B) (atom X))) (B = (seq (atom Y) (ref C) (atom Y))) (C = (atom Z))")
                 .pass("PASS1")
                 .pass("PASS2")
                 .defineViaAnnotations(object)
@@ -1599,7 +1600,7 @@ public final class SexprSchemaTest
 
         final SList input = SList.parse("N/A", "X (Y Z Y) X");
 
-        assertTrue(schema.match(input).isSuccess());
+        assertTrue(schema.match(input).execute().isSuccess());
 
         // Pass #1
         assertEquals("P1BA", list.get(0));

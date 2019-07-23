@@ -64,24 +64,24 @@ public final class Schema
          * @param schema is the textual schema.
          * @return this.
          */
-        public Builder fromString (final String source,
-                                   final String schema)
+        public Builder include (final String source,
+                                final String schema)
         {
             SchemaParser.parse(instance, source, schema);
             return this;
         }
 
-        public Builder fromFile (final File file)
+        public Builder includeFile (final File file)
                 throws IOException
         {
             final String source = file.toString();
             final StringBuilder content = new StringBuilder();
             Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)
                     .forEach(line -> content.append(line).append('\n'));
-            return fromString(source, content.toString());
+            return include(file.getAbsolutePath(), source);
         }
 
-        public Builder fromResource (final String path)
+        public Builder includeResource (final String path)
                 throws IOException
         {
             final StringBuilder schema = new StringBuilder();
@@ -100,7 +100,7 @@ public final class Schema
                 throw ex;
             }
 
-            return fromString(path, schema.toString());
+            return include(path, schema.toString());
         }
 
         /**
@@ -120,7 +120,7 @@ public final class Schema
         {
             Objects.requireNonNull(name, "name");
             Objects.requireNonNull(condition, "condition");
-            Objects.requireNonNull(built, "build() was already called.");
+//            Objects.requireNonNull(built, "build() was already called.");
             instance.defineCondition(name, condition);
             return this;
         }
@@ -160,7 +160,7 @@ public final class Schema
             Objects.requireNonNull(pass, "pass");
             Objects.requireNonNull(rule, "rule");
             Objects.requireNonNull(action, "action");
-            Objects.requireNonNull(built, "build() was already called.");
+//            Objects.requireNonNull(built, "build() was already called.");
             instance.defineBeforeAction(pass, rule, action);
             return this;
         }
@@ -182,7 +182,7 @@ public final class Schema
             Objects.requireNonNull(pass, "pass");
             Objects.requireNonNull(rule, "rule");
             Objects.requireNonNull(action, "action");
-            Objects.requireNonNull(built, "build() was already called.");
+//            Objects.requireNonNull(built, "build() was already called.");
             instance.defineAfterAction(pass, rule, action);
             return this;
         }
@@ -242,7 +242,7 @@ public final class Schema
          * in accordance with a post-order transversal of the tree.
          * </p>
          *
-         * @return
+         * @return the last successfully matched node, if any.
          */
         public Optional<Sexpr<?>> lastSuccess ();
 
@@ -260,7 +260,7 @@ public final class Schema
          * and then the after-actions of (R) will be executed.
          * </p>
          *
-         * @return
+         * @return this.
          */
         public MatchResult execute ();
     }

@@ -19,6 +19,7 @@ import com.mackenziehigh.sexpr.SList;
 import com.mackenziehigh.sexpr.Schema.MatchResult;
 import com.mackenziehigh.sexpr.Sexpr;
 import com.mackenziehigh.sexpr.SourceLocation;
+import com.mackenziehigh.sexpr.exceptions.ParsingFailedException;
 import com.mackenziehigh.sexpr.internal.schema.InternalSchema.Rule;
 import com.mackenziehigh.sexpr.internal.schema.InternalSchema.SequenceElement;
 import java.util.Arrays;
@@ -28,15 +29,15 @@ import java.util.stream.Collectors;
 
 public final class SchemaParser
 {
-    private final InternalSchema g;
+    private final InternalSchema g = new InternalSchema();
 
-    private final InternalSchema b = new InternalSchema();
+    private final InternalSchema b;
 
     private final Stack<Object> stack = new Stack<>();
 
     public SchemaParser (final InternalSchema schemaBeingBuilt)
     {
-        this.g = schemaBeingBuilt;
+        this.b = schemaBeingBuilt;
 
         g.defineRoot("ROOT");
 
@@ -428,7 +429,10 @@ public final class SchemaParser
             final int errorLineNumber = match.lastSuccess().isPresent() ? match.lastSuccess().get().location().line() : 0;
             final int errorColumnNumber = match.lastSuccess().isPresent() ? match.lastSuccess().get().location().column() : 0;
             final SourceLocation errorLocation = new SourceLocation(location, errorLineNumber, errorColumnNumber);
+            throw new ParsingFailedException(errorLocation);
         }
+
+        match.execute();
 
         final InternalSchema result = parser.b;
         return result;

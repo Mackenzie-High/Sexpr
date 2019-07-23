@@ -22,6 +22,7 @@ import java.util.Arrays;
  *
  * <p>
  * Herein, an escape sequence is any one of the following substrings:
+ * </p>
  * <ul>
  * <li>\b</li>
  * <li>\t</li>
@@ -33,7 +34,6 @@ import java.util.Arrays;
  * <li>\\</li>
  * <li>\ uWXYZ, where WXYZ is a four-digit hexadecimal Unicode character code.</li>
  * </ul>
- * </p>
  */
 public final class Escaper
 {

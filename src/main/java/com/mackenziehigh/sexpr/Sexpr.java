@@ -39,7 +39,7 @@ import java.util.function.Predicate;
  * All instances of this interface are immutable.
  * </p>
  *
- * @param <T>
+ * @param <T> is the type of the implementing class.
  */
 public interface Sexpr<T extends Sexpr<T>>
         extends Comparable<Sexpr<?>>
