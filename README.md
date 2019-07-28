@@ -309,28 +309,228 @@ Here each *element* is either an *option quantifier*, *star quantifier*, *plus  
 (repeat <rule> <minimum> <maximum>)
 ```
 
+**Example Sequence Rules:**
+
+| Example Rule                                  | Example Input | Matches? |
+|-----------------------------------------------|---------------|----------|
+| (seq (word A) (word B) (word C))              | (A B C)       | Yes      |
+| (seq (word A) (word B) (word C))              | (X Y Z)       | No       |
+| (seq (word A) (option (word B)) (word C))     | (A C)         | Yes      |
+| (seq (word A) (option (word B)) (word C))     | (A B C)       | Yes      |
+| (seq (word A) (option (word B)) (word C))     | (A B B C)     | No       |
+| (seq (word A) (option (word B)) (word C))     | (A B B B C)   | No       |
+| (seq (word A) (star   (word B)) (word C))     | (A C)         | Yes      |
+| (seq (word A) (star   (word B)) (word C))     | (A B C)       | Yes      |
+| (seq (word A) (star   (word B)) (word C))     | (A B B C)     | Yes      |
+| (seq (word A) (star   (word B)) (word C))     | (A B B B C)   | Yes      |
+| (seq (word A) (plus   (word B)) (word C))     | (A C)         | No       |
+| (seq (word A) (plus   (word B)) (word C))     | (A B C)       | Yes      |
+| (seq (word A) (plus   (word B)) (word C))     | (A B B C)     | Yes      |
+| (seq (word A) (plus   (word B)) (word C))     | (A B B B C)   | Yes      |
+| (seq (word A) (repeat (word B) 1 2) (word C)) | (A C)         | No       |
+| (seq (word A) (repeat (word B) 1 2) (word C)) | (A B C)       | Yes      |
+| (seq (word A) (repeat (word B) 1 2) (word C)) | (A B B C)     | Yes      |
+| (seq (word A) (repeat (word B) 1 2) (word C)) | (A B B B C)   | No       |
 
 
 
 #### Ordered Choice Rules
 
-`(either option-1 ... option-N)`
+An *Ordered Choice Rule*, also known as a *Either Rule* combines a series of nested rules into a series of options, such that each nested rule will be applied, until one successfully matches. 
+
+```bash
+(either <option-0> ... <option-N>)
+```
+
+**Example Ordered Choice Rules:**
+
+| Example Rule                                 | Example Input | Matches? |
+|----------------------------------------------|---------------|----------|
+| (either (word A) (word B) (word C))          | A             | Yes      |
+| (either (word A) (word B) (word C))          | B             | Yes      |
+| (either (word A) (word B) (word C))          | C             | Yes      |
+| (either (word A) (word B) (word C))          | X             | No       |
+
 
 
 #### And Rules
 
+An *And Rule* facilitates looking ahead to determine whether a nested rule would match. 
+
+**Syntax of an And Rule:**
+
+```bash
+(and <rule>)
+```
+
+**Example And Rules:**
+
+| Example Rule                                 | Example Input | Matches? |
+|----------------------------------------------|---------------|----------|
+| (and (word A))                               | A             | Yes      |
+| (and (word A))                               | B             | No       |
+
+
+
 #### Not Rules
+
+A *Not Rule* facilitates looking ahead to determine whether a nested rule would fail to match. 
+
+**Syntax of a Not Rule:**
+
+```bash
+(not <rule>)
+```
+
+**Example Not Rules:**
+
+| Example Rule                                 | Example Input | Matches? |
+|----------------------------------------------|---------------|----------|
+| (and (word A))                               | A             | No       |
+| (and (word A))                               | B             | Yes      |
+
+
 
 #### Predicate Rules
 
-### Match Results
+A *Predicate Rule* allows a user-defined [Predicate](https://docs.oracle.com/en/java/javase/12/docs/api/java.base/java/util/function/Predicate.html) to be used in order to determine whether a symbolic-expression matches. The predicate must be defined as part of Schema construction. 
 
-When a Symbolic Expression is matched against a Schema, a `MatchResult` is created. 
+**Syntax of a Predicate Rule:**
+
+```bash
+(predicate <name>)
+```
+
+**Example of a Predicate Rule:**
+
+| Example Rule                                 | Example Input | Matches? |
+|----------------------------------------------|---------------|----------|
+| (predicate Planet)                           | Venus         | Yes      |
+| (predicate Planet)                           | Ganymede      | No       |
+
+
+**Example Usage of a Predicate Rule:**
+
+```java
+package examples;
+
+import com.mackenziehigh.sexpr.SAtom;
+import com.mackenziehigh.sexpr.Schema;
+import com.mackenziehigh.sexpr.Sexpr;
+import java.util.Set;
+import java.util.function.Predicate;
+
+public final class Example
+{
+    public static void main (String[] args)
+    {
+        final Predicate<Sexpr<?>> terrestrialPlanet = atom ->
+        {
+            final Set<String> planets = Set.of("Mercury", "Venus", "Earth", "Mars");
+            return atom.isAtom() && planets.contains(atom.toString());
+        };
+
+        // Create a Schema that describes Symbolic Atoms,
+        // such that the textual representations of the atoms
+        // are the names of terrestrial planets in our solar system.
+        final Schema schema = Schema.newBuilder()
+                .include("(root = (predicate Planet))")
+                .condition("Planet", terrestrialPlanet)
+                .build();
+
+        // Create some example atoms.
+        final var atom1 = SAtom.fromString("Mercury");
+        final var atom2 = SAtom.fromString("Venus");
+        final var atom3 = SAtom.fromString("Earth");
+        final var atom4 = SAtom.fromString("Mars");
+        final var atom5 = SAtom.fromString("Europa");
+        final var atom6 = SAtom.fromString("Titan");
+
+        // Determine whether the atoms obey the Schema.
+        System.out.println("Atom #1 = " + schema.match(atom1).isSuccess());
+        System.out.println("Atom #2 = " + schema.match(atom2).isSuccess());
+        System.out.println("Atom #3 = " + schema.match(atom3).isSuccess());
+        System.out.println("Atom #4 = " + schema.match(atom4).isSuccess());
+        System.out.println("Atom #5 = " + schema.match(atom5).isSuccess());
+        System.out.println("Atom #6 = " + schema.match(atom6).isSuccess());
+    }
+}
+```
+
+**Output:**
+
+```
+Atom #1 = true
+Atom #2 = true
+Atom #3 = true
+Atom #4 = true
+Atom #5 = false
+Atom #6 = false
+```
+
+
+#### Named Rules
+
+As you have already observed in prior examples, rules can be assigned names. Those named rules can be used elsewhere in order to define complex, sometimes recursive, patterns. 
+
+**Syntax of Rule Naming:**
+
+```bash
+(<name> = <rule>)
+```
+
+**Example Named Rules:**
+
+| Example Rule                                   |
+|------------------------------------------------|
+| (mars   = (word Mars))                         |
+| (earth  = (word Earth))                        |
+| (planet = (either (word Saturn) (word Uranus)) |
+
+
+
+#### Ref Rules
+
+A *Ref Rule* allows one to use a named rule inside of another rule. 
+
+**Syntax of Rule Naming:**
+
+```bash
+(ref <name>)
+```
+
+**Example Ref Rules:**
+
+| Example Rule                                   |
+|------------------------------------------------|
+| (object = (either (ref Planet) (ref Moon))     |
+
+
+#### Predefined Rules
+
+Several named rules are predefined for convenience. By convention, the names of the predefined rules always start with a '$' symbol. More predefined rules may be added in the future. 
+
+**List of Predefined Rules:**
+* $ANY: Always matches. 
+* $ATOM: Matches symbolic-atoms, but not symbolic-lists. 
+* $LIST: Matches symbolic-lists, but not symbolic-atoms. 
+* $BOOLEAN: Matches any symbolic-atom that can be converted to a boolean value. 
+* $CHAR: Matches any symbolic-atom that can be converted to a char value. 
+* $BYTE: Matches any symbolic-atom that can be converted to a byte value. 
+* $SHORT: Matches any symbolic-atom that can be converted to a short value. 
+* $INT: Matches any symbolic-atom that can be converted to a int value. 
+* $LONG: Matches any symbolic-atom that can be converted to a long value. 
+* $FLOAT: Matches any symbolic-atom that can be converted to a float value. 
+* $DOUBLE: Matches any symbolic-atom that can be converted to a double value. 
+
+
+### Matches
+
+When a Symbolic Expression is matched against a Schema, a `Match` object is created. 
+
 
 
 ### Translation
-
-
 
 #### Passes
 
