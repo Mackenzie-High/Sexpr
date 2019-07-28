@@ -532,7 +532,101 @@ When a Symbolic Expression is matched against a Schema, a `Match` object is crea
 
 ### Translation
 
+*Translation* allows one to perform actions in response to a successful match of a Symbolic Expression. 
+
+
+
+#### Initial Examples of Translation
+
+Let us start of with a few examples of translation. 
+
+
+**Example Prefix Notation Calculator:**
+
+```java
+package examples;
+
+import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Schema;
+import com.mackenziehigh.sexpr.Sexpr;
+import java.util.Stack;
+
+public final class Example
+{
+    private static final Stack<Double> stack = new Stack<>();
+
+    public static void main (String[] args)
+    {
+
+        // Create a Schema that implements a stack-based calculator,
+        // that uses prefix notation. Only four operations are supported,
+        // namely division, multiplication, addition, and subtraction.
+        final Schema schema = Schema.newBuilder()
+                .include("(root = (seq (ref operand)))")
+                .include("(operand = (either (ref number) (ref operation)))")
+                .include("(operation = (either (ref div) (ref mul) (ref add) (ref sub)))")
+                .include("(div = (seq (word /) (ref operand) (ref operand)))")
+                .include("(mul = (seq (word *) (ref operand) (ref operand)))")
+                .include("(add = (seq (word +) (ref operand) (ref operand)))")
+                .include("(sub = (seq (word -) (ref operand) (ref operand)))")
+                .include("(number = (ref $DOUBLE))")
+                .pass("calc")
+                .before("calc", "number", x -> stack.push(x.asAtom().asDouble().get()))
+                .after("calc", "div", Example::operationDiv)
+                .after("calc", "mul", Example::operationMul)
+                .after("calc", "add", Example::operationAdd)
+                .after("calc", "sub", Example::operationSub)
+                .after("calc", "root", x -> System.out.println(stack.pop()))
+                .build();
+
+        // Evaluate an example expression: ((((100 / 4) + 2) * 3) - 5)
+        schema.match(SList.parse("(- (* (+ (/ 100 4) 2) 3) 5)")).execute();
+    }
+
+    private static void operationDiv (final Sexpr<?> node)
+    {
+        final double right = stack.pop();
+        final double left = stack.pop();
+        final double result = left / right;
+        stack.push(result);
+    }
+
+    private static void operationMul (final Sexpr<?> node)
+    {
+        final double right = stack.pop();
+        final double left = stack.pop();
+        final double result = left * right;
+        stack.push(result);
+    }
+
+    private static void operationAdd (final Sexpr<?> node)
+    {
+        final double right = stack.pop();
+        final double left = stack.pop();
+        final double result = left + right;
+        stack.push(result);
+    }
+
+    private static void operationSub (final Sexpr<?> node)
+    {
+        final double right = stack.pop();
+        final double left = stack.pop();
+        final double result = left - right;
+        stack.push(result);
+    }
+}
+```
+
+**Output:**
+
+```
+76.0
+```
+
 #### Passes
+
+*Translation* is performed in a series of user-defined *passes*. In effect, passes facilitate the implementation of [multi-pass compiler](https://en.wikipedia.org/wiki/Multi-pass_compiler).
+
 
 #### Before Actions
 
