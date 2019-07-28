@@ -137,7 +137,7 @@ public interface Sexpr<T extends Sexpr<T>>
      * This method retrieves an object describing the source
      * from which this object we obtained.
      *
-     * @return the source-code location of this Sexpr.
+     * @return the source-code location of this node.
      */
     public SourceLocation location ();
 

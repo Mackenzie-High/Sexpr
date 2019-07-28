@@ -331,7 +331,7 @@ public final class SAtom
          * then escape and quote the string; otherwise,
          * return the content() itself.
          */
-        if (content.matches("[^\\s\\t\\r\\n()@'\"]+"))
+        if (content.isEmpty() || content.matches("[^\\s\\t\\r\\n()@'\"]+"))
         {
             return content();
         }
@@ -806,7 +806,7 @@ public final class SAtom
         else
         {
             final SAtom other = (SAtom) obj;
-            final boolean result = hash == other.hash && content.equals(other.content);
+            final boolean result = hash == other.hash && toString().equals(other.toString());
             return result;
         }
     }

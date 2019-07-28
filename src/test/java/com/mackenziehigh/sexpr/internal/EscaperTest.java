@@ -64,40 +64,6 @@ public class EscaperTest
     }
 
     /**
-     * Test: 20170617083241112272
-     *
-     * <p>
-     * Method: <code>escape(*)</code>
-     * </p>
-     *
-     * <p>
-     * Case: Only certain ASCII characters remain unchanged.
-     * </p>
-     */
-    @Test
-    public void test20170617083241112272 ()
-    {
-        System.out.println("Test: 20170617083241112272");
-
-        int total = 0;
-
-        for (int i = 0; i <= Character.MAX_VALUE; i++)
-        {
-            final char[] input = new char[1];
-            input[0] = (char) i;
-            final int len = Escaper.instance.escape(input).length();
-            total += len;
-
-            if (i > 127)
-            {
-                assertTrue(len == 6);
-            }
-        }
-
-        assertEquals((8 * 2) + (91 * 1) + ((65536 - 100) * 6), total);
-    }
-
-    /**
      * Test: 20170617083241112297
      *
      * <p>

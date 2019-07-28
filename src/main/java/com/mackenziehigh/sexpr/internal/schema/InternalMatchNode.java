@@ -26,13 +26,13 @@ import java.util.Objects;
  * An instance of this interfaces represents
  * the successful match of a single schema rule.
  */
-final class MatchNode
+final class InternalMatchNode
 {
     private final Rule rule;
 
     private final Sexpr<?> node;
 
-    private final List<MatchNode> children;
+    private final List<InternalMatchNode> children;
 
     private final int treeSize;
 
@@ -43,9 +43,9 @@ final class MatchNode
      * @param node will be the node().
      * @param children will be the children().
      */
-    public MatchNode (final Rule rule,
+    public InternalMatchNode (final Rule rule,
                       final Sexpr<?> node,
-                      final List<MatchNode> children)
+                      final List<InternalMatchNode> children)
     {
         this.rule = Objects.requireNonNull(rule, "rule");
         this.node = Objects.requireNonNull(node, "node");
@@ -84,7 +84,7 @@ final class MatchNode
      *
      * @return an immutable collection of subordinate matches.
      */
-    public List<MatchNode> children ()
+    public List<InternalMatchNode> children ()
     {
         return children;
     }

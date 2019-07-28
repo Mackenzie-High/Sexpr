@@ -16,7 +16,7 @@
 package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.SList;
-import com.mackenziehigh.sexpr.Schema.MatchResult;
+import com.mackenziehigh.sexpr.Schema.Match;
 import com.mackenziehigh.sexpr.Sexpr;
 import com.mackenziehigh.sexpr.SourceLocation;
 import com.mackenziehigh.sexpr.exceptions.ParsingFailedException;
@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-public final class SchemaParser
+public final class InternalSchemaParser
 {
     private final InternalSchema g = new InternalSchema();
 
@@ -35,7 +35,7 @@ public final class SchemaParser
 
     private final Stack<Object> stack = new Stack<>();
 
-    public SchemaParser (final InternalSchema schemaBeingBuilt)
+    public InternalSchemaParser (final InternalSchema schemaBeingBuilt)
     {
         this.b = schemaBeingBuilt;
 
@@ -57,7 +57,7 @@ public final class SchemaParser
         //                 (ref NOT)
         //                 (ref REF)
         //                 (ref ATOM)
-        //                 (ref KEYWORD)
+        //                 (ref WORD)
         //                 (ref PREDICATE)))
         either("RULE",
                ref("SEQUENCE"),
@@ -66,16 +66,16 @@ public final class SchemaParser
                ref("NOT"),
                ref("REF"),
                ref("ATOM"),
-               ref("KEYWORD"),
+               ref("WORD"),
                ref("PREDICATE"));
 
-        // (ROOT_DECLARATION = (seq (keyword 'root') (ref NAME)))
+        // (ROOT_DECLARATION = (seq (word 'root') (ref NAME)))
         assign("ROOT_DECLARATION", seq(once(atom("root")), once(ref("NAME"))));
 
-        // (ASSIGNMENT = (seq (ref NAME) (keyword '=') (ref RULE)))
+        // (ASSIGNMENT = (seq (ref NAME) (word '=') (ref RULE)))
         assign("ASSIGNMENT", seq(once(ref("NAME")), once(atom("[=]")), once(ref("RULE"))));
 
-        // (SEQUENCE = (seq (keyword 'seq') (star (ref ELEMENT))))
+        // (SEQUENCE = (seq (word 'seq') (star (ref ELEMENT))))
         assign("SEQUENCE", seq(once(atom("seq")), star(ref("ELEMENT"))));
 
         // (ELEMENT = (either (ref OPTION)
@@ -90,40 +90,40 @@ public final class SchemaParser
                ref("REPEAT"),
                ref("RULE"));
 
-        // (OPTION = (seq (keyword 'option') (ref RULE)))
+        // (OPTION = (seq (word 'option') (ref RULE)))
         assign("OPTION", seq(once(atom("option")), once(ref("RULE"))));
 
-        // (STAR = (seq (keyword 'star') (ref RULE)))
+        // (STAR = (seq (word 'star') (ref RULE)))
         assign("STAR", seq(once(atom("star")), once(ref("RULE"))));
 
-        // (PLUS = (seq (keyword 'plus') (ref RULE)))
+        // (PLUS = (seq (word 'plus') (ref RULE)))
         assign("PLUS", seq(once(atom("plus")), once(ref("RULE"))));
 
-        // (REPEAT = (seq (keyword 'repeat') (ref RULE) (atom '[0-9]+') (atom '[0-9]+')))
+        // (REPEAT = (seq (word 'repeat') (ref RULE) (atom '[0-9]+') (atom '[0-9]+')))
         assign("REPEAT", seq(once(atom("repeat")),
                              once(ref("RULE")),
                              once(atom("[0-9]+")),
                              once(atom("[0-9]+"))));
 
-        // (OR = (seq (keyword 'either') (star (ref RULE))))
+        // (OR = (seq (word 'either') (star (ref RULE))))
         assign("OR", seq(once(atom("either")), star(ref("RULE"))));
 
-        // (AND = (seq (keyword 'and') (star (ref RULE))))
+        // (AND = (seq (word 'and') (star (ref RULE))))
         assign("AND", seq(once(atom("and")), star(ref("RULE"))));
 
-        // (NOT = (seq (keyword 'not') (ref RULE)))
+        // (NOT = (seq (word 'not') (ref RULE)))
         assign("NOT", seq(once(atom("not")), once(ref("RULE"))));
 
-        // (REF = (seq (keyword 'ref') (ref NAME)))
+        // (REF = (seq (word 'ref') (ref NAME)))
         assign("REF", seq(once(atom("ref")), once(ref("NAME"))));
 
-        // (ATOM = (seq (keyword 'atom') (option (atom))))
+        // (ATOM = (seq (word 'atom') (option (atom))))
         assign("ATOM", seq(once(atom("atom")), option(atom(".*"))));
 
-        // (KEYWORD = (seq (keyword 'keyword') (atom)))
-        assign("KEYWORD", seq(once(atom("keyword")), once(atom(".*"))));
+        // (WORD = (seq (word 'word') (atom)))
+        assign("WORD", seq(once(atom("word")), once(atom(".*"))));
 
-        // (PREDICATE = (seq (keyword 'predicate') (ref NAME)))
+        // (PREDICATE = (seq (word 'predicate') (ref NAME)))
         assign("PREDICATE", seq(once(atom("predicate")), once(ref("NAME"))));
 
         // (NAME = (atom '[A-Za-z_][A-Za-z_0-9]*'))
@@ -145,7 +145,7 @@ public final class SchemaParser
         g.defineAfterAction(TRANSLATE, "AND", this::translateAnd);
         g.defineAfterAction(TRANSLATE, "NOT", this::translateNot);
         g.defineAfterAction(TRANSLATE, "ATOM", this::translateAtom);
-        g.defineAfterAction(TRANSLATE, "KEYWORD", this::translateKeyword);
+        g.defineAfterAction(TRANSLATE, "WORD", this::translateKeyword);
         g.defineAfterAction(TRANSLATE, "PREDICATE", this::translatePredicate);
         g.defineAfterAction(TRANSLATE, "REF", this::translateRef);
     }
@@ -394,8 +394,8 @@ public final class SchemaParser
 
     private void translateKeyword (final Sexpr<?> node)
     {
-        final String keyword = node.asList().get(1).toString();
-        final Rule rule = b.defineConstantRule(keyword);
+        final String word = node.asList().get(1).toString();
+        final Rule rule = b.defineConstantRule(word);
         stack.push(rule);
     }
 
@@ -418,11 +418,11 @@ public final class SchemaParser
                                         final String schema)
     {
 
-        final SchemaParser parser = new SchemaParser(schemaBeingBuilt);
+        final InternalSchemaParser parser = new InternalSchemaParser(schemaBeingBuilt);
 
         final SList objectSchema = SList.parse(location, schema);
 
-        final MatchResult match = parser.g.match(objectSchema);
+        final Match match = parser.g.match(objectSchema);
 
         if (match.isFailure())
         {

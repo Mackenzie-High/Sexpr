@@ -19,8 +19,6 @@ import com.mackenziehigh.sexpr.annotations.After;
 import com.mackenziehigh.sexpr.annotations.Before;
 import com.mackenziehigh.sexpr.annotations.Condition;
 import com.mackenziehigh.sexpr.annotations.Pass;
-import com.mackenziehigh.sexpr.internal.schema.InternalSchema;
-import com.mackenziehigh.sexpr.internal.schema.SchemaParser;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -44,13 +42,12 @@ public final class SchemaTest
         /**
          * Parse the schema.
          */
-        final InternalSchema grammar = new InternalSchema();
-        SchemaParser.parse(grammar, SchemaTest.class.getName(), schema);
+        final Schema grammar = Schema.newBuilder().include(schema).build();
 
         /**
          * Attempt to match the symbolic-expression using the schema.
          */
-        final Schema.MatchResult match = grammar.match(tree);
+        final Schema.Match match = grammar.match(tree);
         final boolean result = match.isSuccess();
 
         return result;
@@ -72,6 +69,13 @@ public final class SchemaTest
         assertTrue(parse(" (root = (ref $BOOLEAN))", "false"));
         assertFalse(parse("(root = (ref $BOOLEAN))", "XYZ"));
 
+        assertTrue(parse(" (root = (ref $CHAR))", "65"));
+        assertTrue(parse(" (root = (ref $CHAR))", "66"));
+        assertFalse(parse("(root = (ref $CHAR))", "66.0"));
+        assertFalse(parse("(root = (ref $CHAR))", "XYZ"));
+        assertFalse(parse("(root = (ref $CHAR))", "A"));
+        assertFalse(parse("(root = (ref $CHAR))", "B"));
+
         assertTrue(parse(" (root = (ref $BYTE))", "100"));
         assertTrue(parse(" (root = (ref $BYTE))", "-100"));
         assertFalse(parse("(root = (ref $BYTE))", "30.0"));
@@ -91,6 +95,31 @@ public final class SchemaTest
         assertTrue(parse(" (root = (ref $LONG))", "-200"));
         assertFalse(parse("(root = (ref $LONG))", "30.0"));
         assertFalse(parse("(root = (ref $LONG))", "XYZ"));
+
+        assertTrue(parse(" (root = (ref $FLOAT))", "100.0"));
+        assertTrue(parse(" (root = (ref $FLOAT))", "-100.0"));
+        assertTrue(parse(" (root = (ref $FLOAT))", "NAN"));
+        assertFalse(parse("(root = (ref $FLOAT))", "XYZ"));
+
+        assertTrue(parse(" (root = (ref $DOUBLE))", "100.0"));
+        assertTrue(parse(" (root = (ref $DOUBLE))", "-100.0"));
+        assertTrue(parse(" (root = (ref $DOUBLE))", "NAN"));
+        assertFalse(parse("(root = (ref $DOUBLE))", "XYZ"));
+
+        assertTrue(parse(" (root = (ref $ATOM))", "1000"));
+        assertTrue(parse(" (root = (ref $ATOM))", "-200"));
+        assertFalse(parse("(root = (ref $ATOM))", "(1000)"));
+        assertFalse(parse("(root = (ref $ATOM))", "(-200)"));
+
+        assertFalse(parse("(root = (ref $LIST))", "1000"));
+        assertFalse(parse("(root = (ref $LIST))", "-200"));
+        assertTrue(parse(" (root = (ref $LIST))", "(1000)"));
+        assertTrue(parse(" (root = (ref $LIST))", "(-200)"));
+
+        assertTrue(parse("(root = (ref $ANY))", "1000"));
+        assertTrue(parse("(root = (ref $ANY))", "-200"));
+        assertTrue(parse(" (root = (ref $ANY))", "(1000)"));
+        assertTrue(parse(" (root = (ref $ANY))", "(-200)"));
     }
 
     /**
@@ -105,8 +134,8 @@ public final class SchemaTest
     {
         System.out.println("Test: 20170703020824718850");
 
-        assertTrue(parse("(root = (keyword '123'))", "123"));
-        assertTrue(parse("(root = (keyword \"123\"))", "123"));
+        assertTrue(parse("(root = (word '123'))", "123"));
+        assertTrue(parse("(root = (word \"123\"))", "123"));
     }
 
     /**
@@ -374,7 +403,7 @@ public final class SchemaTest
         /**
          * By default, the rule named 'root' will be treated as the root rule.
          */
-        assertTrue(parse("(root = (keyword @'X'))", "X"));
+        assertTrue(parse("(root = (word @'X'))", "X"));
     }
 
     /**

@@ -68,7 +68,7 @@ public final class SList
     private final int treeSize;
 
     /**
-     * Pre-computed hashCode(), per the contract in the List interface.
+     * Precomputed hashCode(), per the contract in the List interface.
      */
     private final int hash;
 
@@ -326,9 +326,8 @@ public final class SList
     }
 
     /**
-     * This method retrieves the sub-list containing
-     * all of the elements of this list,
-     * except for the first element.
+     * This method retrieves the sub-list containing all of the elements of this list,
+     * except for the first element in linear-time.
      *
      * @return the tail sub-list.
      */
@@ -648,8 +647,8 @@ public final class SList
         }
 
         private Mutator (final Mutator below,
-                             final Sexpr<?> node,
-                             final int index)
+                         final Sexpr<?> node,
+                         final int index)
         {
             this.below = below;
             this.node = Objects.requireNonNull(node);
@@ -779,7 +778,7 @@ public final class SList
          *
          * @return the selected node.
          */
-        public Sexpr node ()
+        public Sexpr<?> node ()
         {
             return node;
         }

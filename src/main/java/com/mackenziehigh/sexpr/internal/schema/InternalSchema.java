@@ -17,7 +17,7 @@ package com.mackenziehigh.sexpr.internal.schema;
 
 import com.mackenziehigh.sexpr.SAtom;
 import com.mackenziehigh.sexpr.SList;
-import com.mackenziehigh.sexpr.Schema.MatchResult;
+import com.mackenziehigh.sexpr.Schema.Match;
 import com.mackenziehigh.sexpr.Sexpr;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -99,19 +99,19 @@ public final class InternalSchema
          * @param node is the node that was successfully matched.
          * @return the representation of the successful match.
          */
-        private MatchNode exitOnSuccess (final Rule rule,
-                                         final Sexpr node)
+        private InternalMatchNode exitOnSuccess (final Rule rule,
+                                                 final Sexpr node)
         {
             lastSuccess = node;
 
             /**
              * Remove any successful child matches from the stack.
              */
-            final LinkedList<MatchNode> children = new LinkedList<>();
+            final LinkedList<InternalMatchNode> children = new LinkedList<>();
 
             while (matches.peek() != node)
             {
-                children.addFirst((MatchNode) matches.pop());
+                children.addFirst((InternalMatchNode) matches.pop());
             }
 
             /**
@@ -122,7 +122,7 @@ public final class InternalSchema
             /**
              * Create the representation of the successful match.
              */
-            final MatchNode match = new MatchNode(rule, node, children);
+            final InternalMatchNode match = new InternalMatchNode(rule, node, children);
             matches.push(match);
 
             return match;
@@ -132,11 +132,10 @@ public final class InternalSchema
          * This method is invoked whenever a rule exits a match-attempt
          * due to the fact that the rule failed to match the node.
          *
-         * @param rule is the rule invoking this method.
          * @param node is the node that was unsuccessfully matched.
          * @return null always.
          */
-        private MatchNode exitOnFailure (final Sexpr node)
+        private InternalMatchNode exitOnFailure (final Sexpr node)
         {
             /**
              * Remove any successful child matches from the stack.
@@ -182,8 +181,8 @@ public final class InternalSchema
          * @return an object representing the successful match of this rule,
          * or null, if this rule does not match the given node.
          */
-        public abstract MatchNode match (MatchState state,
-                                         Sexpr node);
+        public abstract InternalMatchNode match (MatchState state,
+                                                 Sexpr node);
 
         /**
          * This method retrieves the name of this rule.
@@ -237,7 +236,7 @@ public final class InternalSchema
      * This map maps the names of user-defined conditions
      * to the definitions of those conditions, if any.
      */
-    private final Map<String, Predicate<Sexpr>> conditions = new TreeMap<>();
+    private final Map<String, Predicate<Sexpr<?>>> conditions = new TreeMap<>();
 
     /**
      * These are the names of the user-defined translation passes.
@@ -249,14 +248,14 @@ public final class InternalSchema
      * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
      * that will be performed for each successful match of (R) during pass (P).
      */
-    private final Map<String, Map<String, List<Consumer<Sexpr>>>> beforeActions = new TreeMap<>();
+    private final Map<String, Map<String, List<Consumer<Sexpr<?>>>>> beforeActions = new TreeMap<>();
 
     /**
      * This map maps the name of a translation pass (P) to a map that maps the name
      * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
      * that will be performed for each successful match of (R) during pass (P).
      */
-    private final Map<String, Map<String, List<Consumer<Sexpr>>>> afterActions = new TreeMap<>();
+    private final Map<String, Map<String, List<Consumer<Sexpr<?>>>>> afterActions = new TreeMap<>();
 
     /**
      * These are the names of all of the rules that have been used in the schema.
@@ -318,7 +317,7 @@ public final class InternalSchema
      * @param condition is the user-defined condition itself.
      */
     public void defineCondition (final String name,
-                                 final Predicate<Sexpr> condition)
+                                 final Predicate<Sexpr<?>> condition)
     {
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(condition, "condition");
@@ -332,7 +331,7 @@ public final class InternalSchema
 
     public void defineBeforeAction (final String pass,
                                     final String rule,
-                                    final Consumer<Sexpr> action)
+                                    final Consumer<Sexpr<?>> action)
     {
         if (beforeActions.containsKey(pass) == false)
         {
@@ -349,7 +348,7 @@ public final class InternalSchema
 
     public void defineAfterAction (final String pass,
                                    final String rule,
-                                   final Consumer<Sexpr> action)
+                                   final Consumer<Sexpr<?>> action)
     {
 
         if (afterActions.containsKey(pass) == false)
@@ -396,8 +395,8 @@ public final class InternalSchema
             }
 
             @Override
-            public MatchNode match (final MatchState state,
-                                    final Sexpr node)
+            public InternalMatchNode match (final MatchState state,
+                                            final Sexpr node)
             {
                 state.enter(node);
                 final boolean answer = rules.get(body).match(state, node) != null;
@@ -428,8 +427,8 @@ public final class InternalSchema
         final Rule rule = new Rule()
         {
             @Override
-            public MatchNode match (final MatchState state,
-                                    final Sexpr node)
+            public InternalMatchNode match (final MatchState state,
+                                            final Sexpr node)
             {
                 return rules.get(name).match(state, node);
             }
@@ -455,8 +454,8 @@ public final class InternalSchema
         final Rule rule = new Rule()
         {
             @Override
-            public MatchNode match (final MatchState state,
-                                    final Sexpr node)
+            public InternalMatchNode match (final MatchState state,
+                                            final Sexpr node)
             {
                 state.enter(node);
                 final boolean answer = operands.stream().map(name -> rules.get(name)).allMatch(rule -> rule.match(state, node) != null);
@@ -484,8 +483,8 @@ public final class InternalSchema
         final Rule rule = new Rule()
         {
             @Override
-            public MatchNode match (final MatchState state,
-                                    final Sexpr node)
+            public InternalMatchNode match (final MatchState state,
+                                            final Sexpr node)
             {
                 state.enter(node);
                 final boolean answer = operands.stream().map(name -> rules.get(name)).anyMatch(rule -> rule.match(state, node) != null);
@@ -512,8 +511,8 @@ public final class InternalSchema
         final Rule rule = new Rule()
         {
             @Override
-            public MatchNode match (final MatchState state,
-                                    final Sexpr node)
+            public InternalMatchNode match (final MatchState state,
+                                            final Sexpr node)
             {
                 state.enter(node);
                 final boolean answer = rules.get(operand).match(state, node) == null;
@@ -552,8 +551,8 @@ public final class InternalSchema
         final Rule rule = new Rule()
         {
             @Override
-            public MatchNode match (final MatchState state,
-                                    final Sexpr node)
+            public InternalMatchNode match (final MatchState state,
+                                            final Sexpr node)
             {
                 return sequenceMatch(this, operands, state, node);
             }
@@ -562,10 +561,10 @@ public final class InternalSchema
         return define(rule);
     }
 
-    private MatchNode sequenceMatch (final Rule rule,
-                                     final List<? extends SequenceElement> operands,
-                                     final MatchState state,
-                                     final Sexpr node)
+    private InternalMatchNode sequenceMatch (final Rule rule,
+                                             final List<? extends SequenceElement> operands,
+                                             final MatchState state,
+                                             final Sexpr node)
     {
         Objects.requireNonNull(rule, "rule");
         Objects.requireNonNull(operands, "operands");
@@ -601,7 +600,7 @@ seq:    for (SequenceElement operand : operands)
                 }
 
                 final Sexpr next = nodes.peek();
-                final MatchNode match = rules.get(operand.element()).match(state, next);
+                final InternalMatchNode match = rules.get(operand.element()).match(state, next);
 
                 if (match == null)
                 {
@@ -630,7 +629,7 @@ seq:    for (SequenceElement operand : operands)
                 }
 
                 final Sexpr next = nodes.peek();
-                final MatchNode match = rules.get(operand.element()).match(state, next);
+                final InternalMatchNode match = rules.get(operand.element()).match(state, next);
 
                 if (match == null)
                 {
@@ -712,8 +711,8 @@ seq:    for (SequenceElement operand : operands)
         final Rule rule = new Rule()
         {
             @Override
-            public MatchNode match (final MatchState state,
-                                    final Sexpr node)
+            public InternalMatchNode match (final MatchState state,
+                                            final Sexpr node)
             {
                 state.enter(node);
                 final boolean answer = condition.test(node);
@@ -730,7 +729,7 @@ seq:    for (SequenceElement operand : operands)
      * @param tree is the symbolic-expression that this schema may match.
      * @return an object describing the result.
      */
-    public MatchResult match (final Sexpr tree)
+    public Match match (final Sexpr tree)
     {
         Objects.requireNonNull(tree, "tree");
 
@@ -744,19 +743,19 @@ seq:    for (SequenceElement operand : operands)
          */
         final MatchState state = new MatchState();
         final Rule rootRule = rules.get(root);
-        final MatchNode match = rootRule.match(state, tree);
+        final InternalMatchNode match = rootRule.match(state, tree);
 
         /**
          * If the match-attempt failed, then report the failure;
          * otherwise, execute the user-defined passes and actions.
          */
         final boolean success = match != null;
-        final MatchResult result = new InternalMatchResult(success,
-                                                           match,
-                                                           state.lastSuccess,
-                                                           List.copyOf(passes),
-                                                           Map.copyOf(beforeActions),
-                                                           Map.copyOf(afterActions));
+        final Match result = new InternalMatch(success,
+                                               match,
+                                               state.lastSuccess,
+                                               List.copyOf(passes),
+                                               Map.copyOf(beforeActions),
+                                               Map.copyOf(afterActions));
         return result;
     }
 

@@ -139,7 +139,7 @@ public final class StringPrinter
     }
 
     /**
-     * Use this method to print a formated value to the output string.
+     * Use this method to print a formatted value to the output string.
      *
      * @param format is the format specifier string.
      * @param args are the values to substitute into the format string.

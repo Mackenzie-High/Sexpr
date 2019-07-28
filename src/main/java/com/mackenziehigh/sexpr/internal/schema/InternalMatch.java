@@ -1,6 +1,21 @@
+/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mackenziehigh.sexpr.internal.schema;
 
-import com.mackenziehigh.sexpr.Schema.MatchResult;
+import com.mackenziehigh.sexpr.Schema.Match;
 import com.mackenziehigh.sexpr.Sexpr;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +26,10 @@ import java.util.function.Consumer;
  *
  * @author mackenzie
  */
-final class InternalMatchResult
-        implements MatchResult
+final class InternalMatch
+        implements Match
 {
-    private final MatchNode root;
+    private final InternalMatchNode root;
 
     private final boolean success;
 
@@ -30,21 +45,21 @@ final class InternalMatchResult
      * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
      * that will be performed for each successful match of (R) during pass (P).
      */
-    private final Map<String, Map<String, List<Consumer<Sexpr>>>> beforeActions;
+    private final Map<String, Map<String, List<Consumer<Sexpr<?>>>>> beforeActions;
 
     /**
      * This map maps the name of a translation pass (P) to a map that maps the name
      * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
      * that will be performed for each successful match of (R) during pass (P).
      */
-    private final Map<String, Map<String, List<Consumer<Sexpr>>>> afterActions;
+    private final Map<String, Map<String, List<Consumer<Sexpr<?>>>>> afterActions;
 
-    public InternalMatchResult (final boolean success,
-                                final MatchNode root,
-                                final Sexpr<?> lastSuccess,
-                                final List<String> passes,
-                                final Map<String, Map<String, List<Consumer<Sexpr>>>> beforeActions,
-                                final Map<String, Map<String, List<Consumer<Sexpr>>>> afterActions)
+    public InternalMatch (final boolean success,
+                          final InternalMatchNode root,
+                          final Sexpr<?> lastSuccess,
+                          final List<String> passes,
+                          final Map<String, Map<String, List<Consumer<Sexpr<?>>>>> beforeActions,
+                          final Map<String, Map<String, List<Consumer<Sexpr<?>>>>> afterActions)
     {
         this.success = success;
         this.root = root;
@@ -67,7 +82,7 @@ final class InternalMatchResult
     }
 
     @Override
-    public Sexpr<?> root ()
+    public Sexpr<?> input ()
     {
         return root.node();
     }
@@ -79,7 +94,7 @@ final class InternalMatchResult
     }
 
     @Override
-    public MatchResult execute ()
+    public Match execute ()
     {
         executeActions(root);
         return this;
@@ -91,17 +106,17 @@ final class InternalMatchResult
      *
      * @param tree describes a successful match attempt.
      */
-    private void executeActions (final MatchNode tree)
+    private void executeActions (final InternalMatchNode tree)
     {
         passes.forEach(pass -> executeActions(pass, tree));
     }
 
     private void executeActions (final String pass,
-                                 final MatchNode node)
+                                 final InternalMatchNode node)
     {
         if (beforeActions.containsKey(pass) && beforeActions.get(pass).containsKey(node.rule().name()))
         {
-            final List<Consumer<Sexpr>> actions = beforeActions.get(pass).get(node.rule().name());
+            final List<Consumer<Sexpr<?>>> actions = beforeActions.get(pass).get(node.rule().name());
             actions.forEach(action -> action.accept(node.node()));
         }
 
@@ -109,7 +124,7 @@ final class InternalMatchResult
 
         if (afterActions.containsKey(pass) && afterActions.get(pass).containsKey(node.rule().name()))
         {
-            final List<Consumer<Sexpr>> actions = afterActions.get(pass).get(node.rule().name());
+            final List<Consumer<Sexpr<?>>> actions = afterActions.get(pass).get(node.rule().name());
             actions.forEach(action -> action.accept(node.node()));
         }
     }

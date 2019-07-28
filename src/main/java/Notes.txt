@@ -13,9 +13,6 @@ TODO:
 + + Exception is conditions.
 + + Escape sequences in strings.
 + + Schema immutability after calling build().
-+ Test parseFile and parseResource.
-+ + Normal Cases
-+ + File/Resource not found.
 
 
 

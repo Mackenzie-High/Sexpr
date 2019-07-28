@@ -15,18 +15,11 @@
  */
 package com.mackenziehigh.sexpr;
 
-import com.mackenziehigh.sexpr.internal.schema.Annotator;
+import com.mackenziehigh.sexpr.internal.schema.InternalAnnotator;
 import com.mackenziehigh.sexpr.internal.schema.InternalSchema;
-import com.mackenziehigh.sexpr.internal.schema.SchemaParser;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import com.mackenziehigh.sexpr.internal.schema.InternalSchemaParser;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -47,7 +40,10 @@ public final class Schema
          */
         private final InternalSchema instance = new InternalSchema();
 
-        private volatile Object built;
+        /**
+         * This flag becomes true, when <code>build()</code> get called.
+         */
+        private volatile boolean built = false;
 
         /**
          * Sole Constructor.
@@ -57,50 +53,43 @@ public final class Schema
             // Pass.
         }
 
-        /**
-         * This method parses a schema string.
+        private void requireNotBuilt ()
+        {
+            if (built)
+            {
+                throw new IllegalStateException("build() was already called.");
+            }
+        }
+
+        /*
+         * This method imports the schema rules defined in the given string.
          *
-         * @param source is a human-readable indicating where the schema is from.
          * @param schema is the textual schema.
+         * @return this.
+         */
+        public Builder include (final String schema)
+        {
+            requireNotBuilt();
+            final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            final StackTraceElement caller = stackTrace[stackTrace.length - 1];
+            final String location = caller.toString();
+            InternalSchemaParser.parse(instance, location, schema);
+            return this;
+        }
+
+        /**
+         * This method imports the schema rules defined in the given string.
+         *
+         * @param source is a human-readable string indicating where the schema is from.
+         * @param schema is the textual schema to parse.
          * @return this.
          */
         public Builder include (final String source,
                                 final String schema)
         {
-            SchemaParser.parse(instance, source, schema);
+            requireNotBuilt();
+            InternalSchemaParser.parse(instance, source, schema);
             return this;
-        }
-
-        public Builder includeFile (final File file)
-                throws IOException
-        {
-            final String source = file.toString();
-            final StringBuilder content = new StringBuilder();
-            Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)
-                    .forEach(line -> content.append(line).append('\n'));
-            return include(file.getAbsolutePath(), source);
-        }
-
-        public Builder includeResource (final String path)
-                throws IOException
-        {
-            final StringBuilder schema = new StringBuilder();
-
-            try (InputStream in = Schema.class.getResourceAsStream(path);
-                 BufferedInputStream bin = new BufferedInputStream(in);
-                 Scanner scanner = new Scanner(bin))
-            {
-                while (scanner.hasNextLine())
-                {
-                    schema.append(scanner.nextLine()).append('\n');
-                }
-            }
-            catch (IOException | RuntimeException ex)
-            {
-                throw ex;
-            }
-
-            return include(path, schema.toString());
         }
 
         /**
@@ -116,11 +105,11 @@ public final class Schema
          * @throws IllegalArgumentException if the name already identifies a predicate.
          */
         public Builder condition (String name,
-                                  Predicate<Sexpr> condition)
+                                  Predicate<Sexpr<?>> condition)
         {
+            requireNotBuilt();
             Objects.requireNonNull(name, "name");
             Objects.requireNonNull(condition, "condition");
-//            Objects.requireNonNull(built, "build() was already called.");
             instance.defineCondition(name, condition);
             return this;
         }
@@ -138,6 +127,7 @@ public final class Schema
          */
         public Builder pass (String name)
         {
+            requireNotBuilt();
             Objects.requireNonNull(name, "name");
             instance.definePass(name);
             return this;
@@ -155,12 +145,12 @@ public final class Schema
          */
         public Builder before (String pass,
                                String rule,
-                               Consumer<Sexpr> action)
+                               Consumer<Sexpr<?>> action)
         {
+            requireNotBuilt();
             Objects.requireNonNull(pass, "pass");
             Objects.requireNonNull(rule, "rule");
             Objects.requireNonNull(action, "action");
-//            Objects.requireNonNull(built, "build() was already called.");
             instance.defineBeforeAction(pass, rule, action);
             return this;
         }
@@ -177,12 +167,12 @@ public final class Schema
          */
         public Builder after (String pass,
                               String rule,
-                              Consumer<Sexpr> action)
+                              Consumer<Sexpr<?>> action)
         {
+            requireNotBuilt();
             Objects.requireNonNull(pass, "pass");
             Objects.requireNonNull(rule, "rule");
             Objects.requireNonNull(action, "action");
-//            Objects.requireNonNull(built, "build() was already called.");
             instance.defineAfterAction(pass, rule, action);
             return this;
         }
@@ -196,7 +186,8 @@ public final class Schema
          */
         public Builder defineViaAnnotations (Object object)
         {
-            final Annotator annotator = new Annotator(this);
+            requireNotBuilt();
+            final InternalAnnotator annotator = new InternalAnnotator(this);
             annotator.defineViaReflection(object);
             return this;
         }
@@ -208,7 +199,8 @@ public final class Schema
          */
         public Schema build ()
         {
-            built = this; // TODO: Make boolean, change exception type.
+            requireNotBuilt();
+            built = true;
 
             instance.validate();
 
@@ -219,28 +211,32 @@ public final class Schema
     /**
      * Result of a <code>match(Sexpr)</code> invocation.
      */
-    public interface MatchResult
+    public interface Match
     {
+        /**
+         * Determine whether this object represents a successful match.
+         *
+         * @return true, if the match attempt succeeded.
+         */
         public boolean isSuccess ();
 
+        /**
+         * Determine whether this object represents a unsuccessful match.
+         *
+         * @return true, if the match attempt failed.
+         */
         public boolean isFailure ();
 
-        public Sexpr<?> root ();
+        /**
+         * Get the symbolic-expression that was the input to <code>match()</code>.
+         *
+         * @return the input.
+         */
+        public Sexpr<?> input ();
 
         /**
-         *
-         * <p>
-         * If the match is unsuccessful, then the failure-handler function
-         * will be invoked passing-in the highest numbered node that
-         * was successfully matched. If no node was successfully matched,
-         * then an empty optional will be passed-in to the function.
-         * Conceptually, the highest numbered node that is successfully
-         * matched will be close to the site of failure; therefore,
-         * the location of the node is useful for generating human
-         * readable error-messages indication the approximate
-         * location of the failure-to-match. Nodes are numbered
-         * in accordance with a post-order transversal of the tree.
-         * </p>
+         * Get the last node of the input that was successfully matched, if any,
+         * which is useful for locating and reporting errors in the input.
          *
          * @return the last successfully matched node, if any.
          */
@@ -262,7 +258,7 @@ public final class Schema
          *
          * @return this.
          */
-        public MatchResult execute ();
+        public Match execute ();
     }
 
     private final InternalSchema internal;
@@ -275,15 +271,19 @@ public final class Schema
     /**
      * This method determines whether the given symbolic-expression obeys this schema.
      *
-     *
-     * @param tree is the symbolic-expression that this schema may match.
-     * @return true, iff the match was successful.
+     * @param input is the symbolic-expression that this schema may match.
+     * @return an object that describes the whether the match was successful or not.
      */
-    public MatchResult match (final Sexpr<?> tree)
+    public Match match (final Sexpr<?> input)
     {
-        return internal.match(tree);
+        return internal.match(input);
     }
 
+    /**
+     * Builder Factory.
+     *
+     * @return an object that can be used to build a <code>Schema</code> object.
+     */
     public static Builder newBuilder ()
     {
         return new Builder();
