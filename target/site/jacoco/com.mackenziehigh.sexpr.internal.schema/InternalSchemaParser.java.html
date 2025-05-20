@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InternalSchemaParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sexpr</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr.internal.schema</a> &gt; <span class="el_source">InternalSchemaParser.java</span></div><h1>InternalSchemaParser.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr.internal.schema;
+
+import com.mackenziehigh.sexpr.SList;
+import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.SourceLocation;
+import com.mackenziehigh.sexpr.exceptions.ParsingFailedException;
+import com.mackenziehigh.sexpr.internal.schema.InternalSchema.Rule;
+import com.mackenziehigh.sexpr.internal.schema.InternalSchema.SequenceElement;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.stream.Collectors;
+import com.mackenziehigh.sexpr.Schema.Match;
+
+public final class InternalSchemaParser
+{
+<span class="fc" id="L32">    private final InternalSchema g = new InternalSchema();</span>
+
+    private final InternalSchema b;
+
+<span class="fc" id="L36">    private final Stack&lt;Object&gt; stack = new Stack&lt;&gt;();</span>
+
+    public InternalSchemaParser (final InternalSchema schemaBeingBuilt)
+<span class="fc" id="L39">    {</span>
+<span class="fc" id="L40">        this.b = schemaBeingBuilt;</span>
+
+<span class="fc" id="L42">        g.defineRoot(&quot;ROOT&quot;);</span>
+
+        // (ROOT = (seq (star (ref STATEMENT))))
+<span class="fc" id="L45">        seq(&quot;ROOT&quot;, star(ref(&quot;STATEMENT&quot;)));</span>
+
+        // (STATEMENT = (either (ref ROOT_DECLARATION)
+        //                      (ref ASSIGNMENT)
+        //                      (ref RULE)))
+<span class="fc" id="L50">        either(&quot;STATEMENT&quot;,</span>
+<span class="fc" id="L51">               ref(&quot;ROOT_DECLARATION&quot;),</span>
+<span class="fc" id="L52">               ref(&quot;ASSIGNMENT&quot;));</span>
+
+        // (RULE = (either (ref SEQUENCE)
+        //                 (ref OR)
+        //                 (ref AND)
+        //                 (ref NOT)
+        //                 (ref REF)
+        //                 (ref ATOM)
+        //                 (ref KEYWORD)
+        //                 (ref PREDICATE)))
+<span class="fc" id="L62">        either(&quot;RULE&quot;,</span>
+<span class="fc" id="L63">               ref(&quot;SEQUENCE&quot;),</span>
+<span class="fc" id="L64">               ref(&quot;OR&quot;),</span>
+<span class="fc" id="L65">               ref(&quot;AND&quot;),</span>
+<span class="fc" id="L66">               ref(&quot;NOT&quot;),</span>
+<span class="fc" id="L67">               ref(&quot;REF&quot;),</span>
+<span class="fc" id="L68">               ref(&quot;ATOM&quot;),</span>
+<span class="fc" id="L69">               ref(&quot;KEYWORD&quot;),</span>
+<span class="fc" id="L70">               ref(&quot;PREDICATE&quot;));</span>
+
+        // (ROOT_DECLARATION = (seq (keyword 'root') (ref NAME)))
+<span class="fc" id="L73">        assign(&quot;ROOT_DECLARATION&quot;, seq(once(atom(&quot;root&quot;)), once(ref(&quot;NAME&quot;))));</span>
+
+        // (ASSIGNMENT = (seq (ref NAME) (keyword '=') (ref RULE)))
+<span class="fc" id="L76">        assign(&quot;ASSIGNMENT&quot;, seq(once(ref(&quot;NAME&quot;)), once(atom(&quot;[=]&quot;)), once(ref(&quot;RULE&quot;))));</span>
+
+        // (SEQUENCE = (seq (keyword 'seq') (star (ref ELEMENT))))
+<span class="fc" id="L79">        assign(&quot;SEQUENCE&quot;, seq(once(atom(&quot;seq&quot;)), star(ref(&quot;ELEMENT&quot;))));</span>
+
+        // (ELEMENT = (either (ref OPTION)
+        //                    (ref STAR)
+        //                    (ref PLUS)
+        //                    (ref REPEAT)
+        //                    (ref RULE)))
+<span class="fc" id="L86">        either(&quot;ELEMENT&quot;,</span>
+<span class="fc" id="L87">               ref(&quot;OPTION&quot;),</span>
+<span class="fc" id="L88">               ref(&quot;STAR&quot;),</span>
+<span class="fc" id="L89">               ref(&quot;PLUS&quot;),</span>
+<span class="fc" id="L90">               ref(&quot;REPEAT&quot;),</span>
+<span class="fc" id="L91">               ref(&quot;RULE&quot;));</span>
+
+        // (OPTION = (seq (keyword 'option') (ref RULE)))
+<span class="fc" id="L94">        assign(&quot;OPTION&quot;, seq(once(atom(&quot;option&quot;)), once(ref(&quot;RULE&quot;))));</span>
+
+        // (STAR = (seq (keyword 'star') (ref RULE)))
+<span class="fc" id="L97">        assign(&quot;STAR&quot;, seq(once(atom(&quot;star&quot;)), once(ref(&quot;RULE&quot;))));</span>
+
+        // (PLUS = (seq (keyword 'plus') (ref RULE)))
+<span class="fc" id="L100">        assign(&quot;PLUS&quot;, seq(once(atom(&quot;plus&quot;)), once(ref(&quot;RULE&quot;))));</span>
+
+        // (REPEAT = (seq (keyword 'repeat') (ref RULE) (atom '[0-9]+') (atom '[0-9]+')))
+<span class="fc" id="L103">        assign(&quot;REPEAT&quot;, seq(once(atom(&quot;repeat&quot;)),</span>
+<span class="fc" id="L104">                             once(ref(&quot;RULE&quot;)),</span>
+<span class="fc" id="L105">                             once(atom(&quot;[0-9]+&quot;)),</span>
+<span class="fc" id="L106">                             once(atom(&quot;[0-9]+&quot;))));</span>
+
+        // (OR = (seq (keyword 'either') (star (ref RULE))))
+<span class="fc" id="L109">        assign(&quot;OR&quot;, seq(once(atom(&quot;either&quot;)), star(ref(&quot;RULE&quot;))));</span>
+
+        // (AND = (seq (keyword 'and') (star (ref RULE))))
+<span class="fc" id="L112">        assign(&quot;AND&quot;, seq(once(atom(&quot;and&quot;)), star(ref(&quot;RULE&quot;))));</span>
+
+        // (NOT = (seq (keyword 'not') (ref RULE)))
+<span class="fc" id="L115">        assign(&quot;NOT&quot;, seq(once(atom(&quot;not&quot;)), once(ref(&quot;RULE&quot;))));</span>
+
+        // (REF = (seq (keyword 'ref') (ref NAME)))
+<span class="fc" id="L118">        assign(&quot;REF&quot;, seq(once(atom(&quot;ref&quot;)), once(ref(&quot;NAME&quot;))));</span>
+
+        // (ATOM = (seq (keyword 'atom') (option (atom))))
+<span class="fc" id="L121">        assign(&quot;ATOM&quot;, seq(once(atom(&quot;atom&quot;)), option(atom(&quot;.*&quot;))));</span>
+
+        // (KEYWORD = (seq (keyword 'keyword') (atom)))
+<span class="fc" id="L124">        assign(&quot;KEYWORD&quot;, seq(once(atom(&quot;keyword&quot;)), once(atom(&quot;.*&quot;))));</span>
+
+        // (PREDICATE = (seq (keyword 'predicate') (ref NAME)))
+<span class="fc" id="L127">        assign(&quot;PREDICATE&quot;, seq(once(atom(&quot;predicate&quot;)), once(ref(&quot;NAME&quot;))));</span>
+
+        // (NAME = (atom '[A-Za-z_][A-Za-z_0-9]*'))
+<span class="fc" id="L130">        assign(&quot;NAME&quot;, atom(&quot;.*&quot;));</span>
+
+        /**
+         * Bind Translation Actions.
+         */
+<span class="fc" id="L135">        final String TRANSLATE = &quot;TRANSLATE&quot;;</span>
+<span class="fc" id="L136">        g.definePass(TRANSLATE);</span>
+<span class="fc" id="L137">        g.defineAfterAction(TRANSLATE, &quot;ROOT_DECLARATION&quot;, this::translateRoot);</span>
+<span class="fc" id="L138">        g.defineAfterAction(TRANSLATE, &quot;ASSIGNMENT&quot;, this::translateAssign);</span>
+<span class="fc" id="L139">        g.defineAfterAction(TRANSLATE, &quot;SEQUENCE&quot;, this::translateSeq);</span>
+<span class="fc" id="L140">        g.defineAfterAction(TRANSLATE, &quot;OPTION&quot;, this::translateOption);</span>
+<span class="fc" id="L141">        g.defineAfterAction(TRANSLATE, &quot;STAR&quot;, this::translateStar);</span>
+<span class="fc" id="L142">        g.defineAfterAction(TRANSLATE, &quot;PLUS&quot;, this::translatePlus);</span>
+<span class="fc" id="L143">        g.defineAfterAction(TRANSLATE, &quot;REPEAT&quot;, this::translateRepeat);</span>
+<span class="fc" id="L144">        g.defineAfterAction(TRANSLATE, &quot;OR&quot;, this::translateEither);</span>
+<span class="fc" id="L145">        g.defineAfterAction(TRANSLATE, &quot;AND&quot;, this::translateAnd);</span>
+<span class="fc" id="L146">        g.defineAfterAction(TRANSLATE, &quot;NOT&quot;, this::translateNot);</span>
+<span class="fc" id="L147">        g.defineAfterAction(TRANSLATE, &quot;ATOM&quot;, this::translateAtom);</span>
+<span class="fc" id="L148">        g.defineAfterAction(TRANSLATE, &quot;KEYWORD&quot;, this::translateKeyword);</span>
+<span class="fc" id="L149">        g.defineAfterAction(TRANSLATE, &quot;PREDICATE&quot;, this::translatePredicate);</span>
+<span class="fc" id="L150">        g.defineAfterAction(TRANSLATE, &quot;REF&quot;, this::translateRef);</span>
+<span class="fc" id="L151">    }</span>
+
+    private Rule seq (final String name,
+                      final SequenceElement... elements)
+    {
+<span class="fc" id="L156">        final Rule anonRule = g.defineSequenceRule(Arrays.asList(elements));</span>
+<span class="fc" id="L157">        final Rule namedRule = g.defineNamedRule(name, anonRule.name());</span>
+<span class="fc" id="L158">        return namedRule;</span>
+    }
+
+    private Rule seq (final SequenceElement... elements)
+    {
+<span class="fc" id="L163">        return g.defineSequenceRule(Arrays.asList(elements));</span>
+    }
+
+    private Rule assign (final String name,
+                         final Rule value)
+    {
+<span class="fc" id="L169">        return either(name, value);</span>
+    }
+
+    private Rule either (final String name,
+                         final Rule... options)
+    {
+<span class="fc" id="L175">        final Rule anonRule = g.defineOrRule(Arrays.asList(options).stream().map(x -&gt; x.name()).collect(Collectors.toList()));</span>
+<span class="fc" id="L176">        final Rule namedRule = g.defineNamedRule(name, anonRule.name());</span>
+<span class="fc" id="L177">        return namedRule;</span>
+    }
+
+    private SequenceElement repeat (final Rule rule,
+                                    final int min,
+                                    final int max)
+    {
+<span class="fc" id="L184">        final String element = rule.name();</span>
+
+<span class="fc" id="L186">        return new SequenceElement()</span>
+<span class="fc" id="L187">        {</span>
+            @Override
+            public String element ()
+            {
+<span class="fc" id="L191">                return element;</span>
+            }
+
+            @Override
+            public int minimum ()
+            {
+<span class="fc" id="L197">                return min;</span>
+            }
+
+            @Override
+            public int maximum ()
+            {
+<span class="fc" id="L203">                return max;</span>
+            }
+        };
+    }
+
+    private SequenceElement once (final Rule rule)
+    {
+<span class="fc" id="L210">        return repeat(rule, 1, 1);</span>
+    }
+
+    private SequenceElement option (final Rule rule)
+    {
+<span class="fc" id="L215">        return repeat(rule, 0, 1);</span>
+    }
+
+    private SequenceElement star (final Rule rule)
+    {
+<span class="fc" id="L220">        return repeat(rule, 0, Integer.MAX_VALUE);</span>
+    }
+
+    private Rule atom (final String regex)
+    {
+<span class="fc" id="L225">        return g.defineRegexRule(regex);</span>
+    }
+
+    private Rule ref (final String name)
+    {
+<span class="fc" id="L230">        final Rule anonRule = g.defineReference(name);</span>
+<span class="fc" id="L231">        final Rule namedRule = g.defineNamedRule(name + &quot;_&quot; + anonRule.name(), anonRule.name());</span>
+<span class="fc" id="L232">        return namedRule;</span>
+    }
+
+    private void translateRoot (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L237">        final String name = node.asList().get(1).toString();</span>
+<span class="fc" id="L238">        b.defineRoot(name);</span>
+<span class="fc" id="L239">    }</span>
+
+    private void translateAssign (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L243">        final String name = node.asList().get(0).toString();</span>
+<span class="fc" id="L244">        final Rule value = (Rule) stack.pop();</span>
+<span class="fc" id="L245">        b.defineNamedRule(name, value.name());</span>
+<span class="fc" id="L246">    }</span>
+
+    private void translateSeq (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L250">        final int elementCount = node.asList().size() - 1;</span>
+
+<span class="fc" id="L252">        final LinkedList&lt;SequenceElement&gt; elements = new LinkedList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        for (int i = 0; i &lt; elementCount; i++)</span>
+        {
+<span class="fc" id="L256">            final SequenceElement element = convertToSequenceElement(stack.pop());</span>
+<span class="fc" id="L257">            elements.addFirst(element);</span>
+        }
+
+<span class="fc" id="L260">        final Rule rule = b.defineSequenceRule(elements);</span>
+<span class="fc" id="L261">        stack.push(rule);</span>
+<span class="fc" id="L262">    }</span>
+
+    private SequenceElement convertToSequenceElement (final Object object)
+    {
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        if (object instanceof SequenceElement)</span>
+        {
+<span class="fc" id="L268">            return (SequenceElement) object;</span>
+        }
+
+<span class="fc" id="L271">        final Rule element = (Rule) object;</span>
+
+<span class="fc" id="L273">        return new SequenceElement()</span>
+<span class="fc" id="L274">        {</span>
+            @Override
+            public String element ()
+            {
+<span class="fc" id="L278">                return element.name();</span>
+            }
+
+            @Override
+            public int minimum ()
+            {
+<span class="fc" id="L284">                return 1;</span>
+            }
+
+            @Override
+            public int maximum ()
+            {
+<span class="fc" id="L290">                return 1;</span>
+            }
+        };
+    }
+
+    private void translateOption (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L297">        final Rule element = (Rule) stack.pop();</span>
+<span class="fc" id="L298">        translateRepeat(element, 0, 1);</span>
+<span class="fc" id="L299">    }</span>
+
+    private void translateStar (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L303">        final Rule element = (Rule) stack.pop();</span>
+<span class="fc" id="L304">        translateRepeat(element, 0, Integer.MAX_VALUE);</span>
+<span class="fc" id="L305">    }</span>
+
+    private void translatePlus (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L309">        final Rule element = (Rule) stack.pop();</span>
+<span class="fc" id="L310">        translateRepeat(element, 1, Integer.MAX_VALUE);</span>
+<span class="fc" id="L311">    }</span>
+
+    private void translateRepeat (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L315">        final Rule element = (Rule) stack.pop();</span>
+<span class="fc" id="L316">        final int minimum = Integer.parseInt(node.asList().get(2).toString());</span>
+<span class="fc" id="L317">        final int maximum = Integer.parseInt(node.asList().get(3).toString());</span>
+<span class="fc" id="L318">        translateRepeat(element, minimum, maximum);</span>
+<span class="fc" id="L319">    }</span>
+
+    private void translateRepeat (final Rule rule,
+                                  final int minimum,
+                                  final int maximum)
+    {
+<span class="fc" id="L325">        final SequenceElement seqelm = new SequenceElement()</span>
+<span class="fc" id="L326">        {</span>
+            @Override
+            public String element ()
+            {
+<span class="fc" id="L330">                return rule.name();</span>
+            }
+
+            @Override
+            public int minimum ()
+            {
+<span class="fc" id="L336">                return minimum;</span>
+            }
+
+            @Override
+            public int maximum ()
+            {
+<span class="fc" id="L342">                return maximum;</span>
+            }
+        };
+
+<span class="fc" id="L346">        stack.push(seqelm);</span>
+<span class="fc" id="L347">    }</span>
+
+    private void translateEither (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L351">        final int elementCount = node.asList().size() - 1;</span>
+
+<span class="fc" id="L353">        final LinkedList&lt;String&gt; elements = new LinkedList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L355" title="All 2 branches covered.">        for (int i = 0; i &lt; elementCount; i++)</span>
+        {
+<span class="fc" id="L357">            final Rule element = (Rule) stack.pop();</span>
+<span class="fc" id="L358">            elements.addFirst(element.name());</span>
+        }
+
+<span class="fc" id="L361">        final Rule rule = b.defineOrRule(elements);</span>
+<span class="fc" id="L362">        stack.push(rule);</span>
+<span class="fc" id="L363">    }</span>
+
+    private void translateAnd (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L367">        final int elementCount = node.asList().size() - 1;</span>
+
+<span class="fc" id="L369">        final LinkedList&lt;String&gt; elements = new LinkedList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L371" title="All 2 branches covered.">        for (int i = 0; i &lt; elementCount; i++)</span>
+        {
+<span class="fc" id="L373">            final Rule element = (Rule) stack.pop();</span>
+<span class="fc" id="L374">            elements.addFirst(element.name());</span>
+        }
+
+<span class="fc" id="L377">        final Rule rule = b.defineAndRule(elements);</span>
+<span class="fc" id="L378">        stack.push(rule);</span>
+<span class="fc" id="L379">    }</span>
+
+    private void translateNot (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L383">        final Rule operand = (Rule) stack.pop();</span>
+<span class="fc" id="L384">        final Rule rule = b.defineNotRule(operand.name());</span>
+<span class="fc" id="L385">        stack.push(rule);</span>
+<span class="fc" id="L386">    }</span>
+
+    private void translateAtom (final Sexpr&lt;?&gt; node)
+    {
+<span class="pc bpc" id="L390" title="1 of 2 branches missed.">        final String regex = node.asList().size() == 1 ? &quot;.*&quot; : node.asList().get(1).toString();</span>
+<span class="fc" id="L391">        final Rule rule = b.defineRegexRule(regex);</span>
+<span class="fc" id="L392">        stack.push(rule);</span>
+<span class="fc" id="L393">    }</span>
+
+    private void translateKeyword (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L397">        final String keyword = node.asList().get(1).toString();</span>
+<span class="fc" id="L398">        final Rule rule = b.defineConstantRule(keyword);</span>
+<span class="fc" id="L399">        stack.push(rule);</span>
+<span class="fc" id="L400">    }</span>
+
+    private void translatePredicate (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L404">        final String name = node.asList().get(1).toString();</span>
+<span class="fc" id="L405">        final Rule rule = b.definePredicateRule(name);</span>
+<span class="fc" id="L406">        stack.push(rule);</span>
+<span class="fc" id="L407">    }</span>
+
+    private void translateRef (final Sexpr&lt;?&gt; node)
+    {
+<span class="fc" id="L411">        final String name = node.asList().get(1).toString();</span>
+<span class="fc" id="L412">        final Rule rule = b.defineReference(name);</span>
+<span class="fc" id="L413">        stack.push(rule);</span>
+<span class="fc" id="L414">    }</span>
+
+    public static InternalSchema parse (final InternalSchema schemaBeingBuilt,
+                                        final String location,
+                                        final String schema)
+    {
+
+<span class="fc" id="L421">        final InternalSchemaParser parser = new InternalSchemaParser(schemaBeingBuilt);</span>
+
+<span class="fc" id="L423">        final SList objectSchema = SList.parse(location, schema);</span>
+
+<span class="fc" id="L425">        final Match match = parser.g.match(objectSchema);</span>
+
+<span class="pc bpc" id="L427" title="1 of 2 branches missed.">        if (match.isFailure())</span>
+        {
+<span class="nc bnc" id="L429" title="All 2 branches missed.">            final int errorLineNumber = match.lastSuccess().isPresent() ? match.lastSuccess().get().location().line() : 0;</span>
+<span class="nc bnc" id="L430" title="All 2 branches missed.">            final int errorColumnNumber = match.lastSuccess().isPresent() ? match.lastSuccess().get().location().column() : 0;</span>
+<span class="nc" id="L431">            final SourceLocation errorLocation = new SourceLocation(location, errorLineNumber, errorColumnNumber);</span>
+<span class="nc" id="L432">            throw new ParsingFailedException(errorLocation);</span>
+        }
+
+<span class="fc" id="L435">        match.execute();</span>
+
+<span class="fc" id="L437">        final InternalSchema result = parser.b;</span>
+<span class="fc" id="L438">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

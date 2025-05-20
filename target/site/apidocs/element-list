@@ -1,0 +1,6 @@
+com.mackenziehigh.sexpr
+com.mackenziehigh.sexpr.annotations
+com.mackenziehigh.sexpr.exceptions
+com.mackenziehigh.sexpr.internal
+com.mackenziehigh.sexpr.internal.schema
+com.mackenziehigh.sexpr.util

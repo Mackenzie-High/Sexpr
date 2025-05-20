@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OutputFile.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sexpr</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr.util</a> &gt; <span class="el_source">OutputFile.java</span></div><h1>OutputFile.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr.util;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.Objects;
+
+/**
+ * An instance of this class represents a output text file.
+ * This class is useful when using schemas to perform code generation.
+ * The file will be encoded using (UTF-8).
+ */
+public final class OutputFile
+{
+    private final File file;
+
+    private final StringPrinter content;
+
+    /**
+     * Sole Constructor.
+     *
+     * @param file is the value for file().
+     * @param capacity is the expected capacity of the output string.
+     * @param step is the number of spaces per indentation level.
+     */
+    public OutputFile (final File file,
+                       final int capacity,
+                       final int step)
+<span class="nc" id="L45">    {</span>
+<span class="nc" id="L46">        Objects.requireNonNull(file, &quot;file&quot;);</span>
+<span class="nc" id="L47">        this.file = file;</span>
+<span class="nc" id="L48">        this.content = new StringPrinter(capacity, step);</span>
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * This method retrieves the path to where the output file will be written.
+     *
+     * @return the path to the output file.
+     */
+    public File file ()
+    {
+<span class="nc" id="L58">        return file;</span>
+    }
+
+    /**
+     * This method retrieve the object used to generate the formatted file content.
+     *
+     * @return the content of the output file.
+     */
+    public StringPrinter content ()
+    {
+<span class="nc" id="L68">        return content;</span>
+    }
+
+    /**
+     * Use this method to write the output file to disk.
+     *
+     * @throws IOException if the file cannot be written.
+     */
+    public void write ()
+            throws IOException
+    {
+<span class="nc" id="L79">        final byte[] text = content.toString().getBytes(Charset.forName(&quot;UTF-8&quot;));</span>
+<span class="nc" id="L80">        Files.write(file.toPath(), text);</span>
+<span class="nc" id="L81">    }</span>
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public String toString ()
+    {
+<span class="nc" id="L89">        return file.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

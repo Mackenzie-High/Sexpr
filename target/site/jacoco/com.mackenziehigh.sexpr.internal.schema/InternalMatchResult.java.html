@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InternalMatchResult.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sexpr</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr.internal.schema</a> &gt; <span class="el_source">InternalMatchResult.java</span></div><h1>InternalMatchResult.java</h1><pre class="source lang-java linenums">package com.mackenziehigh.sexpr.internal.schema;
+
+import com.mackenziehigh.sexpr.Schema.MatchResult;
+import com.mackenziehigh.sexpr.Sexpr;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+/**
+ *
+ * @author mackenzie
+ */
+final class InternalMatchResult
+        implements MatchResult
+{
+    private final MatchNode root;
+
+    private final boolean success;
+
+    private final Sexpr&lt;?&gt; lastSuccess;
+
+    /**
+     * These are the names of the user-defined translation passes.
+     */
+    private final List&lt;String&gt; passes;
+
+    /**
+     * This map maps the name of a translation pass (P) to a map that maps the name
+     * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
+     * that will be performed for each successful match of (R) during pass (P).
+     */
+    private final Map&lt;String, Map&lt;String, List&lt;Consumer&lt;Sexpr&gt;&gt;&gt;&gt; beforeActions;
+
+    /**
+     * This map maps the name of a translation pass (P) to a map that maps the name
+     * of a rule (R) in the schema to a list of user-defined actions (A1 ... AN)
+     * that will be performed for each successful match of (R) during pass (P).
+     */
+    private final Map&lt;String, Map&lt;String, List&lt;Consumer&lt;Sexpr&gt;&gt;&gt;&gt; afterActions;
+
+    public InternalMatchResult (final boolean success,
+                                final MatchNode root,
+                                final Sexpr&lt;?&gt; lastSuccess,
+                                final List&lt;String&gt; passes,
+                                final Map&lt;String, Map&lt;String, List&lt;Consumer&lt;Sexpr&gt;&gt;&gt;&gt; beforeActions,
+                                final Map&lt;String, Map&lt;String, List&lt;Consumer&lt;Sexpr&gt;&gt;&gt;&gt; afterActions)
+<span class="fc" id="L48">    {</span>
+<span class="fc" id="L49">        this.success = success;</span>
+<span class="fc" id="L50">        this.root = root;</span>
+<span class="fc" id="L51">        this.lastSuccess = lastSuccess;</span>
+<span class="fc" id="L52">        this.passes = List.copyOf(passes);</span>
+<span class="fc" id="L53">        this.beforeActions = Map.copyOf(beforeActions);</span>
+<span class="fc" id="L54">        this.afterActions = Map.copyOf(afterActions);</span>
+<span class="fc" id="L55">    }</span>
+
+    @Override
+    public boolean isSuccess ()
+    {
+<span class="fc" id="L60">        return success;</span>
+    }
+
+    @Override
+    public boolean isFailure ()
+    {
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        return !isSuccess();</span>
+    }
+
+    @Override
+    public Sexpr&lt;?&gt; root ()
+    {
+<span class="nc" id="L72">        return root.node();</span>
+    }
+
+    @Override
+    public Optional&lt;Sexpr&lt;?&gt;&gt; lastSuccess ()
+    {
+<span class="nc" id="L78">        return Optional.ofNullable(lastSuccess);</span>
+    }
+
+    @Override
+    public MatchResult execute ()
+    {
+<span class="fc" id="L84">        executeActions(root);</span>
+<span class="fc" id="L85">        return this;</span>
+    }
+
+    /**
+     * On successful matches, this method transverses the match-tree
+     * in multiple &quot;translation passes&quot; executing user-defined actions.
+     *
+     * @param tree describes a successful match attempt.
+     */
+    private void executeActions (final MatchNode tree)
+    {
+<span class="fc" id="L96">        passes.forEach(pass -&gt; executeActions(pass, tree));</span>
+<span class="fc" id="L97">    }</span>
+
+    private void executeActions (final String pass,
+                                 final MatchNode node)
+    {
+<span class="fc bfc" id="L102" title="All 4 branches covered.">        if (beforeActions.containsKey(pass) &amp;&amp; beforeActions.get(pass).containsKey(node.rule().name()))</span>
+        {
+<span class="fc" id="L104">            final List&lt;Consumer&lt;Sexpr&gt;&gt; actions = beforeActions.get(pass).get(node.rule().name());</span>
+<span class="fc" id="L105">            actions.forEach(action -&gt; action.accept(node.node()));</span>
+        }
+
+<span class="fc" id="L108">        node.children().forEach(child -&gt; executeActions(pass, child));</span>
+
+<span class="fc bfc" id="L110" title="All 4 branches covered.">        if (afterActions.containsKey(pass) &amp;&amp; afterActions.get(pass).containsKey(node.rule().name()))</span>
+        {
+<span class="fc" id="L112">            final List&lt;Consumer&lt;Sexpr&gt;&gt; actions = afterActions.get(pass).get(node.rule().name());</span>
+<span class="fc" id="L113">            actions.forEach(action -&gt; action.accept(node.node()));</span>
+        }
+<span class="fc" id="L115">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
