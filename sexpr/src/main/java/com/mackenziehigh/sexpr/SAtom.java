@@ -331,7 +331,11 @@ public final class SAtom
          * then escape and quote the string; otherwise,
          * return the content() itself.
          */
-        if (content.isEmpty() || content.matches("[^\\s\\t\\r\\n()@'\"]+"))
+        if (content.isEmpty())
+        {
+            return "''";
+        }
+        else if (content.matches("[^\\s\\t\\r\\n()@'\"]+"))
         {
             return content();
         }
@@ -538,7 +542,7 @@ public final class SAtom
         {
             try
             {
-                valueAsByte = Optional.of(Byte.parseByte(content()));
+                valueAsByte = Optional.of(Byte.valueOf(content()));
                 return valueAsByte;
             }
             catch (RuntimeException ex)
@@ -579,7 +583,7 @@ public final class SAtom
         {
             try
             {
-                valueAsShort = Optional.of(Short.parseShort(content()));
+                valueAsShort = Optional.of(Short.valueOf(content()));
                 return valueAsShort;
             }
             catch (RuntimeException ex)
@@ -620,7 +624,7 @@ public final class SAtom
         {
             try
             {
-                valueAsInt = Optional.of(Integer.parseInt(content()));
+                valueAsInt = Optional.of(Integer.valueOf(content()));
                 return valueAsInt;
             }
             catch (RuntimeException ex)
@@ -662,7 +666,7 @@ public final class SAtom
         {
             try
             {
-                valueAsLong = Optional.of(Long.parseLong(content()));
+                valueAsLong = Optional.of(Long.valueOf(content()));
                 return valueAsLong;
             }
             catch (RuntimeException ex)
@@ -730,7 +734,7 @@ public final class SAtom
             }
             else
             {
-                valueAsDouble = Optional.of(Double.parseDouble(toString()));
+                valueAsDouble = Optional.of(Double.valueOf(toString()));
                 return valueAsDouble;
             }
         }

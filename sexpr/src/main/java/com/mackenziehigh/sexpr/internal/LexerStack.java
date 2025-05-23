@@ -52,7 +52,7 @@ final class LexerStack
     {
         final LinkedList<Sexpr<?>> elements = new LinkedList<>();
 
-        while (stack.size() > 0 && stack.peek() != MARKER) // identity equality
+        while (!stack.isEmpty() && stack.peek() != MARKER) // identity equality
         {
             elements.addFirst(stack.pop());
         }
