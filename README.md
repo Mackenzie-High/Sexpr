@@ -2,8 +2,8 @@
 An S-expression library, for Java, focused on creating Domain Specific Languages.  
 
 **Quick Links:**
-+ [JavaDoc](target/site/apidocs/index.html)
-+ [Code Coverage](target/site/jacoco/index.html)
++ [JavaDoc](https://mackenzie-high.github.io/Sexpr/javadoc/index.html)
++ [Code Coverage](https://mackenzie-high.github.io/Sexpr/jacoco/index.html)
 
 **Maven Dependency:**
 
