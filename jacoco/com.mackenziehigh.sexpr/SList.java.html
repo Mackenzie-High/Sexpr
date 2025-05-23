@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">com.mackenziehigh:sexpr</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr</a> &gt; <span class="el_source">SList.java</span></div><h1>SList.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr;
+
+import com.mackenziehigh.sexpr.internal.Parser;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+/**
+ * Symbolic List.
+ *
+ * &lt;p&gt;
+ * Textually, a SList consists of an opening parenthesis,
+ * a the series of elements separated by spaces,
+ * followed by a closing parenthesis.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * All instances of this interface are immutable.
+ * &lt;/p&gt;
+ */
+public final class SList
+        extends AbstractList&lt;Sexpr&lt;?&gt;&gt;
+        implements Sexpr&lt;SList&gt;
+{
+    private final ArrayList&lt;Sexpr&gt; elements;
+
+    private final SourceLocation location;
+
+    private final int treeLeafCount;
+
+    private final int treeHeight;
+
+    private final int treeSize;
+
+    /**
+     * Precomputed hashCode(), per the contract in the List interface.
+     */
+    private final int hash;
+
+    /**
+     * Sole Constructor.
+     *
+     * @param location will be the location() of this list.
+     * @param elements will be the elements in this list.
+     */
+    private SList (final SourceLocation location,
+                   final Iterator&lt;? extends Sexpr&lt;?&gt;&gt; elements)
+<span class="fc" id="L83">    {</span>
+<span class="fc" id="L84">        this.location = Objects.requireNonNull(location);</span>
+<span class="fc" id="L85">        this.elements = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L86">        elements.forEachRemaining(x -&gt; this.elements.add(Objects.requireNonNull(x, &quot;A symbolic-list cannot contain null.&quot;)));</span>
+<span class="fc" id="L87">        this.elements.trimToSize();</span>
+<span class="fc" id="L88">        this.treeSize = this.elements.stream().mapToInt(x -&gt; x.treeSize()).sum() + 1;</span>
+<span class="fc" id="L89">        this.treeHeight = this.elements.stream().mapToInt(x -&gt; x.treeHeight()).max().orElse(0) + 1;</span>
+<span class="fc" id="L90">        this.treeLeafCount = this.elements.stream().mapToInt(x -&gt; x.treeLeafCount()).sum();</span>
+<span class="fc" id="L91">        this.hash = 31 * this.elements.stream().mapToInt(x -&gt; x.hashCode()).sum();</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Factory Method.
+     *
+     * @param elements will be the elements in this list.
+     * @return the new symbolic-list.
+     */
+    public static SList of (final Sexpr&lt;?&gt;... elements)
+    {
+<span class="fc" id="L102">        return new SList(SourceLocation.DEFAULT, Arrays.asList(elements).iterator());</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param elements will be the elements in this list.
+     * @return the new symbolic-list.
+     */
+    public static SList of (final SourceLocation location,
+                            final Sexpr&lt;?&gt;... elements)
+    {
+<span class="fc" id="L115">        return new SList(location, Arrays.asList(elements).iterator());</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param list contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final Iterable&lt;? extends Sexpr&lt;?&gt;&gt; list)
+    {
+<span class="fc" id="L126">        return new SList(SourceLocation.DEFAULT, list.iterator());</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param list contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final SourceLocation location,
+                                final Iterable&lt;? extends Sexpr&lt;?&gt;&gt; list)
+    {
+<span class="fc" id="L139">        return new SList(location, list.iterator());</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final Stream&lt;? extends Sexpr&lt;?&gt;&gt; stream)
+    {
+<span class="fc" id="L150">        return new SList(SourceLocation.DEFAULT, stream.iterator());</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final SourceLocation location,
+                                final Stream&lt;? extends Sexpr&lt;?&gt;&gt; stream)
+    {
+<span class="fc" id="L163">        return new SList(location, stream.iterator());</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final Iterator&lt;? extends Sexpr&lt;?&gt;&gt; stream)
+    {
+<span class="fc" id="L174">        return new SList(SourceLocation.DEFAULT, stream);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the location() of this list.
+     * @param stream contains the elements for the new list.
+     * @return the new symbolic-list.
+     */
+    public static SList copyOf (final SourceLocation location,
+                                final Iterator&lt;? extends Sexpr&lt;?&gt;&gt; stream)
+    {
+<span class="fc" id="L187">        return new SList(location, stream);</span>
+    }
+
+    /**
+     * This method creates a new two-dimensional list from the given map.
+     *
+     * &lt;p&gt;
+     * The result will be a list of lists.
+     * Each inner list will correspond to a single entry in the map.
+     * Each inner list will have exactly two elements.
+     * The first element is the key from the map entry.
+     * The second element is the value from the map entry.
+     * &lt;/p&gt;
+     *
+     * @param location will be the location() of this list.
+     * @param map contains the entries to add to the list.
+     * @return the new symbolic-list.
+     */
+    public static SList fromMap (final SourceLocation location,
+                                 final Map&lt;? extends Sexpr&lt;?&gt;, ? extends Sexpr&lt;?&gt;&gt; map)
+    {
+<span class="fc" id="L208">        return copyOf(location, createMap(location, map));</span>
+    }
+
+    /**
+     * This method creates a new two-dimensional list from the given map.
+     *
+     * &lt;p&gt;
+     * The result will be a list of lists.
+     * Each inner list will correspond to a single entry in the map.
+     * Each inner list will have exactly three elements.
+     * The first element will be the key from the map entry.
+     * the second element will be the given separator.
+     * The third element will be the value from the map entry.
+     * &lt;/p&gt;
+     *
+     * @param location will be the location() of this list.
+     * @param map contains the entries to add to the list.
+     * @param separator will be used as the key-value separator.
+     * @return the new symbolic-list.
+     */
+    public static SList fromMap (final SourceLocation location,
+                                 final Map&lt;? extends Sexpr&lt;?&gt;, ? extends Sexpr&lt;?&gt;&gt; map,
+                                 final Sexpr&lt;?&gt; separator)
+    {
+<span class="fc" id="L232">        return copyOf(location, createMap(location, map, separator));</span>
+    }
+
+    private static List&lt;Sexpr&lt;?&gt;&gt; createMap (final SourceLocation location,
+                                             final Map&lt;? extends Sexpr&lt;?&gt;, ? extends Sexpr&lt;?&gt;&gt; map)
+    {
+<span class="fc" id="L238">        final List&lt;Sexpr&lt;?&gt;&gt; outer = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L239">        map.forEach((x, y) -&gt; outer.add(SList.of(location, x, y)));</span>
+<span class="fc" id="L240">        return outer;</span>
+    }
+
+    private static List&lt;Sexpr&lt;?&gt;&gt; createMap (final SourceLocation location,
+                                             final Map&lt;? extends Sexpr&lt;?&gt;, ? extends Sexpr&lt;?&gt;&gt; map,
+                                             final Sexpr&lt;?&gt; separator)
+    {
+<span class="fc" id="L247">        final List&lt;Sexpr&lt;?&gt;&gt; outer = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L248">        map.forEach((x, y) -&gt; outer.add(SList.of(location, x, separator, y)));</span>
+<span class="fc" id="L249">        return outer;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Sexpr get (final int i)
+    {
+<span class="fc" id="L258">        return elements.get(i);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAtom ()
+    {
+<span class="fc" id="L267">        return false;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isList ()
+    {
+<span class="fc" id="L276">        return true;</span>
+    }
+
+    /**
+     * This method retrieves the first element of this list.
+     *
+     * @return the first element, or null, if the list is empty.
+     */
+    public Sexpr first ()
+    {
+<span class="fc bfc" id="L286" title="All 2 branches covered.">        return isEmpty() ? null : get(0);</span>
+    }
+
+    /**
+     * This method retrieves the last element of this list.
+     *
+     * @return the last element, or null, if the list is empty.
+     */
+    public Sexpr last ()
+    {
+<span class="fc bfc" id="L296" title="All 2 branches covered.">        return isEmpty() ? null : get(size() - 1);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SourceLocation location ()
+    {
+<span class="fc" id="L305">        return location;</span>
+    }
+
+    /**
+     * This method obtains a mutator that can be used to
+     * non-destructively modify the tree rooted at this node.
+     *
+     * @return the mutator.
+     */
+    public Mutator mutator ()
+    {
+<span class="fc" id="L316">        return new Mutator(this);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size ()
+    {
+<span class="fc" id="L325">        return elements.size();</span>
+    }
+
+    /**
+     * This method retrieves the sub-list containing all of the elements of this list,
+     * except for the first element in linear-time.
+     *
+     * @return the tail sub-list.
+     */
+    public SList tail ()
+    {
+<span class="fc bfc" id="L336" title="All 2 branches covered.">        return isEmpty() ? this : copyOf(location, subList(1, size()));</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean bfs (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="fc" id="L345">        final Queue&lt;Sexpr&gt; queue = new LinkedList&lt;&gt;();</span>
+
+<span class="fc" id="L347">        queue.add(this);</span>
+
+<span class="fc bfc" id="L349" title="All 2 branches covered.">        while (queue.isEmpty() == false)</span>
+        {
+<span class="fc" id="L351">            final Sexpr element = queue.remove();</span>
+
+<span class="fc bfc" id="L353" title="All 2 branches covered.">            if (condition.test(element))</span>
+            {
+<span class="fc" id="L355">                return true;</span>
+            }
+<span class="fc bfc" id="L357" title="All 2 branches covered.">            else if (element.isList())</span>
+            {
+<span class="fc" id="L359">                queue.addAll((SList) element);</span>
+            }
+<span class="fc" id="L361">        }</span>
+
+<span class="fc" id="L363">        return false;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean dfs (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="fc" id="L372">        return preorder(condition);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean preorder (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="pc bpc" id="L381" title="1 of 4 branches missed.">        return condition.test(this) || stream().anyMatch(x -&gt; x.dfs(condition));</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean postorder (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="fc bfc" id="L390" title="All 4 branches covered.">        return stream().anyMatch(x -&gt; x.postorder(condition)) || condition.test(this);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void traverse (final Consumer&lt;Sexpr&lt;?&gt;&gt; before,
+                          final Consumer&lt;Sexpr&lt;?&gt;&gt; after)
+    {
+<span class="fc" id="L400">        before.accept(this);</span>
+<span class="fc" id="L401">        stream().forEach(x -&gt; x.traverse(before, after));</span>
+<span class="fc" id="L402">        after.accept(this);</span>
+<span class="fc" id="L403">    }</span>
+
+    /**
+     * This method retrieves this value, as a map.
+     *
+     * &lt;p&gt;
+     * This list must be a list of sub-lists.
+     * Each sub-list will correspond to an entry in the new map.
+     * The first element in the sub-list will be used as a map-key.
+     * The last element in the sub-list will be used as a map-value.
+     * If the same map-key occurs multiple times, the last entry will prevail.
+     * &lt;/p&gt;
+     *
+     * @return the immutable value, if possible.
+     */
+    public Optional&lt;Map&lt;Sexpr&lt;?&gt;, Sexpr&lt;?&gt;&gt;&gt; asMap ()
+    {
+<span class="fc" id="L420">        final Map&lt;Sexpr&lt;?&gt;, Sexpr&lt;?&gt;&gt; map = new TreeMap&lt;&gt;();</span>
+
+<span class="fc bfc" id="L422" title="All 2 branches covered.">        for (Sexpr&lt;?&gt; element : this)</span>
+        {
+<span class="fc bfc" id="L424" title="All 2 branches covered.">            if (element.isList() == false)</span>
+            {
+<span class="fc" id="L426">                return Optional.empty();</span>
+            }
+<span class="fc bfc" id="L428" title="All 2 branches covered.">            else if (((SList) element).size() &lt; 2)</span>
+            {
+<span class="fc" id="L430">                return Optional.empty();</span>
+            }
+            else
+            {
+<span class="fc" id="L434">                final SList entry = (SList) element;</span>
+<span class="fc" id="L435">                map.put(entry.first(), entry.last());</span>
+            }
+<span class="fc" id="L437">        }</span>
+
+<span class="fc" id="L439">        return Optional.of(Collections.unmodifiableMap(map));</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int treeHeight ()
+    {
+<span class="fc" id="L448">        return treeHeight;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int treeLeafCount ()
+    {
+<span class="fc" id="L457">        return treeLeafCount;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int treeSize ()
+    {
+<span class="fc" id="L466">        return treeSize;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean equals (final Object other)
+    {
+<span class="fc bfc" id="L475" title="All 2 branches covered.">        if (other == this)</span>
+        {
+<span class="fc" id="L477">            return true;</span>
+        }
+<span class="fc bfc" id="L479" title="All 2 branches covered.">        else if (other == null)</span>
+        {
+<span class="fc" id="L481">            return false;</span>
+        }
+<span class="fc bfc" id="L483" title="All 2 branches covered.">        else if (hash != other.hashCode())</span>
+        {
+<span class="fc" id="L485">            return false;</span>
+        }
+<span class="fc bfc" id="L487" title="All 2 branches covered.">        else if (other instanceof SList == false)</span>
+        {
+<span class="fc" id="L489">            return false;</span>
+        }
+        else
+        {
+<span class="fc" id="L493">            final SList otherList = (SList) other;</span>
+<span class="fc" id="L494">            final boolean result = elements.equals(otherList.elements);</span>
+<span class="fc" id="L495">            return result;</span>
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode ()
+    {
+<span class="fc" id="L505">        return hash;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString ()
+    {
+<span class="fc" id="L514">        final StringBuilder str = new StringBuilder();</span>
+<span class="fc" id="L515">        str.append('(');</span>
+<span class="fc" id="L516">        IntStream.range(0, size() - 1).forEach(i -&gt; str.append(get(i)).append(&quot; &quot;));</span>
+<span class="fc bfc" id="L517" title="All 2 branches covered.">        str.append(isEmpty() ? &quot;&quot; : last());</span>
+<span class="fc" id="L518">        str.append(')');</span>
+<span class="fc" id="L519">        return str.toString();</span>
+    }
+
+    /**
+     * This method converts the textual representation of a SList
+     * to an actual corresponding SList object.
+     *
+     * &lt;p&gt;
+     * This method inserts an implicit symbolic-list into the input.
+     * For example, the input &quot;(1 2) (3 4)&quot; will produce a SList equivalent to &quot;((1 2) (3 4))&quot;.
+     * &lt;/p&gt;
+     *
+     * @param location is a human-readable string indicating where the input came form.
+     * @param input is the input to parse.
+     * @return the resulting symbolic-list.
+     */
+    public static SList parse (final String location,
+                               final String input)
+    {
+<span class="fc" id="L538">        final SList root = Parser.parse(location, input);</span>
+<span class="fc" id="L539">        return root;</span>
+    }
+
+    /**
+     * This method converts the textual representation of a SList
+     * to an actual corresponding SList object.
+     *
+     * &lt;p&gt;
+     * This method inserts an implicit symbolic-list into the input.
+     * For example, the input &quot;(1 2) (3 4)&quot; will produce a SList equivalent to &quot;((1 2) (3 4))&quot;.
+     * &lt;/p&gt;
+     *
+     * @param input is the input to parse.
+     * @return the resulting symbolic-list.
+     */
+    public static SList parse (final String input)
+    {
+<span class="nc" id="L556">        final SList root = Parser.parse(&quot;null&quot;, input);</span>
+<span class="nc" id="L557">        return root;</span>
+    }
+
+    /**
+     * This method converts the textual representation of a resource file
+     * to an actual corresponding SList object.
+     *
+     * &lt;p&gt;
+     * See method parse(*) for more parsing details.
+     * &lt;/p&gt;
+     *
+     * @param path is the path to the resource file.
+     * @return the new symbolic-list.
+     * @throws IOException if the resource cannot be read.
+     */
+    public static SList parseResource (final String path)
+            throws IOException
+    {
+<span class="nc" id="L575">        final StringBuilder text = new StringBuilder();</span>
+
+<span class="nc" id="L577">        try (InputStream in = SList.class.getResourceAsStream(path);</span>
+<span class="nc" id="L578">             BufferedInputStream bin = new BufferedInputStream(in);</span>
+<span class="nc" id="L579">             Scanner scanner = new Scanner(bin))</span>
+        {
+<span class="nc bnc" id="L581" title="All 2 branches missed.">            while (scanner.hasNextLine())</span>
+            {
+<span class="nc" id="L583">                text.append(scanner.nextLine()).append('\n');</span>
+            }
+        }
+<span class="nc" id="L586">        catch (IOException | RuntimeException ex)</span>
+        {
+<span class="nc" id="L588">            throw ex;</span>
+<span class="nc" id="L589">        }</span>
+
+<span class="nc" id="L591">        return parse(path, text.toString());</span>
+    }
+
+    /**
+     * This method converts the textual representation of a text file
+     * to an actual corresponding SList object.
+     *
+     * &lt;p&gt;
+     * See method parse(*) for more parsing details.
+     * &lt;/p&gt;
+     *
+     * @param file is the path to the file.
+     * @return the new symbolic-list.
+     * @throws IOException if the resource cannot be read.
+     */
+    public static SList parseFile (final File file)
+            throws IOException
+    {
+<span class="nc" id="L609">        final String source = file.toString();</span>
+<span class="nc" id="L610">        final StringBuilder content = new StringBuilder();</span>
+<span class="nc" id="L611">        Files.readAllLines(file.toPath(), Charset.forName(&quot;UTF-8&quot;))</span>
+<span class="nc" id="L612">                .forEach(line -&gt; content.append(line).append('\n'));</span>
+<span class="nc" id="L613">        return parse(source, content.toString());</span>
+    }
+
+    /**
+     * An instance of this interface simplifies the modification
+     * of symbolic-expressions, since they are immutable.
+     */
+    public final class Mutator
+    {
+        /**
+         * The mutator in this field relates to a node() closer the root of the tree.
+         * If this field is null, then this mutator relates to the root of the tree.
+         */
+        private final Mutator below;
+
+        /**
+         * This is the node in the tree that this mutator relates to.
+         */
+        private final Sexpr&lt;?&gt; node;
+
+        /**
+         * This is the index of the node() in the immediately enclosing list.
+         * If the node() is the root of the tree, then this field is irrelevant.
+         */
+        private final int index;
+
+        /**
+         * Sole Public Constructor.
+         *
+         * @param node is the root of a symbolic-expression tree.
+         */
+        public Mutator (final SList node)
+        {
+<span class="fc" id="L646">            this(null, node, 0);</span>
+<span class="fc" id="L647">        }</span>
+
+        private Mutator (final Mutator below,
+                         final Sexpr&lt;?&gt; node,
+                         final int index)
+<span class="fc" id="L652">        {</span>
+<span class="fc" id="L653">            this.below = below;</span>
+<span class="fc" id="L654">            this.node = Objects.requireNonNull(node);</span>
+<span class="fc" id="L655">            this.index = index;</span>
+<span class="fc" id="L656">        }</span>
+
+        /**
+         * This method appends the given value onto the selected node,
+         * if the selected node is a symbolic-list.
+         *
+         * @param value is the value to append onto the node().
+         * @return a modified copy of the symbolic-expression.
+         * @throws IllegalStateException if node().isList() is false.
+         */
+        public SList append (final Sexpr&lt;?&gt; value)
+        {
+<span class="fc bfc" id="L668" title="All 2 branches covered.">            if (node.isList())</span>
+            {
+<span class="fc" id="L670">                final LinkedList&lt;Sexpr&lt;?&gt;&gt; elements = new LinkedList&lt;&gt;(node.asList());</span>
+<span class="fc" id="L671">                elements.addLast(Objects.requireNonNull(value));</span>
+<span class="fc" id="L672">                final SList modified = SList.copyOf(elements);</span>
+<span class="fc" id="L673">                return set(modified);</span>
+            }
+            else
+            {
+<span class="fc" id="L677">                throw new IllegalStateException(&quot;append(Sexpr) cannot be used on th tree root.&quot;);</span>
+            }
+        }
+
+        /**
+         * This method prepends the given value onto the selected node,
+         * if the selected node is a symbolic-list.
+         *
+         * @param value is the value to prepend onto the node().
+         * @return a modified copy of the symbolic-expression.
+         * @throws IllegalStateException if node().isList() is false.
+         */
+        public SList prepend (final Sexpr&lt;?&gt; value)
+        {
+<span class="fc bfc" id="L691" title="All 2 branches covered.">            if (node.isList())</span>
+            {
+<span class="fc" id="L693">                final LinkedList&lt;Sexpr&lt;?&gt;&gt; elements = new LinkedList&lt;&gt;(node.asList());</span>
+<span class="fc" id="L694">                elements.addFirst(Objects.requireNonNull(value));</span>
+<span class="fc" id="L695">                final SList modified = SList.copyOf(elements);</span>
+<span class="fc" id="L696">                return set(modified);</span>
+            }
+            else
+            {
+<span class="fc" id="L700">                throw new IllegalStateException(&quot;prepend(Sexpr) cannot be used on th tree root.&quot;);</span>
+            }
+        }
+
+        /**
+         * This method sets the selected node to the given value.
+         *
+         * @param value will replace the node() in the tree.
+         * @return a modified copy of the symbolic-expression.
+         * @throws IllegalStateException if the selected node is the root of the tree.
+         */
+        public SList set (final Sexpr&lt;?&gt; value)
+        {
+<span class="fc bfc" id="L713" title="All 2 branches covered.">            if (below == null)</span>
+            {
+<span class="fc" id="L715">                throw new IllegalStateException(&quot;set(Sexpr) cannot be used on th tree root.&quot;);</span>
+            }
+            else
+            {
+<span class="fc" id="L719">                return below.rebuild(Objects.requireNonNull(value), index);</span>
+            }
+        }
+
+        /**
+         * This method selects the first element in the currently selected list node().
+         *
+         * @return a new instance of this class, which encodes this action.
+         * @throws IllegalStateException if node().isList() is false.
+         * @throws IndexOutOfBoundsException if node() is the list is empty.
+         */
+        public Mutator first ()
+        {
+<span class="fc" id="L732">            return get(0);</span>
+        }
+
+        /**
+         * This method selects the last element in the currently selected list node().
+         *
+         * @return a new instance of this class, which encodes this action.
+         * @throws IllegalStateException if node().isList() is false.
+         * @throws IndexOutOfBoundsException if node() is the list is empty.
+         */
+        public Mutator last ()
+        {
+<span class="fc bfc" id="L744" title="All 2 branches covered.">            if (node.isList())</span>
+            {
+<span class="fc" id="L746">                return get(node.asList().size() - 1);</span>
+            }
+            else
+            {
+<span class="fc" id="L750">                throw new IllegalStateException(&quot;last() requires that node() be a SList.&quot;);</span>
+            }
+        }
+
+        /**
+         * This method selects an element in the currently selected list node().
+         *
+         * @param index is the index of the element to select.
+         * @return a new instance that encodes this action.
+         * @throws IllegalStateException if node().isList() is false.
+         * @throws IndexOutOfBoundsException if node() is the list is empty.
+         */
+        public Mutator get (final int index)
+        {
+<span class="fc bfc" id="L764" title="All 2 branches covered.">            if (node.isList())</span>
+            {
+<span class="fc" id="L766">                final Sexpr element = node.asList().get(index);</span>
+<span class="fc" id="L767">                final Mutator step = new Mutator(this, element, index);</span>
+<span class="fc" id="L768">                return step;</span>
+            }
+            else
+            {
+<span class="fc" id="L772">                throw new IllegalStateException(&quot;get(int) requires that node() be a SList.&quot;);</span>
+            }
+        }
+
+        /**
+         * This method retrieves the currently selected node.
+         *
+         * @return the selected node.
+         */
+        public Sexpr&lt;?&gt; node ()
+        {
+<span class="fc" id="L783">            return node;</span>
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String toString ()
+        {
+<span class="fc" id="L792">            return node.toString();</span>
+        }
+
+        /**
+         * This method propagates changes out towards the root of the tree.
+         *
+         * @param value will replace an element in the current node().
+         * @param position is the position of the element to replace().
+         * @return the root of the modified tree.
+         */
+        private SList rebuild (final Sexpr&lt;?&gt; value,
+                               final int position)
+        {
+            /**
+             * Replace the element at the given position with the new value.
+             * Since the list is immutable, we create a modified copy.
+             */
+<span class="fc" id="L809">            final List&lt;Sexpr&lt;?&gt;&gt; elements = new ArrayList&lt;&gt;(node.asList());</span>
+<span class="fc" id="L810">            elements.set(position, value);</span>
+<span class="fc" id="L811">            final SList modified = SList.copyOf(elements);</span>
+
+            /**
+             * Recursively work our way towards the root of the tree.
+             */
+<span class="fc bfc" id="L816" title="All 2 branches covered.">            final SList result = below == null ? modified : below.rebuild(modified, index);</span>
+
+            /**
+             * Return the modified symbolic-expression tree.
+             */
+<span class="fc" id="L821">            return result;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

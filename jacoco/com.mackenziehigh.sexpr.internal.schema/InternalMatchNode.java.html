@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InternalMatchNode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">com.mackenziehigh:sexpr</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr.internal.schema</a> &gt; <span class="el_source">InternalMatchNode.java</span></div><h1>InternalMatchNode.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr.internal.schema;
+
+import com.mackenziehigh.sexpr.Sexpr;
+import com.mackenziehigh.sexpr.internal.schema.InternalSchema.Rule;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * An instance of this interfaces represents
+ * the successful match of a single schema rule.
+ */
+final class InternalMatchNode
+{
+    private final Rule rule;
+
+    private final Sexpr&lt;?&gt; node;
+
+    private final List&lt;InternalMatchNode&gt; children;
+
+    private final int treeSize;
+
+    /**
+     * Constructor.
+     *
+     * @param rule will be the rule().
+     * @param node will be the node().
+     * @param children will be the children().
+     */
+    public InternalMatchNode (final Rule rule,
+                      final Sexpr&lt;?&gt; node,
+                      final List&lt;InternalMatchNode&gt; children)
+<span class="fc" id="L49">    {</span>
+<span class="fc" id="L50">        this.rule = Objects.requireNonNull(rule, &quot;rule&quot;);</span>
+<span class="fc" id="L51">        this.node = Objects.requireNonNull(node, &quot;node&quot;);</span>
+<span class="fc" id="L52">        this.children = Collections.unmodifiableList(new ArrayList(Objects.requireNonNull(children, &quot;children&quot;)));</span>
+<span class="fc" id="L53">        this.treeSize = children.stream().mapToInt(x -&gt; x.treeSize()).sum() + 1;</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * This is the the rule that this result describes.
+     *
+     * @return the creator of this object.
+     */
+    public Rule rule ()
+    {
+<span class="fc" id="L63">        return rule;</span>
+    }
+
+    /**
+     * This is the symbolic-expression that was successfully matched.
+     *
+     * &lt;p&gt;
+     * Usually, this is the root of a proper sub-tree
+     * from within a larger symbolic-expression.
+     * &lt;/p&gt;
+     *
+     * @return the matched value.
+     */
+    public Sexpr&lt;?&gt; node ()
+    {
+<span class="fc" id="L78">        return node;</span>
+    }
+
+    /**
+     * If there were any rules that matched sub-parts of the value(),
+     * then this method retrieves the related matches.
+     *
+     * @return an immutable collection of subordinate matches.
+     */
+    public List&lt;InternalMatchNode&gt; children ()
+    {
+<span class="fc" id="L89">        return children;</span>
+    }
+
+    /**
+     * This method retrieves the number of matches
+     * in the match-tree rooted at this node.
+     *
+     * @return the size of this match-tree.
+     */
+    public int treeSize ()
+    {
+<span class="fc" id="L100">        return treeSize;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

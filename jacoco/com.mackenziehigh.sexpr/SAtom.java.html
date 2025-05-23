@@ -1,0 +1,827 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SAtom.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">com.mackenziehigh:sexpr</a> &gt; <a href="index.source.html" class="el_package">com.mackenziehigh.sexpr</a> &gt; <span class="el_source">SAtom.java</span></div><h1>SAtom.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2017 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mackenziehigh.sexpr;
+
+import com.mackenziehigh.sexpr.internal.Escaper;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+/**
+ * Symbolic Atom.
+ *
+ * &lt;p&gt;
+ * All instances of this interface are immutable.
+ * &lt;/p&gt;
+ */
+public final class SAtom
+        implements Sexpr&lt;SAtom&gt;
+{
+    /**
+     * This is the content() of this atom.
+     */
+    private final String content;
+
+    /**
+     * This is the content() in a format that would be recognized by the parser.
+     */
+    private final String parsableContent;
+
+    /**
+     * This is the location of this atom in an input-string,
+     * if this atom was obtained by parsing an input-string.
+     */
+    private final SourceLocation location;
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L53">    private Optional&lt;Boolean&gt; valueAsBoolean = Optional.empty();</span>
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L58">    private Optional&lt;Character&gt; valueAsChar = Optional.empty();</span>
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L63">    private Optional&lt;Byte&gt; valueAsByte = Optional.empty();</span>
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L68">    private Optional&lt;Short&gt; valueAsShort = Optional.empty();</span>
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L73">    private Optional&lt;Integer&gt; valueAsInt = Optional.empty();</span>
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L78">    private Optional&lt;Long&gt; valueAsLong = Optional.empty();</span>
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L83">    private Optional&lt;Float&gt; valueAsFloat = Optional.empty();</span>
+
+    /**
+     * Cached Value.
+     */
+<span class="fc" id="L88">    private Optional&lt;Double&gt; valueAsDouble = Optional.empty();</span>
+
+    /**
+     * Cached Hash Code.
+     */
+    private final int hash;
+
+    /**
+     * Constructor.
+     *
+     * @param value will be the content() of this atom.
+     * @param location will be the location() of this atom.
+     */
+    private SAtom (final SourceLocation location,
+                   final String value)
+<span class="fc" id="L103">    {</span>
+<span class="fc" id="L104">        this.content = Objects.requireNonNull(value);</span>
+<span class="fc" id="L105">        this.location = Objects.requireNonNull(location);</span>
+<span class="fc" id="L106">        this.hash = value.hashCode();</span>
+<span class="fc" id="L107">        this.parsableContent = createParsableContent();</span>
+<span class="fc" id="L108">    }</span>
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromBoolean (final boolean value)
+    {
+<span class="fc" id="L118">        return fromBoolean(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromChar (final char value)
+    {
+<span class="fc" id="L129">        return fromChar(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromByte (final byte value)
+    {
+<span class="fc" id="L140">        return fromByte(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromShort (final short value)
+    {
+<span class="fc" id="L151">        return fromShort(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromInt (final int value)
+    {
+<span class="fc" id="L162">        return fromInt(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromLong (final long value)
+    {
+<span class="fc" id="L173">        return fromLong(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromFloat (final float value)
+    {
+<span class="fc" id="L184">        return fromFloat(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromDouble (final double value)
+    {
+<span class="fc" id="L195">        return fromDouble(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromString (final String value)
+    {
+<span class="fc" id="L206">        return fromString(SourceLocation.DEFAULT, value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromBoolean (final SourceLocation location,
+                                     final boolean value)
+    {
+<span class="fc" id="L219">        return new SAtom(location, Boolean.toString(value));</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromChar (final SourceLocation location,
+                                  final char value)
+    {
+<span class="fc" id="L232">        return fromInt(location, (int) value);</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromByte (final SourceLocation location,
+                                  final byte value)
+    {
+<span class="fc" id="L245">        return new SAtom(location, Byte.toString(value));</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromShort (final SourceLocation location,
+                                   final short value)
+    {
+<span class="fc" id="L258">        return new SAtom(location, Short.toString(value));</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromInt (final SourceLocation location,
+                                 final int value)
+    {
+<span class="fc" id="L271">        return new SAtom(location, Integer.toString(value));</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromLong (final SourceLocation location,
+                                  final long value)
+    {
+<span class="fc" id="L284">        return new SAtom(location, Long.toString(value));</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromFloat (final SourceLocation location,
+                                   final float value)
+    {
+<span class="fc" id="L297">        return new SAtom(location, Float.toString(value));</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromDouble (final SourceLocation location,
+                                    final double value)
+    {
+<span class="fc" id="L310">        return new SAtom(location, Double.toString(value));</span>
+    }
+
+    /**
+     * Factory Method.
+     *
+     * @param location will be the &lt;code&gt;location()&lt;/code&gt; of the new atom.
+     * @param value will be the &lt;code&gt;content()&lt;/code&gt; of the new atom.
+     * @return the new atom.
+     */
+    public static SAtom fromString (final SourceLocation location,
+                                    final String value)
+    {
+<span class="fc" id="L323">        return new SAtom(location, value);</span>
+    }
+
+    private String createParsableContent ()
+    {
+        /**
+         * If the content() contains whitespace, parentheses,
+         * at-symbols, single-quotes, double-quotes, or is empty,
+         * then escape and quote the string; otherwise,
+         * return the content() itself.
+         */
+<span class="fc bfc" id="L334" title="All 2 branches covered.">        if (content.isEmpty())</span>
+        {
+<span class="fc" id="L336">            return &quot;''&quot;;</span>
+        }
+<span class="fc bfc" id="L338" title="All 2 branches covered.">        else if (content.matches(&quot;[^\\s\\t\\r\\n()@'\&quot;]+&quot;))</span>
+        {
+<span class="fc" id="L340">            return content();</span>
+        }
+        else
+        {
+<span class="fc" id="L344">            return &quot;'&quot; + escaped() + &quot;'&quot;;</span>
+        }
+    }
+
+    /**
+     * This method retrieves the series of characters
+     * that this atom contains.
+     *
+     * @return the content of this atom.
+     */
+    public String content ()
+    {
+<span class="fc" id="L356">        return content;</span>
+    }
+
+    /**
+     * This method returns the content() with all
+     * special characters escaped.
+     *
+     * @return the escaped content().
+     */
+    public String escaped ()
+    {
+<span class="fc" id="L367">        return Escaper.instance.escape(content().toCharArray());</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAtom ()
+    {
+<span class="fc" id="L376">        return true;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isList ()
+    {
+<span class="fc" id="L385">        return false;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean bfs (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="fc" id="L394">        return condition.test(this);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean dfs (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="fc" id="L403">        return condition.test(this);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean preorder (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="fc" id="L412">        return condition.test(this);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean postorder (final Predicate&lt;Sexpr&lt;?&gt;&gt; condition)
+    {
+<span class="fc" id="L421">        return condition.test(this);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void traverse (final Consumer&lt;Sexpr&lt;?&gt;&gt; before,
+                          final Consumer&lt;Sexpr&lt;?&gt;&gt; after)
+    {
+<span class="fc" id="L431">        before.accept(this);</span>
+<span class="fc" id="L432">        after.accept(this);</span>
+<span class="fc" id="L433">    }</span>
+
+    /**
+     * This method retrieves this value, as a boolean.
+     *
+     * &lt;p&gt;
+     * If toString() equals (ignoring case) &quot;true&quot;, &quot;yes&quot;, &quot;on&quot;, &quot;T&quot;, or &quot;1&quot;,
+     * then this method will return a true result.
+     * &lt;/p&gt;
+     *
+     * &lt;p&gt;
+     * If toString() equals (ignoring case) &quot;false&quot;, &quot;no&quot;, &quot;off&quot;, &quot;F&quot;, or &quot;0&quot;,
+     * then this method will return a false result.
+     * &lt;/p&gt;
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Boolean&gt; asBoolean ()
+    {
+<span class="fc bfc" id="L452" title="All 2 branches covered.">        if (valueAsBoolean.isPresent())</span>
+        {
+<span class="fc" id="L454">            return valueAsBoolean;</span>
+        }
+
+<span class="fc bfc" id="L457" title="All 3 branches covered.">        switch (toString().toLowerCase())</span>
+        {
+            case &quot;true&quot;:
+            case &quot;yes&quot;:
+            case &quot;on&quot;:
+            case &quot;t&quot;:
+            case &quot;1&quot;:
+<span class="fc" id="L464">                return valueAsBoolean = Optional.of(Boolean.TRUE);</span>
+            case &quot;false&quot;:
+            case &quot;no&quot;:
+            case &quot;off&quot;:
+            case &quot;f&quot;:
+            case &quot;0&quot;:
+<span class="fc" id="L470">                return valueAsBoolean = Optional.of(Boolean.FALSE);</span>
+            default:
+<span class="fc" id="L472">                return Optional.empty();</span>
+        }
+    }
+
+    /**
+     * This method retrieves this value, as a char.
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Character&gt; asChar ()
+    {
+<span class="fc bfc" id="L483" title="All 2 branches covered.">        if (valueAsChar.isPresent())</span>
+        {
+<span class="fc" id="L485">            return valueAsChar;</span>
+        }
+<span class="fc bfc" id="L487" title="All 2 branches covered.">        else if (&quot;max&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L489">            return Optional.of(Character.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L491" title="All 2 branches covered.">        else if (&quot;maximum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L493">            return Optional.of(Character.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L495" title="All 2 branches covered.">        else if (&quot;min&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L497">            return Optional.of(Character.MIN_VALUE);</span>
+        }
+<span class="fc bfc" id="L499" title="All 2 branches covered.">        else if (&quot;minimum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L501">            return Optional.of(Character.MIN_VALUE);</span>
+        }
+<span class="pc bpc" id="L503" title="2 of 6 branches missed.">        else if (asInt().isPresent() &amp;&amp; asInt().get() &gt;= Character.MIN_VALUE &amp;&amp; asInt().get() &lt;= Character.MAX_VALUE)</span>
+        {
+<span class="fc" id="L505">            valueAsChar = Optional.of((char) (int) asInt().get());</span>
+<span class="fc" id="L506">            return valueAsChar;</span>
+        }
+        else
+        {
+<span class="fc" id="L510">            return Optional.empty();</span>
+        }
+    }
+
+    /**
+     * This method retrieves this value, as a byte.
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Byte&gt; asByte ()
+    {
+<span class="fc bfc" id="L521" title="All 2 branches covered.">        if (valueAsByte.isPresent())</span>
+        {
+<span class="fc" id="L523">            return valueAsByte;</span>
+        }
+<span class="fc bfc" id="L525" title="All 2 branches covered.">        else if (&quot;max&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L527">            return Optional.of(Byte.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L529" title="All 2 branches covered.">        else if (&quot;maximum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L531">            return Optional.of(Byte.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L533" title="All 2 branches covered.">        else if (&quot;min&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L535">            return Optional.of(Byte.MIN_VALUE);</span>
+        }
+<span class="fc bfc" id="L537" title="All 2 branches covered.">        else if (&quot;minimum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L539">            return Optional.of(Byte.MIN_VALUE);</span>
+        }
+        else
+        {
+            try
+            {
+<span class="fc" id="L545">                valueAsByte = Optional.of(Byte.valueOf(content()));</span>
+<span class="fc" id="L546">                return valueAsByte;</span>
+            }
+<span class="fc" id="L548">            catch (RuntimeException ex)</span>
+            {
+<span class="fc" id="L550">                return Optional.empty();</span>
+            }
+        }
+    }
+
+    /**
+     * This method retrieves this value, as a short.
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Short&gt; asShort ()
+    {
+<span class="fc bfc" id="L562" title="All 2 branches covered.">        if (valueAsShort.isPresent())</span>
+        {
+<span class="fc" id="L564">            return valueAsShort;</span>
+        }
+<span class="fc bfc" id="L566" title="All 2 branches covered.">        else if (&quot;max&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L568">            return Optional.of(Short.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L570" title="All 2 branches covered.">        else if (&quot;maximum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L572">            return Optional.of(Short.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L574" title="All 2 branches covered.">        else if (&quot;min&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L576">            return Optional.of(Short.MIN_VALUE);</span>
+        }
+<span class="fc bfc" id="L578" title="All 2 branches covered.">        else if (&quot;minimum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L580">            return Optional.of(Short.MIN_VALUE);</span>
+        }
+        else
+        {
+            try
+            {
+<span class="fc" id="L586">                valueAsShort = Optional.of(Short.valueOf(content()));</span>
+<span class="fc" id="L587">                return valueAsShort;</span>
+            }
+<span class="fc" id="L589">            catch (RuntimeException ex)</span>
+            {
+<span class="fc" id="L591">                return Optional.empty();</span>
+            }
+        }
+    }
+
+    /**
+     * This method retrieves this value, as an integer.
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Integer&gt; asInt ()
+    {
+<span class="fc bfc" id="L603" title="All 2 branches covered.">        if (valueAsInt.isPresent())</span>
+        {
+<span class="fc" id="L605">            return valueAsInt;</span>
+        }
+<span class="fc bfc" id="L607" title="All 2 branches covered.">        else if (&quot;max&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L609">            return Optional.of(Integer.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L611" title="All 2 branches covered.">        else if (&quot;maximum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L613">            return Optional.of(Integer.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L615" title="All 2 branches covered.">        else if (&quot;min&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L617">            return Optional.of(Integer.MIN_VALUE);</span>
+        }
+<span class="fc bfc" id="L619" title="All 2 branches covered.">        else if (&quot;minimum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L621">            return Optional.of(Integer.MIN_VALUE);</span>
+        }
+        else
+        {
+            try
+            {
+<span class="fc" id="L627">                valueAsInt = Optional.of(Integer.valueOf(content()));</span>
+<span class="fc" id="L628">                return valueAsInt;</span>
+            }
+<span class="fc" id="L630">            catch (RuntimeException ex)</span>
+            {
+<span class="fc" id="L632">                return Optional.empty();</span>
+            }
+        }
+    }
+
+    /**
+     * This method retrieves this value, as a long.
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Long&gt; asLong ()
+    {
+
+<span class="fc bfc" id="L645" title="All 2 branches covered.">        if (valueAsLong.isPresent())</span>
+        {
+<span class="fc" id="L647">            return valueAsLong;</span>
+        }
+<span class="fc bfc" id="L649" title="All 2 branches covered.">        else if (&quot;max&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L651">            return Optional.of(Long.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L653" title="All 2 branches covered.">        else if (&quot;maximum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L655">            return Optional.of(Long.MAX_VALUE);</span>
+        }
+<span class="fc bfc" id="L657" title="All 2 branches covered.">        else if (&quot;min&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L659">            return Optional.of(Long.MIN_VALUE);</span>
+        }
+<span class="fc bfc" id="L661" title="All 2 branches covered.">        else if (&quot;minimum&quot;.equalsIgnoreCase(content()))</span>
+        {
+<span class="fc" id="L663">            return Optional.of(Long.MIN_VALUE);</span>
+        }
+        else
+        {
+            try
+            {
+<span class="fc" id="L669">                valueAsLong = Optional.of(Long.valueOf(content()));</span>
+<span class="fc" id="L670">                return valueAsLong;</span>
+            }
+<span class="fc" id="L672">            catch (RuntimeException ex)</span>
+            {
+<span class="fc" id="L674">                return Optional.empty();</span>
+            }
+        }
+    }
+
+    /**
+     * This method retrieves this value, as a float.
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Float&gt; asFloat ()
+    {
+<span class="fc bfc" id="L686" title="All 2 branches covered.">        if (valueAsFloat.isPresent())</span>
+        {
+<span class="fc" id="L688">            return valueAsFloat;</span>
+        }
+        else
+        {
+<span class="fc" id="L692">            final Optional&lt;Double&gt; number = asDouble();</span>
+<span class="fc bfc" id="L693" title="All 2 branches covered.">            valueAsFloat = number.isPresent() ? Optional.of(number.get().floatValue()) : Optional.empty();</span>
+<span class="fc" id="L694">            return valueAsFloat;</span>
+        }
+    }
+
+    /**
+     * This method retrieves this value, as a float.
+     *
+     * @return the value, if possible.
+     */
+    public Optional&lt;Double&gt; asDouble ()
+    {
+        try
+        {
+<span class="fc bfc" id="L707" title="All 2 branches covered.">            if (valueAsDouble.isPresent())</span>
+            {
+<span class="fc" id="L709">                return valueAsDouble;</span>
+            }
+<span class="fc bfc" id="L711" title="All 2 branches covered.">            else if (&quot;infinity&quot;.equalsIgnoreCase(content()))</span>
+            {
+<span class="fc" id="L713">                return Optional.of(Double.POSITIVE_INFINITY);</span>
+            }
+<span class="fc bfc" id="L715" title="All 2 branches covered.">            else if (&quot;inf&quot;.equalsIgnoreCase(content()))</span>
+            {
+<span class="fc" id="L717">                return Optional.of(Double.POSITIVE_INFINITY);</span>
+            }
+<span class="fc bfc" id="L719" title="All 2 branches covered.">            else if (&quot;-infinity&quot;.equalsIgnoreCase(content()))</span>
+            {
+<span class="fc" id="L721">                return Optional.of(Double.NEGATIVE_INFINITY);</span>
+            }
+<span class="fc bfc" id="L723" title="All 2 branches covered.">            else if (&quot;-inf&quot;.equalsIgnoreCase(content()))</span>
+            {
+<span class="fc" id="L725">                return Optional.of(Double.NEGATIVE_INFINITY);</span>
+            }
+<span class="fc bfc" id="L727" title="All 2 branches covered.">            else if (&quot;nan&quot;.equalsIgnoreCase(content()))</span>
+            {
+<span class="fc" id="L729">                return Optional.of(Double.NaN);</span>
+            }
+<span class="fc bfc" id="L731" title="All 2 branches covered.">            else if (&quot;-nan&quot;.equalsIgnoreCase(content()))</span>
+            {
+<span class="fc" id="L733">                return Optional.of(-Double.NaN);</span>
+            }
+            else
+            {
+<span class="fc" id="L737">                valueAsDouble = Optional.of(Double.valueOf(toString()));</span>
+<span class="fc" id="L738">                return valueAsDouble;</span>
+            }
+        }
+<span class="fc" id="L741">        catch (RuntimeException ex)</span>
+        {
+<span class="fc" id="L743">            return Optional.empty();</span>
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int treeHeight ()
+    {
+<span class="fc" id="L753">        return 1;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int treeLeafCount ()
+    {
+<span class="fc" id="L762">        return 1;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int treeSize ()
+    {
+<span class="fc" id="L771">        return 1;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SourceLocation location ()
+    {
+<span class="fc" id="L780">        return location;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode ()
+    {
+<span class="fc" id="L789">        return hash;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals (final Object obj)
+    {
+<span class="fc bfc" id="L798" title="All 2 branches covered.">        if (this == obj)</span>
+        {
+<span class="fc" id="L800">            return true;</span>
+        }
+<span class="fc bfc" id="L802" title="All 2 branches covered.">        else if (obj == null)</span>
+        {
+<span class="fc" id="L804">            return false;</span>
+        }
+<span class="fc bfc" id="L806" title="All 2 branches covered.">        else if (obj instanceof SAtom == false)</span>
+        {
+<span class="fc" id="L808">            return false;</span>
+        }
+        else
+        {
+<span class="fc" id="L812">            final SAtom other = (SAtom) obj;</span>
+<span class="pc bpc" id="L813" title="1 of 4 branches missed.">            final boolean result = hash == other.hash &amp;&amp; toString().equals(other.toString());</span>
+<span class="fc" id="L814">            return result;</span>
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final String toString ()
+    {
+<span class="fc" id="L824">        return parsableContent;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
