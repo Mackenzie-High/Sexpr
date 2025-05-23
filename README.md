@@ -1,9 +1,19 @@
 # Sexpr
 An S-expression library, for Java, focused on creating Domain Specific Languages.  
 
-**JavaDoc:** [Here](target/site/apidocs/index.html)
+**Quick Links:**
++ [JavaDoc](target/site/apidocs/index.html)
++ [Code Coverage](target/site/jacoco/index.html)
 
-**Coverage:** [Here](target/site/jacoco/index.html)
+**Maven Dependency:**
+
+```xml
+<dependency>
+    <groupId>com.mackenziehigh</groupId>
+    <artifactId>sexpr</artifactId>
+    <version>1.1</version>
+</dependency>
+```
 
 ## Symbolic Expressions
 
